@@ -5,6 +5,9 @@ from sprinter_settings.base_models import Base
 from mptt.models import TreeForeignKey
 from mptt.models import MPTTModel
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import MinValueValidator, MaxValueValidator
+
+from user.models import User
 
 
 class Catalog(Base, MPTTModel):
@@ -41,6 +44,7 @@ class Product(Base):
 class ProductParam(Base):
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='products')
     param = models.JSONField(default=dict)
+    is_important = models.BooleanField(default=False, help_text=_("Этот параметр влияет на цену товара?"))
 
     def __str__(self):
         return f'{self.product} - {self.param}'
@@ -64,3 +68,25 @@ class PromoCode(Base):
 
     def __str__(self):
         return f'{self.code}'
+
+
+class Comment(Base, MPTTModel):
+    parent = TreeForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='children')
+    title = models.TextField()
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f'{self.user} - {self.title}'
+
+
+class Rating(Base):
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    rate = models.FloatField(validators=[
+        MinValueValidator(0),
+        MaxValueValidator(5),
+    ])
+
+    def __str__(self):
+        return f'{self.user} - {self.product} - {self.rate}'
