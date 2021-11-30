@@ -25,7 +25,7 @@ class ProductParamModelAdmin(admin.ModelAdmin):
 
 
 class ProductPriceModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product', 'param', 'available_count',)
+    list_display = ('id', 'product', 'param', 'price', 'available_count',)
 
 
 class PromoCodeModelAdmin(admin.ModelAdmin):

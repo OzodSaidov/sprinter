@@ -4,11 +4,13 @@ from django.db import models
 from sprinter_settings.base_models import Base
 from mptt.models import TreeForeignKey
 from mptt.models import MPTTModel
+from django.utils.translation import gettext_lazy as _
 
 
 class Catalog(Base, MPTTModel):
-    title = models.CharField(max_length=255, unique=True)
-    parent = TreeForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='sub_catalogs')
+    title = models.CharField(max_length=255, unique=True, help_text=_("Название каталога"))
+    parent = TreeForeignKey('self', on_delete=models.SET_NULL, null=True,
+                            blank=True, related_name='sub_catalogs', help_text=_("К какому каталогу относится этот каталог?"))
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
