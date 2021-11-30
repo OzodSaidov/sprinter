@@ -31,7 +31,7 @@ class Color(Base):
 
 class Product(Base):
     catalog = models.ForeignKey('Catalog', on_delete=models.PROTECT, related_name='products')
-    color = models.ManyToManyField('Color', null=True, blank=True)
+    color = models.ManyToManyField('Color')
     title = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='photos/product')
@@ -62,7 +62,7 @@ class ProductPrice(Base):
 
 class PromoCode(Base):
     code = models.CharField(max_length=255, unique=True)
-    product = models.ManyToManyField('Product', null=True, blank=True)
+    product = models.ManyToManyField('Product')
     # product_param = models.ForeignKey('ProductParam', on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 
