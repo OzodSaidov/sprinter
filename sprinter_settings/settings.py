@@ -40,11 +40,12 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-
+    'mptt',
 ]
 
 LOCALE_APPS = [
-
+    'user',
+    'core',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCALE_APPS
