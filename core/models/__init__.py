@@ -11,4 +11,6 @@ __all__ = [
     'ProductOrder',
     'Basket',
     'Order',
+    'Rating',
+    'Comment',
 ]
