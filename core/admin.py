@@ -21,7 +21,7 @@ class ProductModelAdmin(admin.ModelAdmin):
 
 
 class ProductParamModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'param', 'product',)
+    list_display = ('id', 'name', 'property', 'product',)
 
 
 class ProductPriceModelAdmin(admin.ModelAdmin):

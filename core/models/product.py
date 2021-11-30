@@ -48,11 +48,12 @@ class ProductImages(Base):
 
 class ProductParam(Base):
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='products')
-    param = models.JSONField(default=dict)
+    name = models.CharField(max_length=255)
+    property = models.CharField(max_length=255)
     is_important = models.BooleanField(default=False, help_text=_("Этот параметр влияет на цену товара?"))
 
     def __str__(self):
-        return f'{self.product} - {self.param}'
+        return f'{self.name} - {self.property}'
 
 
 class ProductPrice(Base):
