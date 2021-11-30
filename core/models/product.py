@@ -26,7 +26,7 @@ class Color(Base):
 
 class Product(Base):
     catalog = models.ForeignKey('Catalog', on_delete=models.PROTECT, related_name='products')
-    color = models.ManyToManyField('Color')
+    color = models.ManyToManyField('Color', null=True, blank=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='photos/product')
@@ -38,7 +38,10 @@ class Product(Base):
 
 class ProductParam(Base):
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='products')
-    param = models.JSONField()
+    param = models.JSONField(default=dict)
+
+    def __str__(self):
+        return f'{self.product} - {self.param}'
 
 
 class ProductPrice(Base):
@@ -47,11 +50,15 @@ class ProductPrice(Base):
     price = models.FloatField()
     available_count = models.PositiveIntegerField()
 
+    def __str__(self):
+        return f'{self.product} - {self.price}'
+
 
 class PromoCode(Base):
     code = models.CharField(max_length=255, unique=True)
-    product = models.ForeignKey('Product', on_delete=models.CASCADE)
-    product_param = models.ForeignKey('ProductParam', on_delete=models.CASCADE)
+    product = models.ManyToManyField('Product', null=True, blank=True)
+    # product_param = models.ForeignKey('ProductParam', on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 
-
+    def __str__(self):
+        return f'{self.code}'
