@@ -19,6 +19,7 @@ class OrderStatus(TextChoices):
 class PaymentStatus(TextChoices):
     WAITING = 'Waiting', 'Waiting'
     PAYED = 'Payed', 'Payed'
+    FAILURE = 'Failure', 'Failure'
 
 
 class UserRoles(TextChoices):

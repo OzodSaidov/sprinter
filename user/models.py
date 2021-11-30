@@ -8,6 +8,14 @@ from .validators import validate_phone
 
 
 class User(AbstractUser, Base):
+    username = models.CharField(
+        _('username'),
+        max_length=150,
+        unique=True,
+        error_messages={
+            'unique': _("A user with that username already exists."),
+        },
+    )
     user_ident = models.CharField(max_length=9, unique=True)
     address = models.TextField()
     zip_code = models.CharField(max_length=9)
@@ -21,6 +29,8 @@ class User(AbstractUser, Base):
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=True)
 
+    REQUIRED_FIELDS = []
+
     def __str__(self):
         return self.get_username()
 
@@ -32,5 +42,3 @@ class User(AbstractUser, Base):
         ident = str(uuid.uuid4().fields[-1])[:9]
         self.user_ident = ident
         super(User, self).save(*args, **kwargs)
-
-
