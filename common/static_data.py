@@ -19,3 +19,8 @@ class OrderStatus(TextChoices):
 class PaymentStatus(TextChoices):
     WAITING = 'Waiting', 'Waiting'
     PAYED = 'Payed', 'Payed'
+
+
+class UserRoles(TextChoices):
+    ADMIN = 'Admin'
+    USER = 'User'
