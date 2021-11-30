@@ -53,9 +53,24 @@ class BasketClassModelAdmin(admin.ModelAdmin):
 
 
 class OrderClassModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'basket', 'payment_type', 'order_status', 'payment_status', 'promocode', 'is_active')
+    list_display = ('id', 'basket', 'payment_type',
+                    'order_status', 'payment_status',
+                    'promocode', 'is_active')
 
 
 admin.site.register(ProductOrder, ProductOrderClassModelAdmin)
 admin.site.register(Basket, BasketClassModelAdmin)
 admin.site.register(Order, OrderClassModelAdmin)
+
+
+####################### - ORDER - #######################
+
+
+####################### - Comment, Rating - #######################
+
+
+class CommentClassModelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'parent', 'user', 'title', 'is_active')
+
+
+admin.site.register(Comment, CommentClassModelAdmin)

@@ -31,7 +31,7 @@ class Color(Base):
 
 class Product(Base):
     catalog = models.ForeignKey('Catalog', on_delete=models.PROTECT, related_name='products')
-    color = models.ManyToManyField('Color')
+    color = models.ManyToManyField('Color', blank=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='photos/product')
@@ -62,7 +62,7 @@ class ProductPrice(Base):
 
 class PromoCode(Base):
     code = models.CharField(max_length=255, unique=True)
-    product = models.ManyToManyField('Product')
+    product = models.ManyToManyField('Product', blank=True)
     # product_param = models.ForeignKey('ProductParam', on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
 
@@ -73,6 +73,7 @@ class PromoCode(Base):
 class Comment(Base, MPTTModel):
     parent = TreeForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='children')
     title = models.TextField()
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     is_active = models.BooleanField(default=True)
 
