@@ -34,11 +34,16 @@ class Product(Base):
     color = models.ManyToManyField('Color', blank=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
-    image = models.ImageField(upload_to='photos/product')
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.title}'
+
+
+class ProductImages(Base):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='photos/products')
+    is_active = models.BooleanField(default=True)
 
 
 class ProductParam(Base):
