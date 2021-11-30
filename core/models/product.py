@@ -20,6 +20,15 @@ class Catalog(Base, MPTTModel):
         return f'{self.title}'
 
 
+class Brand(Base):
+    title = models.CharField(max_length=255)
+    logo = models.ImageField(upload_to='photos/brands')
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f'{self.title}'
+
+
 class Color(Base):
     title = models.CharField(max_length=255, unique=True)
     icon = models.ImageField(upload_to='photos/color_icons')
@@ -31,6 +40,7 @@ class Color(Base):
 
 class Product(Base):
     catalog = models.ForeignKey('Catalog', on_delete=models.PROTECT, related_name='products')
+    brand = models.ForeignKey('Brand', on_delete=models.PROTECT, null=True, blank=True)
     color = models.ManyToManyField('Color', blank=True)
     title = models.CharField(max_length=255)
     description = models.TextField()

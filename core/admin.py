@@ -32,6 +32,10 @@ class PromoCodeModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'code', 'is_active')
 
 
+class BrandCodeModelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'is_active')
+
+
 admin.site.register(Catalog, CatalogModelAdmin)
 admin.site.register(Color, ColorModelAdmin)
 admin.site.register(Product, ProductModelAdmin)
