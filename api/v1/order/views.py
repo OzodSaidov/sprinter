@@ -1,8 +1,3 @@
-import re
-
-import pyotp
-from django.contrib.auth import get_user_model
-from rest_framework import status
 from rest_framework.generics import (
     CreateAPIView,
     ListAPIView,
@@ -10,12 +5,8 @@ from rest_framework.generics import (
     UpdateAPIView,
     DestroyAPIView,
 )
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
-from api.v1.user.serializers import UserMeCreateSerializer
-from api.v1.user.services.send_code import send_code
+from api.v1.order.filters import OrderFilter
 from api.v1.order.serializers import *
 from core.models.order import *
 
@@ -113,6 +104,7 @@ class OrderListApiView(ListAPIView):
     """ List of orders """
 
     serializer_class = OrderListSerializer
+    filterset_class = OrderFilter
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
