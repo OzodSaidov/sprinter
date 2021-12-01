@@ -57,7 +57,7 @@ admin.site.register(PromoCode, PromoCodeModelAdmin)
 admin.site.register(Brand, BrandModelAdmin)
 admin.site.register(Review, ReviewModelAdmin)
 admin.site.register(ReviewAttachment, ReviewAttachmentModelAdmin)
-
+admin.site.register(ProductGroup, ProductGroupModelAdmin)
 
 ####################### - PRODUCT - #######################
 
@@ -66,6 +66,11 @@ admin.site.register(ReviewAttachment, ReviewAttachmentModelAdmin)
 
 class ProductOrderClassModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'product', 'quantity')
+
+    # def save_related(self, request, form, formsets, change):
+    #     super(ProductOrderClassModelAdmin, self).save_related(request, form, formsets, change)
+    #     print(form.instance.product_param.values_list('group', flat=True))
+    #     # raise ValidationError('Not possible')
 
 
 class BasketClassModelAdmin(admin.ModelAdmin):

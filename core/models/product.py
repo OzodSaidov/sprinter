@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.exceptions import ValidationError
 # Create your models here.
 from sprinter_settings.base_models import Base
 from mptt.models import TreeForeignKey
@@ -91,6 +91,14 @@ class ProductPrice(Base):
 
     def __str__(self):
         return f'{self.product} - {self.price}'
+
+    def save(self, *args, **kwargs):
+        """ Эту модель можно использовать только для параметров влияющих на цену
+        (ProductParam.is_important)"""
+
+        if not self.param.is_important:
+            raise ValidationError('Невозможно создать для такого параметра')
+        return super().save(*args, **kwargs)
 
 
 class PromoCode(Base):
