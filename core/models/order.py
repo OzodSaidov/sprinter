@@ -14,6 +14,7 @@ class ProductOrder(Base):
     product_param = models.ManyToManyField('ProductParam')
     color = models.ForeignKey(ProductColor, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField()
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.user} - {self.product}'
