@@ -57,3 +57,15 @@ class LoginSerializer(Serializer):
         data['access_token'] = str(access_token)
         data['refresh_token'] = str(refresh_token)
         return data
+
+
+class ResetPasswordSerializer(Serializer):
+    code = serializers.CharField()
+    token = serializers.CharField()
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def to_internal_value(self, data):
+        data = super().to_internal_value(data)
+        data["code"] = data["code"].zfill(6)
+        return data
