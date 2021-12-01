@@ -1,7 +1,7 @@
 import re
 
 import pyotp
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.generics import (
     CreateAPIView
@@ -10,11 +10,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.v1.user.serializers import UserMeCreateSerializer, LoginSerializer
+from api.v1.user.serializers import UserMeCreateSerializer, LoginSerializer, ResetPasswordSerializer
 from api.v1.user.services.send_code import send_code
 
-User = get_user_model()
-# from user.models import User
+# User = get_user_model()
+from user.models import User
 
 
 class UserMeCreateView(CreateAPIView):
@@ -26,7 +26,7 @@ class UserMeCreateView(CreateAPIView):
         sms_code = request.data.get("sms_code")
         token = request.data.get("token")
         if sms_code:
-            totp = pyotp.TOTP(token, interval=180)
+            totp = pyotp.TOTP(token, interval=1800)
             if totp.verify(sms_code):
                 return super().post(request, *args, **kwargs)
             return Response({'status': "invalid code"}, status=402)
@@ -34,21 +34,43 @@ class UserMeCreateView(CreateAPIView):
         return Response({'status': "not otp or token"}, status=401)
 
 
-class PhoneVerifyAPIView(APIView):
+class VerifyAPIView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        phone = self.request.data.get('phone')
-        phone = re.sub('[^0-9]', '', phone)
-        if len(phone) != 12:
-            return Response({'status': 'bad request'}, status=400)
-        if User.objects.filter(phone__iexact=phone).exists():
-            return Response({'detail': 'Phone number already exists!'},
-                            status=status.HTTP_400_BAD_REQUEST)
+        reset = self.request.query_params.get('reset', False)
+        username = self.request.data.get('username')
+        is_email = re.findall(r'\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}', username)
+        is_phone = re.findall(r'^[+]?998\d{9}$', username)
+        user_not_found = Response({'user': 'Not found!'}, status=status.HTTP_404_NOT_FOUND)
+        user_exists = Response({'user': 'Already exists!'}, status=status.HTTP_400_BAD_REQUEST)
+        error = Response({'error': 'Incorrect data!'})
+
+        if reset == 'true':
+            if is_email:
+                if not User.objects.filter(email=username).exists():
+                    return user_not_found
+            elif is_phone:
+                username = re.sub('[^0-9]', '', username)
+                if not User.objects.filter(phone=username).exists():
+                    return user_not_found
+            else:
+                return error
+        else:
+            if is_email:
+                if User.objects.filter(email=username).exists():
+                    return user_exists
+            elif is_phone:
+                username = re.sub('[^0-9]', '', username)
+                if User.objects.filter(phone=username).exists():
+                    return user_exists
+            else:
+                return error
+
         secret = pyotp.random_base32()
-        totp = pyotp.TOTP(secret, interval=180)
+        totp = pyotp.TOTP(secret, interval=1800)
         otp = totp.now()
-        send_code(phone, otp)
+        send_code(username, otp)
         return Response({'token': secret}, status=200)
 
 
@@ -79,3 +101,29 @@ class LoginView(APIView):
                 )
         else:
             return Response({'error': 'Incorrect data'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserResetPasswordView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = ResetPasswordSerializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.data
+        token = data["token"]
+        code = data["code"]
+        password = data["password"]
+        phone = data["username"]
+        code = code.zfill(6)
+        phone = re.sub('[^0-9]', '', phone)
+        user = User.objects.filter(phone=phone).first()
+        if not user:
+            return Response({"phone": "not found"}, status=status.HTTP_404_NOT_FOUND)
+        totp = pyotp.TOTP(token, interval=1800)
+        if code and token:
+            if totp.verify(code):
+                user.set_password(password)
+                user.save()
+                return Response({"password_updated": "ok"}, status=status.HTTP_200_OK)
+            return Response({"detail": "invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': "invalid token"}, status=status.HTTP_400_BAD_REQUEST)
