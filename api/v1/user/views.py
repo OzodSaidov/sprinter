@@ -1,7 +1,7 @@
 import re
 
 import pyotp
-# from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.generics import (
     CreateAPIView
@@ -13,8 +13,8 @@ from rest_framework.views import APIView
 from api.v1.user.serializers import UserMeCreateSerializer, LoginSerializer
 from api.v1.user.services.send_code import send_code
 
-# User = get_user_model()
-from user.models import User
+User = get_user_model()
+# from user.models import User
 
 
 class UserMeCreateView(CreateAPIView):
@@ -68,12 +68,9 @@ class LoginView(APIView):
         if username and password:
             if user.exists():
                 if user.first().check_password(password):
-                    print(user.first())
                     serializer = LoginSerializer(user.first())
-                    print('DONE!')
                     return Response(serializer.data)
                 else:
-                    print('FAIL!')
                     return Response({'error': 'Incorrect data'}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response(
