@@ -139,7 +139,8 @@ USE_TZ = True
 gettext = lambda s: s
 LANGUAGES = (
     ('uz', gettext('Uzbek')),
-    ('ru', gettext('Russian'))
+    ('ru', gettext('Russian')),
+    ('en', gettext('English')),
 )
 
 # Static files (CSS, JavaScript, Images)
