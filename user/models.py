@@ -29,7 +29,7 @@ class User(AbstractUser, Base):
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=True)
 
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['email', 'phone']
 
     def __str__(self):
         return self.get_username()
@@ -41,6 +41,5 @@ class User(AbstractUser, Base):
     def save(self, *args, **kwargs):
         ident = str(uuid.uuid4().fields[-1])[:9]
         self.user_ident = ident
-        # self.set_password(self.password)
         super(User, self).save(*args, **kwargs)
 
