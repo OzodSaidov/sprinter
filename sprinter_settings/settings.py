@@ -43,6 +43,7 @@ THIRD_PARTY_APPS = [
     'mptt',
     'modeltranslation',
     'rest_framework',
+    'rest_framework_simplejwt',
     'drf_yasg',
     'colorfield',
 ]
@@ -160,3 +161,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.User'
+
+# Django Rest Framework JWT
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
