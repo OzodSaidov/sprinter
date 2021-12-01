@@ -5,7 +5,7 @@ from sprinter_settings.base_models import Base
 from mptt.models import TreeForeignKey
 from mptt.models import MPTTModel
 from django.utils.translation import gettext_lazy as _
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, FileExtensionValidator
 from colorfield.fields import ColorField
 from user.models import User
 
@@ -123,3 +123,20 @@ class Rating(Base):
 
     def __str__(self):
         return f'{self.user} - {self.product} - {self.rate}'
+
+
+class Review(Base):
+    """ Отзыв (Оценка продукта)"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='reviews')
+    comment = models.TextField()
+    rating = models.ForeignKey('Rating', on_delete=models.SET_NULL, null=True)
+    like = models.CharField('Что понравилось больше всего?', max_length=255, null=True, blank=True)
+    is_active = models.BooleanField(default=False)
+
+
+class ReviewAttachment(Base):
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, null=True)
+    photo = models.ImageField(upload_to='review/',
+                              validators=[FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png'])],
+                              error_messages={'extension': _('File extension must be jpeg or jpg or png')})
