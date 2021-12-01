@@ -1,4 +1,6 @@
 from django.db import models
+
+from core.models import Color
 from user.models import User
 # Create your models here.
 from common.static_data import PaymentType, OrderStatus, PaymentStatus
@@ -10,6 +12,7 @@ class ProductOrder(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='productorders')
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
     product_param = models.ForeignKey('ProductParam', on_delete=models.CASCADE)
+    color = models.ForeignKey(Color, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField()
 
 
