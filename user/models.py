@@ -41,6 +41,6 @@ class User(AbstractUser, Base):
     def save(self, *args, **kwargs):
         ident = str(uuid.uuid4().fields[-1])[:9]
         self.user_ident = ident
-        self.set_password(self.password)
+        # self.set_password(self.password)
         super(User, self).save(*args, **kwargs)
 
