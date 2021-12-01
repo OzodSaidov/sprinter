@@ -40,6 +40,14 @@ class BrandCodeModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'is_active')
 
 
+class ReviewModelAdmin(admin.ModelAdmin):
+    list_display = ('user', 'product', 'rating', 'id')
+
+
+class ReviewAttachmentModelAdmin(admin.ModelAdmin):
+    list_display = ('review', 'photo')
+
+
 admin.site.register(Catalog, CatalogModelAdmin)
 admin.site.register(Color, ColorModelAdmin)
 admin.site.register(Product, ProductModelAdmin)
@@ -47,6 +55,9 @@ admin.site.register(ProductParam, ProductParamModelAdmin)
 admin.site.register(ProductPrice, ProductPriceModelAdmin)
 admin.site.register(PromoCode, PromoCodeModelAdmin)
 admin.site.register(Brand, BrandModelAdmin)
+admin.site.register(Review, ReviewModelAdmin)
+admin.site.register(ReviewAttachment, ReviewAttachmentModelAdmin)
+
 
 ####################### - PRODUCT - #######################
 

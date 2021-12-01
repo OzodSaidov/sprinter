@@ -25,3 +25,11 @@ class PaymentStatus(TextChoices):
 class UserRoles(TextChoices):
     ADMIN = 'Admin'
     USER = 'User'
+
+
+# class Quality(TextChoices):
+#     PRICE = 'Price', 'Price'
+#     RESPONSIVENESS = 'Responsiveness', 'Responsiveness'
+#     COLOR = 'Color', 'Color'
+#     DELIVERY_SPEED = 'Delivery speed', 'Delivery speed'
+#     QUALITY = 'Quality', 'Quality'
