@@ -22,7 +22,7 @@ class Catalog(Base, MPTTModel):
 
 
 class Brand(Base):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, unique=True)
     logo = models.ImageField(upload_to='photos/brands')
     is_active = models.BooleanField(default=True)
 
