@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+
+import sprinter_settings.settings
 from core.models import ProductColor
 from user.models import User
 # Create your models here.
@@ -18,18 +20,6 @@ class ProductOrder(Base):
 
     def __str__(self):
         return f'{self.user} - {self.product}'
-
-    def save(self, *args, **kwargs):
-        """ Только параметры с группой могут быть добавлены в product_param.
-        С каждой группы только один парамент может быть добавлен """
-
-        # invalid_params = self.product_param.filter(is_important=False)
-        # print(product_order.product_param)
-        # same_group_params = product_order.values_list('group')
-        # print(same_group_params)
-        # if self.product_param.filter(is_important=False):
-        #     raise ValidationError(f"{invalid_params} - эти параметры не могу быть добавлены")
-        return super().save(*args, **kwargs)
 
 
 class Basket(Base):
