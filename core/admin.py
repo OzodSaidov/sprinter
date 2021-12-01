@@ -13,7 +13,7 @@ class CatalogModelAdmin(admin.ModelAdmin):
 
 
 class ColorModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'color',)
+    list_display = ('id', 'title', 'color', 'product')
 
 
 class BrandModelAdmin(admin.ModelAdmin):
@@ -21,7 +21,11 @@ class BrandModelAdmin(admin.ModelAdmin):
 
 
 class ProductModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'catalog', 'brand', 'is_active')
+    list_display = ('id', 'title', 'catalog', 'brand', 'price', 'is_active')
+
+
+class ProductGroupModelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title')
 
 
 class ProductParamModelAdmin(admin.ModelAdmin):
@@ -43,7 +47,7 @@ admin.site.register(ProductParam, ProductParamModelAdmin)
 admin.site.register(ProductPrice, ProductPriceModelAdmin)
 admin.site.register(PromoCode, PromoCodeModelAdmin)
 admin.site.register(Brand, BrandModelAdmin)
-
+admin.site.register(ProductGroup, ProductGroupModelAdmin)
 ####################### - PRODUCT - #######################
 
 ####################### - ORDER - #######################

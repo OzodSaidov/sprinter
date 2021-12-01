@@ -3,7 +3,7 @@ from core.models.order import *
 
 __all__ = [
     'Catalog',
-    'Color',
+    'ProductColor',
     'Product',
     'ProductParam',
     "ProductPrice",
@@ -15,4 +15,5 @@ __all__ = [
     'Comment',
     'ProductImages',
     'Brand',
+    'ProductGroup',
 ]
