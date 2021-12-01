@@ -1,5 +1,5 @@
 from modeltranslation.translator import translator, TranslationOptions
-from core.models.product import Catalog, Color, Product, Comment
+from core.models.product import Catalog, ProductColor, Product, Comment
 
 
 class CatalogTranslationOptions(TranslationOptions):
@@ -28,6 +28,6 @@ class CommentTranslationOptions(TranslationOptions):
 
 
 translator.register(Catalog, CatalogTranslationOptions)
-translator.register(Color, ColorTranslationOptions)
+translator.register(ProductColor, ColorTranslationOptions)
 translator.register(Product, ProductTranslationOptions)
 translator.register(Comment, CommentTranslationOptions)

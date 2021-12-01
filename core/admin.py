@@ -13,11 +13,11 @@ class CatalogModelAdmin(admin.ModelAdmin):
 
 
 class ColorModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'icon', 'is_active')
+    list_display = ('id', 'title', 'color',)
 
 
 class BrandModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'logo', 'is_active')
+    list_display = ('id', 'title', 'logo', 'is_active')
 
 
 class ProductModelAdmin(admin.ModelAdmin):
@@ -25,7 +25,7 @@ class ProductModelAdmin(admin.ModelAdmin):
 
 
 class ProductParamModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'property', 'product',)
+    list_display = ('id', 'key', 'value', 'product', 'has_group')
 
 
 class ProductPriceModelAdmin(admin.ModelAdmin):
@@ -34,10 +34,6 @@ class ProductPriceModelAdmin(admin.ModelAdmin):
 
 class PromoCodeModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'code', 'is_active')
-
-
-class BrandCodeModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'is_active')
 
 
 class ReviewModelAdmin(admin.ModelAdmin):
@@ -49,7 +45,7 @@ class ReviewAttachmentModelAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Catalog, CatalogModelAdmin)
-admin.site.register(Color, ColorModelAdmin)
+admin.site.register(ProductColor, ColorModelAdmin)
 admin.site.register(Product, ProductModelAdmin)
 admin.site.register(ProductParam, ProductParamModelAdmin)
 admin.site.register(ProductPrice, ProductPriceModelAdmin)
@@ -65,7 +61,7 @@ admin.site.register(ReviewAttachment, ReviewAttachmentModelAdmin)
 
 
 class ProductOrderClassModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product', 'product_param', 'quantity')
+    list_display = ('id', 'product', 'quantity')
 
 
 class BasketClassModelAdmin(admin.ModelAdmin):

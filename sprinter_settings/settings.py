@@ -44,6 +44,7 @@ THIRD_PARTY_APPS = [
     'modeltranslation',
     'rest_framework',
     'drf_yasg',
+    'colorfield',
 ]
 
 LOCALE_APPS = [
