@@ -24,6 +24,7 @@ class PaymentStatus(TextChoices):
 
 class UserRoles(TextChoices):
     ADMIN = 'Admin'
+    MODERATOR = 'Moderator'
     USER = 'User'
 
 
