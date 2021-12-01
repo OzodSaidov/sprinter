@@ -11,7 +11,7 @@ from user.validators import validate_phone
 class ProductOrder(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='productorders')
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
-    product_param = models.ForeignKey('ProductParam', on_delete=models.CASCADE)
+    product_param = models.ManyToManyField('ProductParam')
     color = models.ForeignKey(Color, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField()
 

@@ -25,7 +25,7 @@ class ProductModelAdmin(admin.ModelAdmin):
 
 
 class ProductParamModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'property', 'product',)
+    list_display = ('id', 'key', 'value', 'product', 'has_group')
 
 
 class ProductPriceModelAdmin(admin.ModelAdmin):
@@ -54,7 +54,7 @@ admin.site.register(Brand, BrandModelAdmin)
 
 
 class ProductOrderClassModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product', 'product_param', 'quantity')
+    list_display = ('id', 'product', 'quantity')
 
 
 class BasketClassModelAdmin(admin.ModelAdmin):

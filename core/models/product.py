@@ -57,14 +57,27 @@ class ProductImages(Base):
     is_active = models.BooleanField(default=True)
 
 
+class ProductGroup(Base):
+    title = models.CharField(max_length=255, unique=True)
+
+
 class ProductParam(Base):
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='products')
-    name = models.CharField(max_length=255)
-    property = models.CharField(max_length=255)
+    group = models.ForeignKey('ProductGroup', on_delete=models.SET_NULL, null=True, blank=True)
+    key = models.CharField(max_length=255)
+    value = models.CharField(max_length=255)
     is_important = models.BooleanField(default=False, help_text=_("Этот параметр влияет на цену товара?"))
 
+    @property
+    def has_group(self):
+        """ If product params does not belong to any group, it is static """
+
+        if self.group:
+            return True
+        return
+
     def __str__(self):
-        return f'{self.name} - {self.property}'
+        return f'{self.key} - {self.value}'
 
 
 class ProductPrice(Base):
