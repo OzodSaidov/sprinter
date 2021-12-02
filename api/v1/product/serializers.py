@@ -132,7 +132,7 @@ class ProductRatingSerializer(serializers.ModelSerializer):
 
 class ProductListSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(read_only=True)
-    rating = serializers.FloatField(read_only=True)
+    rating = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Product
@@ -146,14 +146,14 @@ class ProductListSerializer(serializers.ModelSerializer):
             'rating',
         )
 
-    def to_representation(self, instance: Product):
+    def to_representation(self, instance):
         data = super(ProductListSerializer, self).to_representation(instance)
         data['image'] = ProductImageSerializer(instance.images.filter(is_active=True).first(),
                                                context=self.context).data
-        data['rating'] = ProductRatingSerializer(
-            instance.rating_set.all().aggregate(rating=Avg('rate'))
-        ).data
         return data
+
+    def get_rating(self, instance):
+        return instance.rating_set.all().aggregate(rating=Avg('rate'))
 
 
 class ProductCreateSerializer(serializers.ModelSerializer):
