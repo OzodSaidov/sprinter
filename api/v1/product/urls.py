@@ -12,9 +12,7 @@ urlpatterns = [
     # ----------------------BRAND----------------------
     path('brand/list/', views.BrandListView.as_view()),
     path('brand/create/', views.BrandCreateView.as_view()),
-    path('brand/edit/<int:pk>/', views.BrandEditView.as_view()),
-    path('brand/detail/<int:pk>/', views.BrandRetrieveView.as_view()),
-    path('brand/delete/<int:pk>/', views.BrandDeleteView.as_view()),
+    path('brand/<int:pk>/', views.BrandRetrieveUpdateDestroyView.as_view()),
 
     # ----------------------PRODUCT----------------------
     path('list/', views.ProductListView.as_view()),
