@@ -3,6 +3,7 @@ from core.models.order import *
 from django.db import transaction
 from django.db.models import Sum, F
 
+
 class ProductOrderListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductOrder
@@ -71,6 +72,8 @@ class ProductOrderUpdateSerializer(serializers.ModelSerializer):
 
 
 class ProductOrderDetailSerializer(serializers.ModelSerializer):
+    price = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = ProductOrder
         fields = [
@@ -79,7 +82,11 @@ class ProductOrderDetailSerializer(serializers.ModelSerializer):
             'product_param',
             'color',
             'quantity',
+            'price'
         ]
+
+    def get_price(self, obj):
+        return obj.price
 
 
 class BasketListSerializer(serializers.ModelSerializer):
@@ -93,10 +100,6 @@ class BasketListSerializer(serializers.ModelSerializer):
             'products',
             'is_active',
         ]
-    #
-    # def to_representation(self, instance):
-    #     data = super().to_representation(instance)
-    #     data['products'] = ProductOrderDetailSerializer()
 
 
 class BasketCreateSerializer(serializers.ModelSerializer):
@@ -119,7 +122,6 @@ class BasketCreateSerializer(serializers.ModelSerializer):
 
     def get_price(self, basket):
         initial_price = basket.products.aggragate(Sum('price'))
-        print(initial_price)
         return initial_price
 
 
@@ -134,6 +136,7 @@ class BasketUpdateSerializer(serializers.ModelSerializer):
 
 class BasketDetailSerializer(serializers.ModelSerializer):
     price = serializers.SerializerMethodField(read_only=True)
+    products = ProductOrderDetailSerializer(read_only=True, many=True)
 
     class Meta:
         model = Basket
@@ -145,6 +148,7 @@ class BasketDetailSerializer(serializers.ModelSerializer):
         ]
 
     def get_price(self, basket):
+        print(basket.total_price)
         return basket.total_price
 
 
@@ -161,6 +165,7 @@ class OrderListSerializer(serializers.ModelSerializer):
             'zip_code',
             'phone',
             'payment_type',
+            'order_status',
             'promocode',
             'price',
             'date_delivered',
@@ -191,8 +196,6 @@ class OrderCreateSerializer(serializers.ModelSerializer):
     def validate_basket(self, basket):
         if basket.is_empty:
             raise ValidationError('Basket is empty. Cannot create order')
-        elif basket.order_set.exists():
-            raise ValidationError('This basket already has order')
         return basket
 
     @transaction.atomic
@@ -239,6 +242,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'zip_code',
             'phone',
             'payment_type',
+            'order_status',
             'promocode',
             'price',
             'date_delivered',

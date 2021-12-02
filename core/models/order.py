@@ -10,6 +10,7 @@ from sprinter_settings.base_models import Base
 from user.validators import validate_phone
 from django.db.models import F, Sum
 
+
 class ProductOrder(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='productorders')
     product = models.ForeignKey('Product', on_delete=models.CASCADE)
@@ -20,6 +21,12 @@ class ProductOrder(Base):
 
     def __str__(self):
         return f'{self.user} - {self.product}'
+
+    @property
+    def price(self):
+        """ Return price for this product in given quantity """
+
+        return self.product.price * self.quantity
 
     def delete(self, *args, **kwargs):
         """ Do not allow to delete non active product-order. Non-active is for history """
@@ -51,14 +58,14 @@ class Basket(Base):
     @property
     def total_price(self):
         """ Return total price for all products in basket """
-        products = self.products.annotate(price=F('product__price') * F("quantity"))
-        total_price = products.aggregate(price=Sum('price'))
+        products = self.products.all().annotate(total_price=F('product__price')*F("quantity"))
+        total_price = products.aggregate(price=Sum('total_price'))
         return total_price.get('price')
 
 
 class Order(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
-    basket = models.ForeignKey('Basket', on_delete=models.PROTECT)
+    basket = models.OneToOneField('Basket', on_delete=models.PROTECT)
     address = models.CharField(max_length=255)
     orderer = models.CharField(max_length=255)
     zip_code = models.CharField(max_length=255)
