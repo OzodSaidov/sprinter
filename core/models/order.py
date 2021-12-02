@@ -8,6 +8,7 @@ from user.models import User
 from common.static_data import PaymentType, OrderStatus, PaymentStatus
 from sprinter_settings.base_models import Base
 from user.validators import validate_phone
+from django.db.models import F, Sum
 
 
 class ProductOrder(Base):
@@ -21,16 +22,50 @@ class ProductOrder(Base):
     def __str__(self):
         return f'{self.user} - {self.product}'
 
+    @property
+    def price(self):
+        """ Return price for this product in given quantity """
+
+        return self.product.price * self.quantity
+
+    def delete(self, *args, **kwargs):
+        """ Do not allow to delete non active product-order. Non-active is for history """
+
+        if not self.is_active:
+            raise ValidationError('Can not delete non-active product-order')
+        return super().delete(*args, **kwargs)
+
 
 class Basket(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='basket')
     products = models.ManyToManyField('ProductOrder')
     is_active = models.BooleanField(editable=False, default=True)
 
+    # def save(self, *args, **kwargs):
+    #     """ Only one active basket allowed """
+    #
+    #     if Basket.objects.filter(is_active=True).exists():
+    #         raise ValidationError('Basket already exists')
+    #     return super().save(*args, **kwargs)
+    @property
+    def is_empty(self):
+        """ Is there any product in basket? """
+
+        if self.products.count() > 0:
+            return False
+        return True
+
+    @property
+    def total_price(self):
+        """ Return total price for all products in basket """
+        products = self.products.all().annotate(total_price=F('product__price')*F("quantity"))
+        total_price = products.aggregate(price=Sum('total_price'))
+        return total_price.get('price')
+
 
 class Order(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
-    basket = models.ForeignKey('Basket', on_delete=models.PROTECT)
+    basket = models.OneToOneField('Basket', on_delete=models.PROTECT)
     address = models.CharField(max_length=255)
     orderer = models.CharField(max_length=255)
     zip_code = models.CharField(max_length=255)
@@ -40,4 +75,6 @@ class Order(Base):
     order_status = models.CharField(max_length=255, choices=OrderStatus.choices, default=OrderStatus.OPENED)
     payment_status = models.CharField(max_length=255, choices=PaymentStatus.choices, default=PaymentStatus.WAITING)
     promocode = models.ForeignKey('PromoCode', on_delete=models.PROTECT, null=True, blank=True)
+    date_delivered = models.DateField(null=True, blank=True)
+    price = models.FloatField()
     is_active = models.BooleanField(default=True)

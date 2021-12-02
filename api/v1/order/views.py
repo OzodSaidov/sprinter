@@ -6,7 +6,7 @@ from rest_framework.generics import (
     DestroyAPIView,
 )
 
-from api.v1.order.filters import OrderFilter
+from api.v1.order.filters import OrderFilter, BasketListFilter
 from api.v1.order.serializers import *
 from core.models.order import *
 
@@ -45,7 +45,7 @@ class ProductOrderDetailApiView(RetrieveAPIView):
         return ProductOrder.objects.filter(user=self.request.user)
 
 
-class ProductOrderDestroyApiView(CreateAPIView):
+class ProductOrderDestroyApiView(DestroyAPIView):
     """ Delete product from basket """
 
     def get_queryset(self):
@@ -56,6 +56,7 @@ class BasketListApiView(ListAPIView):
     """ List of baskets """
 
     serializer_class = BasketListSerializer
+    filterset_class = BasketListFilter
 
     def get_queryset(self):
         return Basket.objects.filter(user=self.request.user)
