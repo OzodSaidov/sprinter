@@ -53,7 +53,7 @@ class ProductColor(Base):
 class ProductImage(Base):
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='photos/products')
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
 
 
 class ProductGroup(Base):

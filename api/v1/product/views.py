@@ -30,64 +30,41 @@ class CatalogDeleteView(generics.DestroyAPIView):
 
 
 class BrandListView(generics.ListAPIView):
-    serializer_class = None
-    # permission_classes = None
+    serializer_class = BrandListSerializer
     queryset = Brand.objects.all()
 
 
 class BrandCreateView(generics.CreateAPIView):
-    serializer_class = None
-    # permission_classes = None
+    serializer_class = BrandCreateSerializer
 
 
-class BrandEditView(generics.RetrieveUpdateAPIView):
-    """For CMS"""
-    serializer_class = None
-    # permission_classes = None
-    queryset = Brand.objects.all()
-
-
-class BrandRetrieveView(generics.RetrieveAPIView):
-    """For site"""
-    serializer_class = None
-    # permission_classes = None
-    queryset = Brand.objects.all()
-
-
-class BrandDeleteView(generics.DestroyAPIView):
-    serializer_class = None
-    # permission_classes = None
+class BrandRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = BrandRetrieveUpdateSerializer
     queryset = Brand.objects.all()
 
 
 class ProductListView(generics.ListAPIView):
-    serializer_class = None
-    # permission_classes = None
-    queryset = Product.objects.all()
+    serializer_class = ProductListSerializer
+    queryset = Product.objects.filter(is_active=True)
 
 
 class ProductCreateView(generics.CreateAPIView):
-    serializer_class = None
-    # permission_classes = None
+    serializer_class = ProductCreateSerializer
 
 
 class ProductEditView(generics.RetrieveUpdateAPIView):
     """For CMS"""
-    serializer_class = None
-    # permission_classes = None
+    serializer_class = ProductRetrieveUpdateSerializer
     queryset = Product.objects.all()
 
 
 class ProductRetrieveView(generics.RetrieveAPIView):
     """For site"""
-    serializer_class = None
-    # permission_classes = None
+    serializer_class = ProductRetrieveSerializer
     queryset = Product.objects.all()
 
 
 class ProductDeleteView(generics.DestroyAPIView):
-    serializer_class = None
-    # permission_classes = None
     queryset = Product.objects.all()
 
 
