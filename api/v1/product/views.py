@@ -1,37 +1,31 @@
 from rest_framework import generics
 
-from core.models import Catalog, Brand, Product, ProductColor, ProductImage, ProductGroup, ProductParam, ProductPrice, \
-    PromoCode, Comment, Rating, Review, ReviewImage
+from core.models import *
+from . serializers import *
 
 
 class CatalogListView(generics.ListAPIView):
-    serializer_class = None
-    # permission_classes = None
-    queryset = Catalog.objects.all()
+    serializer_class = CatalogListSerializer
+    queryset = Catalog.objects.filter(parent=None)
 
 
 class CatalogCreateView(generics.CreateAPIView):
-    serializer_class = None
-    # permission_classes = None
+    serializer_class = CatalogCreateSerializer
 
 
 class CatalogEditView(generics.RetrieveUpdateAPIView):
     """For CMS"""
-    serializer_class = None
-    # permission_classes = None
+    serializer_class = CatalogRetrieveUpdateSerializer
     queryset = Catalog.objects.all()
 
 
 class CatalogRetrieveView(generics.RetrieveAPIView):
     """For site"""
-    serializer_class = None
-    # permission_classes = None
+    serializer_class = CatalogRetrieveSerializer
     queryset = Catalog.objects.all()
 
 
 class CatalogDeleteView(generics.DestroyAPIView):
-    serializer_class = None
-    # permission_classes = None
     queryset = Catalog.objects.all()
 
 
