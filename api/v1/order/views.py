@@ -27,7 +27,7 @@ class ProductOrderCreateApiView(CreateAPIView):
     queryset = ProductOrder.objects.all()
 
 
-class ProductOrderUpdateApiView(CreateAPIView):
+class ProductOrderUpdateApiView(UpdateAPIView):
     """ Update product to add to basket """
 
     serializer_class = ProductOrderCreateSerializer

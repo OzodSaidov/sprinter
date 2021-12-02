@@ -44,7 +44,7 @@ class ReviewModelAdmin(admin.ModelAdmin):
     list_display = ('user', 'product', 'rating', 'id')
 
 
-class ReviewAttachmentModelAdmin(admin.ModelAdmin):
+class ReviewImageModelAdmin(admin.ModelAdmin):
     list_display = ('review', 'photo')
 
 
@@ -56,7 +56,7 @@ admin.site.register(ProductPrice, ProductPriceModelAdmin)
 admin.site.register(PromoCode, PromoCodeModelAdmin)
 admin.site.register(Brand, BrandModelAdmin)
 admin.site.register(Review, ReviewModelAdmin)
-admin.site.register(ReviewAttachment, ReviewAttachmentModelAdmin)
+admin.site.register(ReviewImage, ReviewImageModelAdmin)
 admin.site.register(ProductGroup, ProductGroupModelAdmin)
 
 ####################### - PRODUCT - #######################

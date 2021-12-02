@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-# Create your models here.
 from sprinter_settings.base_models import Base
 from mptt.models import TreeForeignKey
 from mptt.models import MPTTModel
@@ -51,7 +50,7 @@ class ProductColor(Base):
         return f'{self.title}'
 
 
-class ProductImages(Base):
+class ProductImage(Base):
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='photos/products')
     is_active = models.BooleanField(default=True)
@@ -139,12 +138,12 @@ class Review(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='reviews')
     comment = models.TextField()
-    rating = models.ForeignKey('Rating', on_delete=models.SET_NULL, null=True)
+    rating = models.OneToOneField('Rating', on_delete=models.SET_NULL, null=True)
     like = models.CharField('Что понравилось больше всего?', max_length=255, null=True, blank=True)
     is_active = models.BooleanField(default=False)
 
 
-class ReviewAttachment(Base):
+class ReviewImage(Base):
     review = models.ForeignKey(Review, on_delete=models.CASCADE, null=True)
     photo = models.ImageField(upload_to='review/',
                               validators=[FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png'])],
