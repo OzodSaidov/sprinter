@@ -1,10 +1,6 @@
 from django.urls import path
 from . import views
 
-"""
-ReviewAttachment
-"""
-
 urlpatterns = [
     # ----------------------CATALOG----------------------
     path('catalog/list/', views.CatalogListView.as_view()),
