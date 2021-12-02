@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from core.models.order import *
 from django.db import transaction
+from django.db.models import Sum, F
 
 class ProductOrderListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,6 +13,7 @@ class ProductOrderListSerializer(serializers.ModelSerializer):
             'product_param',
             'color',
             'quantity',
+            'is_active',
         ]
 
 
@@ -73,7 +75,6 @@ class ProductOrderDetailSerializer(serializers.ModelSerializer):
         model = ProductOrder
         fields = [
             'id',
-            'user',
             'product',
             'product_param',
             'color',
@@ -82,23 +83,32 @@ class ProductOrderDetailSerializer(serializers.ModelSerializer):
 
 
 class BasketListSerializer(serializers.ModelSerializer):
+    products = ProductOrderDetailSerializer(read_only=True, many=True)
+
     class Meta:
         model = Basket
         fields = [
             'id',
             'user',
             'products',
+            'is_active',
         ]
+    #
+    # def to_representation(self, instance):
+    #     data = super().to_representation(instance)
+    #     data['products'] = ProductOrderDetailSerializer()
 
 
 class BasketCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    price = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Basket
         fields = [
             'id',
             'user',
+            'price',
         ]
 
     def validate(self, attrs):
@@ -106,6 +116,11 @@ class BasketCreateSerializer(serializers.ModelSerializer):
         if user.basket.filter(is_active=True):
             raise ValidationError('Корзина уже существует')
         return attrs
+
+    def get_price(self, basket):
+        initial_price = basket.products.aggragate(Sum('price'))
+        print(initial_price)
+        return initial_price
 
 
 class BasketUpdateSerializer(serializers.ModelSerializer):
@@ -118,16 +133,23 @@ class BasketUpdateSerializer(serializers.ModelSerializer):
 
 
 class BasketDetailSerializer(serializers.ModelSerializer):
+    price = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Basket
         fields = [
             'id',
             'user',
             'products',
+            'price',
         ]
+
+    def get_price(self, basket):
+        return basket.total_price
 
 
 class OrderListSerializer(serializers.ModelSerializer):
+    basket = BasketDetailSerializer(read_only=True)
     class Meta:
         model = Order
         fields = [
@@ -140,22 +162,53 @@ class OrderListSerializer(serializers.ModelSerializer):
             'phone',
             'payment_type',
             'promocode',
+            'price',
+            'date_delivered',
         ]
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # basket = BasketDetailSerializer(read_only=True)
+
     class Meta:
         model = Order
         fields = [
             'id',
             'basket',
+            'user',
             'address',
             'orderer',
             'zip_code',
             'phone',
             'payment_type',
+            'price',
             'promocode',
         ]
+        read_only_fields = ('price',)
+
+
+    def validate_basket(self, basket):
+        if basket.is_empty:
+            raise ValidationError('Basket is empty. Cannot create order')
+        elif basket.order_set.exists():
+            raise ValidationError('This basket already has order')
+        return basket
+
+    @transaction.atomic
+    def create(self, validated_data):
+        """ When order is created, dis-active basket and its products """
+
+        basket = validated_data.get('basket')
+        basket.products.all().update(is_active=False)
+        basket.is_active = False
+        basket.save()
+
+        order = Order(**validated_data)
+        order.price = basket.total_price
+        order.save()
+
+        return order
 
 
 class OrderUpdateSerializer(serializers.ModelSerializer):
@@ -174,6 +227,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
+    basket = BasketDetailSerializer(read_only=True)
     class Meta:
         model = Order
         fields = [
@@ -186,4 +240,6 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'phone',
             'payment_type',
             'promocode',
+            'price',
+            'date_delivered',
         ]
