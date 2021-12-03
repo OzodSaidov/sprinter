@@ -83,8 +83,8 @@ class ProductParam(Base):
 
 
 class ProductPrice(Base):
-    product = models.ForeignKey('Product', on_delete=models.CASCADE)
-    param = models.ForeignKey('ProductParam', on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='prices')
+    param = models.OneToOneField('ProductParam', on_delete=models.CASCADE, related_name='prices')
     price = models.FloatField()
     available_count = models.PositiveIntegerField()
 

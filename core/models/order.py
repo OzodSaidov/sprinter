@@ -26,7 +26,12 @@ class ProductOrder(Base):
     def price(self):
         """ Return price for this product in given quantity """
 
-        return self.product.price * self.quantity
+        additional_price = self.product.prices.filter(
+            param__in=self.product_param.all()).aggregate(additional_price=Sum('price'))
+        total_price = self.product.price
+        if additional_price.get('additional_price'):
+            total_price += additional_price['additional_price']
+        return total_price * self.quantity
 
     def delete(self, *args, **kwargs):
         """ Do not allow to delete non active product-order. Non-active is for history """
@@ -52,9 +57,11 @@ class Basket(Base):
     @property
     def total_price(self):
         """ Return total price for all products in basket """
-        products = self.products.all().annotate(total_price=F('product__price')*F("quantity"))
-        total_price = products.aggregate(price=Sum('total_price'))
-        return total_price.get('price')
+
+        total_price = 0
+        for product in self.products.all():
+            total_price += product.price
+        return total_price
 
 
 class Order(Base):

@@ -3,12 +3,13 @@ from rest_framework import serializers
 from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer
 from core.models.order import *
 from django.db import transaction
-from django.db.models import Sum, F
+from django.db.models import Sum, F, When
 
 
 class ProductOrderListSerializer(serializers.ModelSerializer):
     product = ProductRetrieveSerializer(read_only=True)
     color = ColorSerializer(read_only=True)
+    price = serializers.ReadOnlyField()
 
     class Meta:
         model = ProductOrder
@@ -20,6 +21,7 @@ class ProductOrderListSerializer(serializers.ModelSerializer):
             'color',
             'quantity',
             'is_active',
+            'price',
         ]
 
 
@@ -51,7 +53,7 @@ class ProductOrderCreateSerializer(serializers.ModelSerializer):
             product_order.quantity = quantity
         else:
             product_order = ProductOrder.objects.create(**validated_data)
-            product_order.product_param.set(product_params)
+        product_order.product_param.set(product_params)
         product_order.save()
         basket = user.basket.filter(is_active=True)
         if basket.exists():
@@ -77,7 +79,7 @@ class ProductOrderUpdateSerializer(serializers.ModelSerializer):
 
 
 class ProductOrderDetailSerializer(serializers.ModelSerializer):
-    price = serializers.SerializerMethodField(read_only=True)
+    price = serializers.ReadOnlyField()
     product = ProductRetrieveSerializer(read_only=True)
     color = ColorSerializer(read_only=True)
 
@@ -92,12 +94,10 @@ class ProductOrderDetailSerializer(serializers.ModelSerializer):
             'price'
         ]
 
-    def get_price(self, obj):
-        return obj.price
-
 
 class BasketListSerializer(serializers.ModelSerializer):
     products = ProductOrderDetailSerializer(read_only=True, many=True)
+    total_price = serializers.ReadOnlyField()
 
     class Meta:
         model = Basket
@@ -106,19 +106,20 @@ class BasketListSerializer(serializers.ModelSerializer):
             'user',
             'products',
             'is_active',
+            'total_price',
         ]
 
 
 class BasketCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    price = serializers.SerializerMethodField(read_only=True)
+    total_price = serializers.ReadOnlyField()
 
     class Meta:
         model = Basket
         fields = [
             'id',
             'user',
-            'price',
+            'total_price',
         ]
 
     def validate(self, attrs):
@@ -126,10 +127,6 @@ class BasketCreateSerializer(serializers.ModelSerializer):
         if user.basket.filter(is_active=True):
             raise ValidationError('Корзина уже существует')
         return attrs
-
-    def get_price(self, basket):
-        initial_price = basket.products.aggragate(Sum('price'))
-        return initial_price
 
 
 class BasketUpdateSerializer(serializers.ModelSerializer):
@@ -142,8 +139,8 @@ class BasketUpdateSerializer(serializers.ModelSerializer):
 
 
 class BasketDetailSerializer(serializers.ModelSerializer):
-    price = serializers.SerializerMethodField(read_only=True)
     products = ProductOrderDetailSerializer(read_only=True, many=True)
+    total_price = serializers.ReadOnlyField()
 
     class Meta:
         model = Basket
@@ -151,12 +148,8 @@ class BasketDetailSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'products',
-            'price',
+            'total_price',
         ]
-
-    def get_price(self, basket):
-        print(basket.total_price)
-        return basket.total_price
 
 
 class OrderListSerializer(serializers.ModelSerializer):
