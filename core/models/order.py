@@ -41,12 +41,6 @@ class Basket(Base):
     products = models.ManyToManyField('ProductOrder')
     is_active = models.BooleanField(editable=False, default=True)
 
-    # def save(self, *args, **kwargs):
-    #     """ Only one active basket allowed """
-    #
-    #     if Basket.objects.filter(is_active=True).exists():
-    #         raise ValidationError('Basket already exists')
-    #     return super().save(*args, **kwargs)
     @property
     def is_empty(self):
         """ Is there any product in basket? """
@@ -78,3 +72,4 @@ class Order(Base):
     date_delivered = models.DateField(null=True, blank=True)
     price = models.FloatField()
     is_active = models.BooleanField(default=True)
+

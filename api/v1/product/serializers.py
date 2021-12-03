@@ -2,7 +2,7 @@ from django.db import transaction
 from django.db.models import Avg
 from rest_framework import serializers
 
-from core.models import Catalog, Brand, Product, ProductImage, Rating
+from core.models import Catalog, Brand, Product, ProductImage, Rating, ProductColor
 
 
 class CatalogListSerializer(serializers.ModelSerializer):
@@ -238,3 +238,13 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
         data['image'] = ProductImageSerializer(instance.images.all(), many=True,
                                                context=self.context).data
         return data
+
+
+class ColorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductColor
+        fields = (
+            'id',
+            'color',
+            'title',
+        )

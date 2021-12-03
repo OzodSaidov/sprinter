@@ -1,10 +1,15 @@
 from rest_framework import serializers
+
+from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer
 from core.models.order import *
 from django.db import transaction
 from django.db.models import Sum, F
 
 
 class ProductOrderListSerializer(serializers.ModelSerializer):
+    product = ProductRetrieveSerializer(read_only=True)
+    color = ColorSerializer(read_only=True)
+
     class Meta:
         model = ProductOrder
         fields = [
@@ -73,6 +78,8 @@ class ProductOrderUpdateSerializer(serializers.ModelSerializer):
 
 class ProductOrderDetailSerializer(serializers.ModelSerializer):
     price = serializers.SerializerMethodField(read_only=True)
+    product = ProductRetrieveSerializer(read_only=True)
+    color = ColorSerializer(read_only=True)
 
     class Meta:
         model = ProductOrder
