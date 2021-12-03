@@ -34,7 +34,8 @@ class Product(Base):
     brand = models.ForeignKey('Brand', on_delete=models.PROTECT, null=True, blank=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
-    price = models.FloatField()
+    new_price = models.FloatField()
+    old_price = models.FloatField(null=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -43,6 +44,7 @@ class Product(Base):
 
 class ProductColor(Base):
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='colors')
+    # image = models.ForeignKey('ProductImage', on_delete=models.SET_NULL, null=True)
     color = ColorField()
     title = models.CharField(max_length=255)
 
@@ -64,7 +66,7 @@ class ProductGroup(Base):
 
 
 class ProductParam(Base):
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='products')
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='params')
     group = models.ForeignKey('ProductGroup', on_delete=models.SET_NULL, null=True, blank=True)
     key = models.CharField(max_length=255)
     value = models.CharField(max_length=255)

@@ -1,8 +1,8 @@
 from django.db import transaction
 from django.db.models import Avg
 from rest_framework import serializers
-
-from core.models import Catalog, Brand, Product, ProductImage, Rating, ProductColor
+from itertools import groupby
+from core.models import Catalog, Brand, Product, ProductImage, Rating, ProductColor, ProductParam, ProductPrice
 
 
 class CatalogListSerializer(serializers.ModelSerializer):
@@ -141,7 +141,8 @@ class ProductListSerializer(serializers.ModelSerializer):
             'brand',
             'title',
             'description',
-            'price',
+            'new_price',
+            'old_price',
             'image',
             'rating',
         )
@@ -154,6 +155,45 @@ class ProductListSerializer(serializers.ModelSerializer):
 
     def get_rating(self, instance):
         return instance.rating_set.all().aggregate(rating=Avg('rate'))
+
+
+class ColorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductColor
+        fields = (
+            # 'id',
+            'color',
+            # 'title',
+        )
+
+
+class ProductParamPriceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductPrice
+        fields = (
+            'price',
+        )
+
+
+class ProductParamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductParam
+        fields = (
+            # 'id',
+            # 'product',
+            # 'group',
+            'key',
+            'value',
+            # 'is_important',
+        )
+
+    def to_representation(self, instance: ProductParam):
+        data = super(ProductParamSerializer, self).to_representation(instance)
+        if instance.has_group and instance.is_important:
+            data['key'] = instance.group.title
+            data['value'] = ProductParamPriceSerializer(ProductPrice.objects.filter(param=instance),
+                                                        many=True).data
+        return data
 
 
 class ProductCreateSerializer(serializers.ModelSerializer):
@@ -175,7 +215,8 @@ class ProductCreateSerializer(serializers.ModelSerializer):
             'description_uz',
             'description_ru',
             'description_en',
-            'price',
+            'new_price',
+            'old_price',
             'image',
         )
 
@@ -207,7 +248,8 @@ class ProductRetrieveUpdateSerializer(serializers.ModelSerializer):
             'description_uz',
             'description_ru',
             'description_en',
-            'price',
+            'new_price',
+            'old_price',
             'image',
         )
 
@@ -221,6 +263,9 @@ class ProductRetrieveUpdateSerializer(serializers.ModelSerializer):
 
 class ProductRetrieveSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(read_only=True)
+    colors = serializers.PrimaryKeyRelatedField(queryset=ProductColor.objects.all(), many=True)
+    params = serializers.SerializerMethodField(read_only=True)
+    # params = serializers.PrimaryKeyRelatedField(queryset=ProductParam.objects.all(), many=True)
 
     class Meta:
         model = Product
@@ -229,22 +274,25 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             'brand',
             'title',
             'description',
-            'price',
+            'new_price',
+            'old_price',
             'image',
+            'colors',
+            'params',
         )
+
+    def get_params(self, obj: Product):
+        params = obj.params.all().values_list('key', 'value')
+        result = {}
+        for i in params:
+            result.setdefault(i[0], []).append(i[1])
+        return result
 
     def to_representation(self, instance: Product):
         data = super(ProductRetrieveSerializer, self).to_representation(instance)
         data['image'] = ProductImageSerializer(instance.images.all(), many=True,
                                                context=self.context).data
+        if instance.colors:
+            data['colors'] = instance.colors.all().values_list('color', flat=True)
+        # data['params'] = instance.params.all().values_list('key', 'value')
         return data
-
-
-class ColorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductColor
-        fields = (
-            'id',
-            'color',
-            'title',
-        )

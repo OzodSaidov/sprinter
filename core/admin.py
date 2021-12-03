@@ -16,12 +16,16 @@ class ColorModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'color', 'product')
 
 
+class ImageModelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product', 'image', 'is_active')
+
+
 class BrandModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'logo', 'is_active')
 
 
 class ProductModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'catalog', 'brand', 'price', 'is_active')
+    list_display = ('id', 'title', 'catalog', 'brand', 'new_price', 'old_price', 'is_active')
 
 
 class ProductGroupModelAdmin(admin.ModelAdmin):
@@ -50,6 +54,7 @@ class ReviewImageModelAdmin(admin.ModelAdmin):
 
 admin.site.register(Catalog, CatalogModelAdmin)
 admin.site.register(ProductColor, ColorModelAdmin)
+admin.site.register(ProductImage, ImageModelAdmin)
 admin.site.register(Product, ProductModelAdmin)
 admin.site.register(ProductParam, ProductParamModelAdmin)
 admin.site.register(ProductPrice, ProductPriceModelAdmin)
