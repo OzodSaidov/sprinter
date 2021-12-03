@@ -81,7 +81,9 @@ class OrderClassModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'basket', 'payment_type',
                     'order_status', 'payment_status',
                     'promocode', 'is_active')
-
+    list_filter = (
+         'order_status',
+    )
 
 admin.site.register(ProductOrder, ProductOrderClassModelAdmin)
 admin.site.register(Basket, BasketClassModelAdmin)

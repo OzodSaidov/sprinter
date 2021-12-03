@@ -154,6 +154,7 @@ class BasketDetailSerializer(serializers.ModelSerializer):
 
 class OrderListSerializer(serializers.ModelSerializer):
     basket = BasketDetailSerializer(read_only=True)
+
     class Meta:
         model = Order
         fields = [
@@ -219,7 +220,6 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
         model = Order
         fields = [
             'id',
-            'basket',
             'address',
             'orderer',
             'zip_code',
@@ -231,6 +231,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
 
 class OrderDetailSerializer(serializers.ModelSerializer):
     basket = BasketDetailSerializer(read_only=True)
+
     class Meta:
         model = Order
         fields = [
