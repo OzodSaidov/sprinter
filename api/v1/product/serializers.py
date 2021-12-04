@@ -38,7 +38,6 @@ class CatalogCreateSerializer(serializers.ModelSerializer):
         )
 
 
-
 class CatalogRetrieveUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Catalog
@@ -173,23 +172,24 @@ class ProductParamPriceSerializer(serializers.ModelSerializer):
 
 
 class ProductParamSerializer(serializers.ModelSerializer):
+    price = serializers.PrimaryKeyRelatedField(source='prices', queryset=ProductPrice.objects.all())
+
     class Meta:
         model = ProductParam
         fields = (
-            # 'id',
+            'id',
             # 'product',
             # 'group',
             'key',
             'value',
+            'price',
             # 'is_important',
         )
 
     def to_representation(self, instance: ProductParam):
         data = super(ProductParamSerializer, self).to_representation(instance)
-        if instance.has_group and instance.is_important:
-            data['key'] = instance.group.title
-            data['value'] = ProductParamPriceSerializer(ProductPrice.objects.filter(param=instance),
-                                                        many=True).data
+        if hasattr(instance, 'prices'):
+            data['price'] = instance.prices.price
         return data
 
 
@@ -262,6 +262,7 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(read_only=True)
     colors = serializers.PrimaryKeyRelatedField(queryset=ProductColor.objects.all(), many=True)
     params = serializers.SerializerMethodField(read_only=True)
+
     # params = serializers.PrimaryKeyRelatedField(queryset=ProductParam.objects.all(), many=True)
 
     class Meta:
