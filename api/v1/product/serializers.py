@@ -215,6 +215,9 @@ class ProductCreateSerializer(serializers.ModelSerializer):
             'price',
             'old_price',
             'image',
+            'is_active',
+            'available_quantity'
+
         )
 
     def create(self, validated_data):
@@ -262,7 +265,7 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(read_only=True)
     colors = serializers.PrimaryKeyRelatedField(queryset=ProductColor.objects.all(), many=True)
     params = serializers.SerializerMethodField(read_only=True)
-    # params = serializers.PrimaryKeyRelatedField(queryset=ProductParam.objects.all(), many=True)
+    important_params = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Product
@@ -276,13 +279,24 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             'image',
             'colors',
             'params',
+            'important_params'
         )
 
     def get_params(self, obj: Product):
-        params = obj.params.all().values_list('key', 'value')
+        params = obj.params.filter(group__isnull=True).values_list('key', 'value')
         result = {}
-        for i in params:
-            result.setdefault(i[0], []).append(i[1])
+        if params:
+            result = {_[0]: _[1] for _ in params}
+        return result
+
+    def get_important_params(self, obj: Product):
+        groups = set(
+            obj.params.filter(group__isnull=False).values_list('group__title', flat=True)
+        )
+        result = {
+            group: {_[0]: _[1] for _ in obj.params.filter(group__title=group).values_list('value', 'prices__price')}
+            for group in groups
+        }
         return result
 
     def to_representation(self, instance: Product):
@@ -291,5 +305,4 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
                                                context=self.context).data
         if instance.colors:
             data['colors'] = instance.colors.all().values_list('color', flat=True)
-        # data['params'] = instance.params.all().values_list('key', 'value')
         return data
