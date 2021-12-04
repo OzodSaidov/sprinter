@@ -12,6 +12,7 @@ class ProductOrderListSerializer(serializers.ModelSerializer):
     product = ProductRetrieveSerializer(read_only=True)
     color = ColorSerializer(read_only=True)
     price = serializers.ReadOnlyField()
+    product_param = ProductParamSerializer(many=True)
 
     class Meta:
         model = ProductOrder

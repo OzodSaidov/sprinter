@@ -157,9 +157,9 @@ class ColorSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductColor
         fields = (
-            # 'id',
+            'id',
             'color',
-            # 'title',
+            'title',
         )
 
 
