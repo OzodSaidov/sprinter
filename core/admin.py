@@ -25,7 +25,7 @@ class BrandModelAdmin(admin.ModelAdmin):
 
 
 class ProductModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'catalog', 'brand', 'new_price', 'old_price', 'is_active')
+    list_display = ('id', 'title', 'catalog', 'brand', 'price', 'old_price', 'is_active')
 
 
 class ProductGroupModelAdmin(admin.ModelAdmin):

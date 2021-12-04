@@ -34,7 +34,7 @@ class Product(Base):
     brand = models.ForeignKey('Brand', on_delete=models.PROTECT, null=True, blank=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
-    new_price = models.FloatField()
+    price = models.FloatField()
     old_price = models.FloatField(null=True)
     is_active = models.BooleanField(default=True)
 
