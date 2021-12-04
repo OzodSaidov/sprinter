@@ -19,9 +19,8 @@ urlpatterns = [
 
     # Basket - collection of product orders
     path('basket/list/', BasketListApiView.as_view()),
-    path('basket/create/', BasketCreateApiView.as_view()),
-    path('basket/update/<int:pk>/', BasketUpdateApiView.as_view()),
-    path('basket/detail/<int:pk>/', BasketDetailApiView.as_view()),
-    path('basket/delete/<int:pk>/', BasketDestroyApiView.as_view()),
-
+    # path('basket/create/', BasketCreateApiView.as_view()),
+    # path('basket/update/<int:pk>/', BasketUpdateApiView.as_view()),
+    # path('basket/detail/<int:pk>/', BasketDetailApiView.as_view()),
+    # path('basket/delete/<int:pk>/', BasketDestroyApiView.as_view()),
 ]
