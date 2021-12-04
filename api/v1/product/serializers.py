@@ -36,10 +36,7 @@ class CatalogCreateSerializer(serializers.ModelSerializer):
             'parent',
             'is_active',
         )
-        extra_kwargs = {
-            'sub_catalogs': {'read_only': True},
-            'title': {'read_only': True},
-        }
+
 
 
 class CatalogRetrieveUpdateSerializer(serializers.ModelSerializer):

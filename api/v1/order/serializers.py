@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer
+from core.models import ProductParam
 from core.models.order import *
 from django.db import transaction
 from django.db.models import Sum, F, When
@@ -27,6 +28,8 @@ class ProductOrderListSerializer(serializers.ModelSerializer):
 
 class ProductOrderCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    product_param = serializers.PrimaryKeyRelatedField(required=False, many=True,
+                                                       queryset=ProductParam.objects.all())
 
     class Meta:
         model = ProductOrder
@@ -34,8 +37,8 @@ class ProductOrderCreateSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'product',
-            'product_param',
             'color',
+            'product_param',
             'quantity',
         ]
 
@@ -44,10 +47,12 @@ class ProductOrderCreateSerializer(serializers.ModelSerializer):
         user = validated_data.get('user')
         product = validated_data.get('product')
         color = validated_data.get('color')
-        product_params = validated_data.pop('product_param')
+        product_params = validated_data.pop('product_param', [])
         quantity = validated_data.get('quantity')
         same_product = user.productorders.filter(is_active=True, product=product,
-                                                 color=color, product_param__in=product_params)
+                                                 color=color)
+        for param in product_params:
+            same_product = same_product.filter(product_param=param)
         if same_product.exists():
             product_order = same_product.last()
             product_order.quantity = quantity
