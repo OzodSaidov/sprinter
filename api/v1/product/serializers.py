@@ -176,7 +176,7 @@ class ProductParamSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductParam
         fields = (
-            # 'id',
+            'id',
             # 'product',
             # 'group',
             'key',
@@ -188,8 +188,8 @@ class ProductParamSerializer(serializers.ModelSerializer):
         data = super(ProductParamSerializer, self).to_representation(instance)
         if instance.has_group and instance.is_important:
             data['key'] = instance.group.title
-            data['value'] = ProductParamPriceSerializer(ProductPrice.objects.filter(param=instance),
-                                                        many=True).data
+            # data['value'] = ProductParamPriceSerializer(ProductPrice.objects.filter(param=instance),
+            #                                             many=True).data
         return data
 
 

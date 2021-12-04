@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer
-from core.models import ProductParam
+from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer, ProductParamSerializer
+from core.models import ProductParam, Product, ProductGroup
 from core.models.order import *
 from django.db import transaction
 from django.db.models import Sum, F, When
@@ -41,6 +41,22 @@ class ProductOrderCreateSerializer(serializers.ModelSerializer):
             'product_param',
             'quantity',
         ]
+
+    def validate(self, attrs):
+        """ All important params should be chosen. Not important param cannot be chosen.
+        Evey important param has a group, only one param from each group can be chosen"""
+
+        product = attrs.get('product')
+        product_params = attrs.get('product_param')
+        product_params = [product_param.id for product_param in product_params]
+        groups = ProductGroup.objects.filter(productparam__in=product_params)
+        if product.params.filter(pk__in=product_params, is_important=False).exists():
+            raise ValidationError('Cannot choose param which is not important')
+        elif product.params.exclude(pk__in=product_params, is_important=True).exclude(group__in=groups).exists():
+            raise ValidationError('Not all params were chosen')
+        elif len(product_params) != product.params.filter(is_important=True).distinct('group').count():
+            raise ValidationError('Cannot assign several params from the same group')
+        return attrs
 
     @transaction.atomic
     def create(self, validated_data):
@@ -87,6 +103,7 @@ class ProductOrderDetailSerializer(serializers.ModelSerializer):
     price = serializers.ReadOnlyField()
     product = ProductRetrieveSerializer(read_only=True)
     color = ColorSerializer(read_only=True)
+    product_param = ProductParamSerializer(many=True)
 
     class Meta:
         model = ProductOrder
