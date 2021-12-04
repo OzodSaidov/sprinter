@@ -5,6 +5,7 @@ from rest_framework.generics import (
     UpdateAPIView,
     DestroyAPIView,
 )
+from rest_framework.permissions import IsAuthenticated
 
 from api.v1.order.filters import OrderFilter, BasketListFilter
 from api.v1.order.serializers import *
