@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api.v1.order.validation import ProductOrderValidation
 from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer, ProductParamSerializer
 from core.models import ProductParam, Product, ProductGroup
 from core.models.order import *
@@ -45,22 +46,12 @@ class ProductOrderCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         """ All important params should be chosen. Not important param cannot be chosen.
         Evey important param has a group, only one param from each group can be chosen"""
-        # Checking product params
-        product = attrs.get('product')
-        product_params = attrs.get('product_param')
-        product_params = [product_param.id for product_param in product_params]
-        groups = ProductGroup.objects.filter(productparam__in=product_params)
-        if product.params.filter(pk__in=product_params, is_important=False).exists():
-            raise ValidationError('Cannot choose param which is not important')
-        elif product.params.exclude(pk__in=product_params, is_important=True).exclude(group__in=groups).exists():
-            raise ValidationError('Not all params were chosen')
-        elif len(product_params) != product.params.filter(is_important=True).distinct('group').count():
-            raise ValidationError('Cannot assign several params from the same group')
 
-        # Checking quantity
-        quantity = attrs.get('quantity')
-        if product.available_quantity < quantity:
-            raise ValidationError('No such quantity available')
+        product = attrs.get('product')
+        validator = ProductOrderValidation(product_order=self.instance, product=product, attrs=attrs)
+        validator.validate_product_params()
+        validator.validate_quantity()
+
         return attrs
 
     @transaction.atomic
@@ -92,16 +83,26 @@ class ProductOrderCreateSerializer(serializers.ModelSerializer):
 
 
 class ProductOrderUpdateSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    product_param = serializers.PrimaryKeyRelatedField(required=False, many=True,
+                                                       queryset=ProductParam.objects.all())
+
     class Meta:
         model = ProductOrder
         fields = [
             'id',
             'user',
-            'product',
             'product_param',
             'color',
             'quantity',
         ]
+
+    def validate(self, attrs):
+        validator = ProductOrderValidation(product_order=self.instance,
+                                           product=self.instance.product, attrs=attrs)
+        validator.validate_product_params()
+        validator.validate_quantity()
+        return attrs
 
 
 class ProductOrderDetailSerializer(serializers.ModelSerializer):

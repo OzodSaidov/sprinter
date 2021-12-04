@@ -30,10 +30,10 @@ class ProductOrderCreateApiView(CreateAPIView):
 class ProductOrderUpdateApiView(UpdateAPIView):
     """ Update product to add to basket """
 
-    serializer_class = ProductOrderCreateSerializer
+    serializer_class = ProductOrderUpdateSerializer
 
     def get_queryset(self):
-        return ProductOrder.objects.filter(user=self.request.user)
+        return ProductOrder.objects.filter(user=self.request.user, is_active=True)
 
 
 class ProductOrderDetailApiView(RetrieveAPIView):
@@ -49,7 +49,7 @@ class ProductOrderDestroyApiView(DestroyAPIView):
     """ Delete product from basket """
 
     def get_queryset(self):
-        return ProductOrder.objects.filter(user=self.request.user)
+        return ProductOrder.objects.filter(user=self.request.user, is_active=True)
 
 
 class BasketListApiView(ListAPIView):
