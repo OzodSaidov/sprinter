@@ -251,6 +251,7 @@ class ProductRetrieveUpdateSerializer(serializers.ModelSerializer):
             'price',
             'old_price',
             'image',
+            'available_quantity',
         )
 
     def update(self, instance, validated_data):
@@ -282,14 +283,14 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             'important_params'
         )
 
-    def get_params(self, obj: Product):
+    def get_params(self, obj):
         params = obj.params.filter(group__isnull=True).values_list('key', 'value')
         result = {}
         if params:
             result = {_[0]: _[1] for _ in params}
         return result
 
-    def get_important_params(self, obj: Product):
+    def get_important_params(self, obj):
         groups = set(
             obj.params.filter(group__isnull=False).values_list('group__title', flat=True)
         )

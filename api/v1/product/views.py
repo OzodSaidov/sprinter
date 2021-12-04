@@ -1,6 +1,7 @@
 from rest_framework import generics
 
 from core.models import *
+from .filters import ProductFilter
 from . serializers import *
 
 
@@ -45,7 +46,8 @@ class BrandRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 class ProductListView(generics.ListAPIView):
     serializer_class = ProductListSerializer
-    queryset = Product.objects.filter(is_active=True)
+    queryset = Product.objects.filter()
+    filterset_class = ProductFilter
 
 
 class ProductCreateView(generics.CreateAPIView):
