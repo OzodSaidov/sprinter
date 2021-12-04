@@ -35,12 +35,20 @@ class Product(Base):
     title = models.CharField(max_length=255)
     description = models.TextField()
     price = models.FloatField()
-    old_price = models.FloatField(null=True)
+    discount = models.FloatField('Скидка', null=True, blank=True)
+    old_price = models.FloatField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
-    available_quantity = models.PositiveIntegerField()
+    available_quantity = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f'{self.title}'
+
+    def save(self, *args, **kwargs):
+        self.price = round(self.price, 2)
+        if self.price and self.discount:
+            self.old_price = self.price
+            self.price = round(self.price - (self.price * self.discount) / 100)
+        super(Product, self).save(*args, **kwargs)
 
 
 class ProductColor(Base):
