@@ -37,6 +37,7 @@ class Product(Base):
     price = models.FloatField()
     old_price = models.FloatField(null=True)
     is_active = models.BooleanField(default=True)
+    available_quantity = models.PositiveIntegerField()
 
     def __str__(self):
         return f'{self.title}'

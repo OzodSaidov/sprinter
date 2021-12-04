@@ -45,7 +45,7 @@ class ProductOrderCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         """ All important params should be chosen. Not important param cannot be chosen.
         Evey important param has a group, only one param from each group can be chosen"""
-
+        # Checking product params
         product = attrs.get('product')
         product_params = attrs.get('product_param')
         product_params = [product_param.id for product_param in product_params]
@@ -56,6 +56,11 @@ class ProductOrderCreateSerializer(serializers.ModelSerializer):
             raise ValidationError('Not all params were chosen')
         elif len(product_params) != product.params.filter(is_important=True).distinct('group').count():
             raise ValidationError('Cannot assign several params from the same group')
+
+        # Checking quantity
+        quantity = attrs.get('quantity')
+        if product.available_quantity < quantity:
+            raise ValidationError('No such quantity available')
         return attrs
 
     @transaction.atomic
