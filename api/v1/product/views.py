@@ -154,7 +154,7 @@ class ProductGroupDeleteView(generics.DestroyAPIView):
 
 
 class ProductParamListView(generics.ListAPIView):
-    serializer_class = None
+    serializer_class = ProductParamSerializer
     # permission_classes = None
     queryset = ProductParam.objects.all()
 
@@ -173,7 +173,7 @@ class ProductParamEditView(generics.RetrieveUpdateAPIView):
 
 class ProductParamRetrieveView(generics.RetrieveAPIView):
     """For site"""
-    serializer_class = None
+    serializer_class = ProductParamSerializer
     # permission_classes = None
     queryset = ProductParam.objects.all()
 
