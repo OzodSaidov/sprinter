@@ -1,7 +1,6 @@
 from django.db import transaction
 from django.db.models import Avg
 from rest_framework import serializers
-from itertools import groupby
 from core.models import Catalog, Brand, Product, ProductImage, Rating, ProductColor, ProductParam, ProductPrice
 
 
