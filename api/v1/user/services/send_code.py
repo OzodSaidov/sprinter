@@ -7,9 +7,13 @@ from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
 import random
 import string
-
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from requests.exceptions import ProxyError
 from rest_framework.response import Response
+
+from sprinter_settings import settings
 
 load_dotenv()
 
@@ -59,5 +63,13 @@ def send_code(recipient: str, text: str):
                                      json=payload)
             return response
     elif is_email:
-        # send to email
-        pass
+        html_content = render_to_string('email_template.html', context={'code': text})
+        text_content = strip_tags(html_content)
+        email = EmailMultiAlternatives(
+            subject='Test',
+            body=text_content,
+            from_email=settings.EMAIL_HOST_USER,
+            to=[recipient]
+        )
+        email.attach_alternative(html_content, 'text/html')
+        return email.send()
