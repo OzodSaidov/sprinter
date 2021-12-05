@@ -136,10 +136,11 @@ class Comment(Base, MPTTModel):
 class Rating(Base):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    review = models.OneToOneField('Review', on_delete=models.SET_NULL, null=True, related_name='product_rating')
     rate = models.FloatField(validators=[
         MinValueValidator(0),
         MaxValueValidator(5),
-    ])
+    ], default=0)
 
     def __str__(self):
         return f'{self.user} - {self.product} - {self.rate}'
@@ -150,7 +151,6 @@ class Review(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='reviews')
     comment = models.TextField()
-    rating = models.OneToOneField('Rating', on_delete=models.SET_NULL, null=True)
     like = models.CharField('Что понравилось больше всего?', max_length=255, null=True, blank=True)
     is_active = models.BooleanField(default=False)
 

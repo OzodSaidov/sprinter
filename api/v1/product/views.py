@@ -1,7 +1,7 @@
 from rest_framework import generics
 
 from core.models import *
-from .filters import ProductFilter
+from .filters import ProductFilter, ReviewFilter
 from . serializers import *
 
 
@@ -290,6 +290,7 @@ class ReviewListView(generics.ListAPIView):
     serializer_class = None
     # permission_classes = None
     queryset = Review.objects.all()
+    filterset_class = ReviewFilter
 
 
 class ReviewCreateView(generics.CreateAPIView):

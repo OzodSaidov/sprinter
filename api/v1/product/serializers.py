@@ -1,7 +1,8 @@
 from django.db import transaction
 from django.db.models import Avg
 from rest_framework import serializers
-from core.models import Catalog, Brand, Product, ProductImage, Rating, ProductColor, ProductParam, ProductPrice
+from core.models import Catalog, Brand, Product, ProductImage, Rating, ProductColor, ProductParam, ProductPrice, Review, \
+    ReviewImage
 
 
 class CatalogListSerializer(serializers.ModelSerializer):
@@ -306,3 +307,73 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
         if instance.colors:
             data['colors'] = instance.colors.all().values_list('color', flat=True)
         return data
+
+
+class ReviewImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReviewImage
+        fields = (
+            'id',
+            'review',
+            'photo',
+        )
+
+
+class ReviewListSerializer(serializers.ModelSerializer):
+    rating = serializers.PrimaryKeyRelatedField(source='product_rating', read_only=True)
+
+    class Meta:
+        model = Review
+        fields = (
+            'id',
+            'user',
+            'rating',
+            'comment',
+            'images',
+        )
+
+    def to_representation(self, instance: Review):
+        data = super(ReviewListSerializer, self).to_representation(instance)
+        data['images'] = ReviewImagesSerializer(instance.reviewimage_set.all(),
+                                                many=True, context=self.context).data
+        if instance.product_rating:
+            data['rating'] = instance.product_rating.rate
+        return data
+
+
+class ReviewCreateSerializer(serializers.ModelSerializer):
+    images = serializers.ListField(
+        child=serializers.ImageField(allow_empty_file=False),
+        required=True,
+        write_only=True,
+        allow_empty=True
+    )
+    rating = serializers.FloatField()
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Review
+        fields = (
+            'id',
+            'user',
+            'product',
+            'comment',
+            'like',
+            'rating',
+            'images',
+        )
+
+    def create(self, validated_data):
+        rate = validated_data.pop('rating', 0)
+        images = validated_data.pop('images', [])
+        user = validated_data.get('user')
+        product = validated_data.get('product')
+
+        with transaction.atomic():
+            review = super(ReviewCreateSerializer, self).create(validated_data)
+            for image in images:
+                ReviewImage.objects.create(review=review, photo=image)
+
+            Rating.objects.create(user=user, product=product, rate=rate, review=review)
+
+        return review
