@@ -7,14 +7,17 @@ from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
 import random
 import string
+from django.contrib.auth import get_user_model
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from requests.exceptions import ProxyError
 from rest_framework.response import Response
 
+from api.v1.user.services.logo_data import logo_data
 from sprinter_settings import settings
 
+User = get_user_model()
 load_dotenv()
 
 
@@ -63,13 +66,20 @@ def send_code(recipient: str, text: str):
                                      json=payload)
             return response
     elif is_email:
-        html_content = render_to_string('email_template.html', context={'code': text})
+        user = User.objects.filter(email=recipient).first()
+        html_content = render_to_string('test.html',
+                                        context={
+                                            'code': text,
+                                            'first_name': user.first_name,
+                                            'last_name': user.last_name
+                                        })
         text_content = strip_tags(html_content)
         email = EmailMultiAlternatives(
-            subject='Test',
+            subject='[Sprinter] Your verify code',
             body=text_content,
             from_email=settings.EMAIL_HOST_USER,
             to=[recipient]
         )
+        email.mixed_subtype = 'related'
         email.attach_alternative(html_content, 'text/html')
-        return email.send()
+        email.send(fail_silently=True)

@@ -1,7 +1,7 @@
 import re
 
 import pyotp
-# from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.generics import (
     CreateAPIView
@@ -13,8 +13,8 @@ from rest_framework.views import APIView
 from api.v1.user.serializers import UserMeCreateSerializer, LoginSerializer, ResetPasswordSerializer
 from api.v1.user.services.send_code import send_code
 
-# User = get_user_model()
-from user.models import User
+User = get_user_model()
+# from user.models import User
 
 
 class UserMeCreateView(CreateAPIView):
@@ -26,7 +26,7 @@ class UserMeCreateView(CreateAPIView):
         sms_code = request.data.get("sms_code")
         token = request.data.get("token")
         if sms_code:
-            totp = pyotp.TOTP(token, interval=1800)
+            totp = pyotp.TOTP(token, interval=300)
             if totp.verify(sms_code):
                 return super().post(request, *args, **kwargs)
             return Response({'status': "invalid code"}, status=402)
@@ -68,7 +68,7 @@ class VerifyAPIView(APIView):
                 return error
 
         secret = pyotp.random_base32()
-        totp = pyotp.TOTP(secret, interval=1800)
+        totp = pyotp.TOTP(secret, interval=300)
         otp = totp.now()
         send_code(username, otp)
         return Response({'token': secret}, status=200)
@@ -119,11 +119,11 @@ class UserResetPasswordView(APIView):
         user = User.objects.filter(phone=phone).first()
         if not user:
             return Response({"phone": "not found"}, status=status.HTTP_404_NOT_FOUND)
-        totp = pyotp.TOTP(token, interval=1800)
+        totp = pyotp.TOTP(token, interval=300)
         if code and token:
             if totp.verify(code):
                 user.set_password(password)
                 user.save()
                 return Response({"password_updated": "ok"}, status=status.HTTP_200_OK)
-            return Response({"detail": "invalid token"}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({'detail': "invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "You entered incorrect or deprecated code"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': "invalid token"}, status=status.HTTP_400_BAD_REQUEST)
