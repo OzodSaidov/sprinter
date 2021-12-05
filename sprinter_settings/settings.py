@@ -49,6 +49,7 @@ THIRD_PARTY_APPS = [
     'drf_yasg',
     'colorfield',
     'django_filters',
+    "corsheaders",
 ]
 
 LOCALE_APPS = [
@@ -67,7 +68,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'sprinter_settings.urls'
 
