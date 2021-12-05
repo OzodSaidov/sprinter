@@ -1,6 +1,6 @@
 from django_filters import rest_framework as rest_filter
 
-from core.models import Product
+from core.models import Product, Review
 
 
 class ProductFilter(rest_filter.FilterSet):
@@ -13,3 +13,11 @@ class ProductFilter(rest_filter.FilterSet):
             'brand_id': ['in'],
             'catalog_id': ['in'],
         }
+
+
+class ReviewFilter(rest_filter.FilterSet):
+    class Meta:
+        model = Review
+        fields = [
+            'product_id'
+        ]

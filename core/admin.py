@@ -45,7 +45,7 @@ class PromoCodeModelAdmin(admin.ModelAdmin):
 
 
 class ReviewModelAdmin(admin.ModelAdmin):
-    list_display = ('user', 'product', 'rating', 'id')
+    list_display = ('user', 'product', 'id')
 
 
 class ReviewImageModelAdmin(admin.ModelAdmin):

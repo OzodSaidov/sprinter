@@ -74,8 +74,8 @@ urlpatterns = [
     # path('rating/delete/<int:pk>/', views.RatingDeleteView.as_view()),
 
     # ----------------------REVIEW----------------------
-    # path('review/list/', views.ReviewListView.as_view()),
-    # path('review/create/', views.ReviewCreateView.as_view()),
+    path('review/list/', views.ReviewListView.as_view()),
+    path('review/create/', views.ReviewCreateView.as_view()),
     # path('review/edit/<int:pk>/', views.ReviewEditView.as_view()),
     # path('review/delete/<int:pk>/', views.ReviewDeleteView.as_view()),
 
