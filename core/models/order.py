@@ -10,6 +10,7 @@ from sprinter_settings.base_models import Base
 from user.validators import validate_phone
 from django.db.models import F, Sum
 
+
 class ProductOrder(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='productorders')
     product = models.ForeignKey('Product', on_delete=models.CASCADE)

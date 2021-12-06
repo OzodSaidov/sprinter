@@ -83,12 +83,28 @@ class BasketClassModelAdmin(admin.ModelAdmin):
 
 
 class OrderClassModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'basket', 'payment_type',
+    list_display = ('id', 'user', 'payment_type',
                     'order_status', 'payment_status',
                     'promocode', 'is_active')
     list_filter = (
          'order_status',
     )
+
+    def get_items(self, obj):
+        text = ''
+        for index, product_order in enumerate(obj.basket.products.all()):
+            params = '\n'.join([f"{param.key} : {param.value}" for param in product_order.product_param.all()])
+            text += '{}. {}, {} шт\nЦвет: {}\n{}\nЦена: {}\n\n'.format(index + 1,
+                                                     product_order.product.title,
+                                                     product_order.quantity,
+                                                     product_order.color.title,
+                                                     params,
+                                                     product_order.price)
+        return text
+    get_items.short_description = 'Товары'
+    exclude = ('basket', 'is_active')
+    readonly_fields = ('promocode', 'price', 'get_items')
+
 
 admin.site.register(ProductOrder, ProductOrderClassModelAdmin)
 admin.site.register(Basket, BasketClassModelAdmin)
