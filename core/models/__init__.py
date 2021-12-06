@@ -12,7 +12,7 @@ __all__ = [
     'Basket',
     'Order',
     'Rating',
-    'Comment',
+    # 'Comment',
     'ProductImage',
     'Brand',
     'ProductGroup',

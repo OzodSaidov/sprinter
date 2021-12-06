@@ -122,15 +122,15 @@ class PromoCode(Base):
         return f'{self.code}'
 
 
-class Comment(Base, MPTTModel):
-    parent = TreeForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='children')
-    title = models.TextField()
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return f'{self.user} - {self.title}'
+# class Comment(Base, MPTTModel):
+#     parent = TreeForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='children')
+#     title = models.TextField()
+#     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='comments')
+#     user = models.ForeignKey(User, on_delete=models.PROTECT)
+#     is_active = models.BooleanField(default=True)
+#
+#     def __str__(self):
+#         return f'{self.user} - {self.title}'
 
 
 class Rating(Base):

@@ -321,6 +321,7 @@ class ReviewImagesSerializer(serializers.ModelSerializer):
 
 class ReviewListSerializer(serializers.ModelSerializer):
     rating = serializers.PrimaryKeyRelatedField(source='product_rating', read_only=True)
+    images = ReviewImagesSerializer(many=True)
 
     class Meta:
         model = Review
@@ -334,8 +335,6 @@ class ReviewListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance: Review):
         data = super(ReviewListSerializer, self).to_representation(instance)
-        data['images'] = ReviewImagesSerializer(instance.reviewimage_set.all(),
-                                                many=True, context=self.context).data
         if instance.product_rating:
             data['rating'] = instance.product_rating.rate
         return data
@@ -377,3 +376,29 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
             Rating.objects.create(user=user, product=product, rate=rate, review=review)
 
         return review
+
+
+class RatingCreateSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Rating
+        fields = (
+            'id',
+            'user',
+            'product',
+            'rate',
+        )
+
+
+class RatingUpdateSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Rating
+        fields = (
+            'id',
+            'rate',
+            'user',
+            'product',
+        )

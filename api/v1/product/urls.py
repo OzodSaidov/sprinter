@@ -17,7 +17,7 @@ urlpatterns = [
     # ----------------------PRODUCT----------------------
     path('list/', views.ProductListView.as_view()),
     # path('create/', views.ProductCreateView.as_view()),
-    path('edit/<int:pk>/', views.ProductEditView.as_view()),
+    # path('edit/<int:pk>/', views.ProductEditView.as_view()),
     path('detail/<int:pk>/', views.ProductRetrieveView.as_view()),
     # path('delete/<int:pk>/', views.ProductDeleteView.as_view()),
 
@@ -69,8 +69,8 @@ urlpatterns = [
 
     # ----------------------RATING----------------------
     # path('rating/list/', views.RatingListView.as_view()),
-    # path('rating/create/', views.RatingCreateView.as_view()),
-    # path('rating/edit/<int:pk>/', views.RatingEditView.as_view()),
+    path('rating/create/', views.RatingCreateView.as_view()),
+    path('rating/update/<int:pk>/', views.RatingUpdateView.as_view()),
     # path('rating/delete/<int:pk>/', views.RatingDeleteView.as_view()),
 
     # ----------------------REVIEW----------------------
