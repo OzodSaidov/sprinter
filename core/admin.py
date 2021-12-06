@@ -101,8 +101,8 @@ admin.site.register(Order, OrderClassModelAdmin)
 ####################### - Comment, Rating - #######################
 
 
-class CommentClassModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'parent', 'user', 'title', 'is_active')
-
-
-admin.site.register(Comment, CommentClassModelAdmin)
+# class CommentClassModelAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'parent', 'user', 'title', 'is_active')
+#
+#
+# admin.site.register(Comment, CommentClassModelAdmin)
