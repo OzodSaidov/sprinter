@@ -143,6 +143,7 @@ class ProductListSerializer(serializers.ModelSerializer):
             'description',
             'price',
             'old_price',
+            'discount',
             'image',
             'rating',
             'status',
