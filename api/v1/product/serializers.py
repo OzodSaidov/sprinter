@@ -13,6 +13,7 @@ class CatalogListSerializer(serializers.ModelSerializer):
             'title',
             'parent',
             'is_active',
+            'image',
             'sub_catalogs',
         ]
         extra_kwargs = {
@@ -33,6 +34,7 @@ class CatalogCreateSerializer(serializers.ModelSerializer):
             'title_ru',
             'title_uz',
             'title_en',
+            'image',
             'parent',
             'is_active',
         )
@@ -46,6 +48,7 @@ class CatalogRetrieveUpdateSerializer(serializers.ModelSerializer):
             'title_ru',
             'title_uz',
             'title_en',
+            'image',
             'parent',
             'is_active',
         )
@@ -62,6 +65,7 @@ class CatalogRetrieveSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'title',
+            'image',
             'parent',
             'is_active',
         )

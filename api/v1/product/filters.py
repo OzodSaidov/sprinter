@@ -6,7 +6,6 @@ from core.models import Product, Review
 class ProductFilter(rest_filter.FilterSet):
     min_price = rest_filter.NumberFilter(field_name='price', lookup_expr='gte')
     max_price = rest_filter.NumberFilter(field_name='price', lookup_expr='lte')
-    new_products = rest_filter.BooleanFilter(field_name='is_slider')
 
     class Meta:
         model = Product
