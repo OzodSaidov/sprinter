@@ -4,16 +4,18 @@ import pyotp
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.generics import (
-    CreateAPIView
+    CreateAPIView, RetrieveAPIView
 )
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.v1.user.serializers import UserMeCreateSerializer, LoginSerializer, ResetPasswordSerializer
+from api.v1.user.serializers import UserMeCreateSerializer, LoginSerializer, ResetPasswordSerializer, UserSerializer
 from api.v1.user.services.send_code import send_code
 
 User = get_user_model()
+
+
 # from user.models import User
 
 
@@ -127,3 +129,11 @@ class UserResetPasswordView(APIView):
                 return Response({"password_updated": "ok"}, status=status.HTTP_200_OK)
             return Response({"error": "You entered incorrect or deprecated code"}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'error': "invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserMeView(RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
