@@ -1,14 +1,11 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-
-import sprinter_settings.settings
 from core.models import ProductColor
 from user.models import User
-# Create your models here.
 from common.static_data import PaymentType, OrderStatus, PaymentStatus
 from sprinter_settings.base_models import Base
 from user.validators import validate_phone
-from django.db.models import F, Sum
+from django.db.models import Sum
 
 
 class ProductOrder(Base):
@@ -79,4 +76,3 @@ class Order(Base):
     date_delivered = models.DateField(null=True, blank=True)
     price = models.FloatField()
     is_active = models.BooleanField(default=True)
-
