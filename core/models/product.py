@@ -38,6 +38,8 @@ class Product(Base):
     discount = models.PositiveSmallIntegerField('Скидка', null=True, blank=True)
     old_price = models.FloatField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
+    is_slider = models.BooleanField(default=False)
+    is_on_sale = models.BooleanField(default=False)
     available_quantity = models.PositiveIntegerField(default=0)
 
     def __str__(self):
