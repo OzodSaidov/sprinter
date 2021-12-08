@@ -145,6 +145,7 @@ class ProductListSerializer(serializers.ModelSerializer):
             'old_price',
             'image',
             'rating',
+            'status',
         )
 
     def to_representation(self, instance):
@@ -220,7 +221,10 @@ class ProductCreateSerializer(serializers.ModelSerializer):
             'old_price',
             'image',
             'is_active',
-            'available_quantity'
+            'available_quantity',
+            'is_slider',
+            'is_on_sale',
+            'status',
 
         )
 
@@ -283,8 +287,10 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             'old_price',
             'image',
             'colors',
+            'status',
+            'available_quantity',
             'params',
-            'important_params'
+            'important_params',
         )
 
     def get_params(self, obj):
