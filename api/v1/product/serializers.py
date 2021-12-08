@@ -146,7 +146,7 @@ class ProductListSerializer(serializers.ModelSerializer):
             'discount',
             'image',
             'rating',
-            'status',
+            'is_new',
         )
 
     def to_representation(self, instance):
@@ -225,7 +225,7 @@ class ProductCreateSerializer(serializers.ModelSerializer):
             'available_quantity',
             'is_slider',
             'is_on_sale',
-            'status',
+            'is_new',
 
         )
 
@@ -261,6 +261,7 @@ class ProductRetrieveUpdateSerializer(serializers.ModelSerializer):
             'old_price',
             'image',
             'available_quantity',
+            'is_new'
         )
 
     def update(self, instance, validated_data):
@@ -288,7 +289,7 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             'old_price',
             'image',
             'colors',
-            'status',
+            'is_new',
             'available_quantity',
             'params',
             'important_params',
