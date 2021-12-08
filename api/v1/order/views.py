@@ -5,7 +5,7 @@ from rest_framework.generics import (
     UpdateAPIView,
     DestroyAPIView,
 )
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 
 from api.v1.order.filters import OrderFilter, BasketListFilter
 from api.v1.order.serializers import *
@@ -14,7 +14,7 @@ from core.models.order import *
 
 class ProductOrderListApiView(ListAPIView):
     """ List of products in basket """
-
+    permission_classes = [AllowAny]
     serializer_class = ProductOrderListSerializer
 
     def get_queryset(self):
@@ -55,7 +55,7 @@ class ProductOrderDestroyApiView(DestroyAPIView):
 
 class BasketListApiView(ListAPIView):
     """ List of baskets """
-
+    permission_classes = [AllowAny]
     serializer_class = BasketListSerializer
     filterset_class = BasketListFilter
 
@@ -104,7 +104,7 @@ class OrderCreateApiView(CreateAPIView):
 
 class OrderListApiView(ListAPIView):
     """ List of orders """
-
+    permission_classes = [AllowAny]
     serializer_class = OrderListSerializer
     filterset_class = OrderFilter
 
