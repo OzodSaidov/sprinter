@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.permissions import AllowAny
 
 from core.models import *
 from .filters import ProductFilter, ReviewFilter
@@ -8,6 +9,7 @@ from .serializers import *
 class CatalogListView(generics.ListAPIView):
     serializer_class = CatalogListSerializer
     queryset = Catalog.objects.filter(parent=None)
+    permission_classes = [AllowAny]
 
 
 class CatalogCreateView(generics.CreateAPIView):
@@ -46,7 +48,8 @@ class BrandRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 class ProductListView(generics.ListAPIView):
     serializer_class = ProductListSerializer
-    queryset = Product.objects.filter()
+    queryset = Product.objects.all()
+    permission_classes = [AllowAny]
     filterset_class = ProductFilter
 
 
@@ -63,6 +66,7 @@ class ProductEditView(generics.RetrieveUpdateAPIView):
 class ProductRetrieveView(generics.RetrieveAPIView):
     """For site"""
     serializer_class = ProductRetrieveSerializer
+    permission_classes = [AllowAny]
     queryset = Product.objects.all()
 
 
@@ -288,7 +292,7 @@ class RatingUpdateView(generics.UpdateAPIView):
 
 class ReviewListView(generics.ListAPIView):
     serializer_class = ReviewListSerializer
-    # permission_classes = None
+    permission_classes = [AllowAny]
     queryset = Review.objects.all()
     filterset_class = ReviewFilter
 
