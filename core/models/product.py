@@ -41,6 +41,7 @@ class Product(Base):
     is_active = models.BooleanField(default=True)
     is_slider = models.BooleanField(default=False)
     is_on_sale = models.BooleanField(default=False)
+    status = models.CharField(max_length=50, default='NEW')
     available_quantity = models.PositiveIntegerField(default=0)
 
     def __str__(self):
