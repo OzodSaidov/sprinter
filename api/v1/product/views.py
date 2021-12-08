@@ -48,7 +48,7 @@ class BrandRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 class ProductListView(generics.ListAPIView):
     serializer_class = ProductListSerializer
-    queryset = Product.objects.filter()
+    queryset = Product.objects.all()
     permission_classes = [AllowAny]
     filterset_class = ProductFilter
 
@@ -292,7 +292,7 @@ class RatingUpdateView(generics.UpdateAPIView):
 
 class ReviewListView(generics.ListAPIView):
     serializer_class = ReviewListSerializer
-    # permission_classes = None
+    permission_classes = [AllowAny]
     queryset = Review.objects.all()
     filterset_class = ReviewFilter
 
