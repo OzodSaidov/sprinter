@@ -69,3 +69,17 @@ class ResetPasswordSerializer(Serializer):
         data = super().to_internal_value(data)
         data["code"] = data["code"].zfill(6)
         return data
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'user_ident'
+            'first_name',
+            'last_name',
+            'phone',
+            'email',
+            'address',
+            'zip_code',
+        )

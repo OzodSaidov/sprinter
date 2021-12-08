@@ -50,7 +50,7 @@ class Product(Base):
         self.price = round(self.price, 2)
         if self.price and self.discount:
             self.old_price = self.price
-            self.price = round(self.price - (self.price * self.discount) / 100)
+            self.price = round(self.price - (self.price * self.discount) / 100, 2)
         super(Product, self).save(*args, **kwargs)
 
 
