@@ -14,6 +14,7 @@ class Catalog(Base, MPTTModel):
     parent = TreeForeignKey('self', on_delete=models.SET_NULL, null=True,
                             blank=True, related_name='sub_catalogs',
                             help_text=_("К какому каталогу относится этот каталог?"))
+    image = models.ImageField(upload_to='photos/catalogs')
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
