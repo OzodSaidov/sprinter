@@ -47,17 +47,16 @@ class Product(Base):
     def __str__(self):
         return f'{self.title}'
 
-    def save(self, *args, **kwargs):
-        self.price = round(self.price, 2)
-        if self.price and self.discount:
-            self.old_price = self.price
-            self.price = round(self.price - (self.price * self.discount) / 100, 2)
-        super(Product, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.price = round(self.price, 2)
+    #     if self.price and self.discount:
+    #         self.old_price = self.price
+    #         self.price = round(self.price - (self.price * self.discount) / 100, 2)
+    #     super(Product, self).save(*args, **kwargs)
 
 
 class ProductColor(Base):
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='colors')
-    # image = models.ForeignKey('ProductImage', on_delete=models.SET_NULL, null=True)
     color = ColorField()
     title = models.CharField(max_length=255)
 

@@ -275,7 +275,7 @@ class ProductRetrieveUpdateSerializer(serializers.ModelSerializer):
 
 
 class ProductRetrieveSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(read_only=True)
+    images = serializers.SerializerMethodField(read_only=True)
     colors = serializers.PrimaryKeyRelatedField(queryset=ProductColor.objects.all(), many=True)
     params = serializers.SerializerMethodField(read_only=True)
     important_params = serializers.SerializerMethodField(read_only=True)
@@ -289,13 +289,17 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             'description',
             'price',
             'old_price',
-            'image',
+            'images',
             'colors',
             'is_new',
             'available_quantity',
             'params',
             'important_params',
         )
+
+    def get_images(self, obj: Product):
+        result = list(map(dict, obj.images.all().values_list('image', 'color')))
+        return result
 
     def get_params(self, obj):
         params = obj.params.filter(group__isnull=True).values_list('key', 'value')
@@ -361,6 +365,7 @@ class ReviewListSerializer(serializers.ModelSerializer):
         data = super(ReviewListSerializer, self).to_representation(instance)
         data['rate'] = instance.product_rating.rate
         data['created_at'] = instance.created_at.strftime('%d.%m.%Y')
+        data['user'] = instance.user.full_name
         return data
 
 
