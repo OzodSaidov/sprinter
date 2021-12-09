@@ -2,9 +2,11 @@ from django.db import transaction
 from django.db.models import Avg
 from rest_framework import serializers
 
+from api.v1.product.services.round_avg import Round
 from api.v1.product.validators import ReviewCreateValidator
 from core.models import Catalog, Brand, Product, ProductImage, Rating, ProductColor, ProductParam, ProductPrice, Review, \
     ReviewImage, Comment
+from sprinter_settings import settings
 
 
 class CatalogListSerializer(serializers.ModelSerializer):
@@ -279,6 +281,7 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
     colors = serializers.PrimaryKeyRelatedField(queryset=ProductColor.objects.all(), many=True)
     params = serializers.SerializerMethodField(read_only=True)
     important_params = serializers.SerializerMethodField(read_only=True)
+    rating = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Product
@@ -289,6 +292,7 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             'description',
             'price',
             'old_price',
+            'rating',
             'images',
             'colors',
             'is_new',
@@ -297,9 +301,18 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             'important_params',
         )
 
-    def get_images(self, obj: Product):
-        result = list(map(dict, obj.images.all().values_list('image', 'color')))
-        return result
+    def get_rating(self, obj: Product):
+        return obj.rating_set.all().aggregate(rate=Round(Avg('rate')))['rate']
+
+    def get_images(self, obj):
+        request = self.context['request']
+        url_scheme = '{}://{}{}'.format(request.scheme, request.get_host(), settings.MEDIA_URL)
+        return list(map(
+            lambda item: {
+                "IMAGE_URL": ''.join([url_scheme, item[0]]),
+                "COLOR": item[1]
+            }, obj.images.all().values_list('image', 'color')
+        ))
 
     def get_params(self, obj):
         params = obj.params.filter(group__isnull=True).values_list('key', 'value')
@@ -320,8 +333,8 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance: Product):
         data = super(ProductRetrieveSerializer, self).to_representation(instance)
-        data['image'] = ProductImageSerializer(instance.images.all(), many=True,
-                                               context=self.context).data
+        # data['image'] = ProductImageSerializer(instance.images.all(), many=True,
+        #                                        context=self.context).data
         if instance.colors:
             data['colors'] = instance.colors.all().values_list('color', flat=True)
         return data
