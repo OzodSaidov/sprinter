@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny
 
 from core.models import *
-from .filters import ProductFilter, ReviewFilter
+from .filters import ProductFilter, ReviewFilter, CommentFilter
 from .serializers import *
 
 
@@ -236,15 +236,15 @@ class ProductParamRetrieveView(generics.RetrieveAPIView):
 #     queryset = PromoCode.objects.all()
 
 
-# class CommentListView(generics.ListAPIView):
-#     serializer_class = None
-#     # permission_classes = None
-#     queryset = Comment.objects.all()
+class CommentListView(generics.ListAPIView):
+    serializer_class = CommentListSerializer
+    permission_classes = [AllowAny]
+    queryset = Comment.objects.filter(parent=None)
+    filterset_class = CommentFilter
 
 
-# class CommentCreateView(generics.CreateAPIView):
-#     serializer_class = None
-#     # permission_classes = None
+class CommentCreateView(generics.CreateAPIView):
+    serializer_class = CommentCreateSerializer
 
 
 # class CommentEditView(generics.RetrieveUpdateAPIView):

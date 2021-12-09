@@ -126,15 +126,15 @@ class PromoCode(Base):
         return f'{self.code}'
 
 
-# class Comment(Base, MPTTModel):
-#     parent = TreeForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='children')
-#     title = models.TextField()
-#     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='comments')
-#     user = models.ForeignKey(User, on_delete=models.PROTECT)
-#     is_active = models.BooleanField(default=True)
-#
-#     def __str__(self):
-#         return f'{self.user} - {self.title}'
+class Comment(Base, MPTTModel):
+    parent = TreeForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='sub_comments')
+    text = models.TextField()
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    is_active = models.BooleanField(default=True)
+
+    # def __str__(self):
+    #     return f'{self.user} - {self.text}'
 
 
 class Rating(Base):
@@ -146,8 +146,8 @@ class Rating(Base):
         MaxValueValidator(5),
     ], default=0)
 
-    def __str__(self):
-        return f'{self.user} - {self.product} - {self.rate}'
+    # def __str__(self):
+    #     return f'{self.user} - {self.product} - {self.rate}'
 
 
 class Review(Base):

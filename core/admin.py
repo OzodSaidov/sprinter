@@ -52,6 +52,10 @@ class ReviewImageModelAdmin(admin.ModelAdmin):
     list_display = ('review', 'photo')
 
 
+class ProductRatingModelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'rate', 'product', 'review')
+
+
 admin.site.register(Catalog, CatalogModelAdmin)
 admin.site.register(ProductColor, ColorModelAdmin)
 admin.site.register(ProductImage, ImageModelAdmin)
@@ -63,6 +67,7 @@ admin.site.register(Brand, BrandModelAdmin)
 admin.site.register(Review, ReviewModelAdmin)
 admin.site.register(ReviewImage, ReviewImageModelAdmin)
 admin.site.register(ProductGroup, ProductGroupModelAdmin)
+admin.site.register(Rating, ProductRatingModelAdmin)
 
 ####################### - PRODUCT - #######################
 
@@ -117,8 +122,8 @@ admin.site.register(Order, OrderClassModelAdmin)
 ####################### - Comment, Rating - #######################
 
 
-# class CommentClassModelAdmin(admin.ModelAdmin):
-#     list_display = ('id', 'parent', 'user', 'title', 'is_active')
-#
-#
-# admin.site.register(Comment, CommentClassModelAdmin)
+class CommentClassModelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'parent', 'user', 'text', 'is_active')
+
+
+admin.site.register(Comment, CommentClassModelAdmin)
