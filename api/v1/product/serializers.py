@@ -1,6 +1,8 @@
 from django.db import transaction
 from django.db.models import Avg
 from rest_framework import serializers
+
+from api.v1.product.validators import ReviewCreateValidator
 from core.models import Catalog, Brand, Product, ProductImage, Rating, ProductColor, ProductParam, ProductPrice, Review, \
     ReviewImage, Comment
 
@@ -383,6 +385,7 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
             'rating',
             'images',
         )
+        validators = [ReviewCreateValidator()]
 
     def create(self, validated_data):
         rate = validated_data.pop('rating', 0)
