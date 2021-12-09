@@ -12,6 +12,15 @@ class CatalogListView(generics.ListAPIView):
     permission_classes = [AllowAny]
 
 
+class SubCatalogListView(generics.ListAPIView):
+    serializer_class = CatalogListSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        sub_catalogs = Catalog.objects.filter(parent=self.kwargs.get('id'))
+        return sub_catalogs
+
+
 class CatalogCreateView(generics.CreateAPIView):
     serializer_class = CatalogCreateSerializer
 
