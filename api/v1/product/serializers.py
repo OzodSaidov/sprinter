@@ -2,7 +2,7 @@ from django.db import transaction
 from django.db.models import Avg
 from rest_framework import serializers
 from core.models import Catalog, Brand, Product, ProductImage, Rating, ProductColor, ProductParam, ProductPrice, Review, \
-    ReviewImage
+    ReviewImage, Comment
 
 
 class CatalogListSerializer(serializers.ModelSerializer):
@@ -331,35 +331,45 @@ class ReviewImagesSerializer(serializers.ModelSerializer):
         )
 
 
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = (
+            'id',
+            'rate'
+        )
+
+
 class ReviewListSerializer(serializers.ModelSerializer):
-    rating = serializers.PrimaryKeyRelatedField(source='product_rating', read_only=True)
-    images = ReviewImagesSerializer(many=True)
+    rate = serializers.PrimaryKeyRelatedField(read_only=True)
+    images = ReviewImagesSerializer(source='reviewimage_set', many=True)
 
     class Meta:
         model = Review
         fields = (
             'id',
             'user',
-            'rating',
+            'rate',
             'comment',
             'images',
+            'created_at',
         )
 
     def to_representation(self, instance: Review):
         data = super(ReviewListSerializer, self).to_representation(instance)
-        if instance.product_rating:
-            data['rating'] = instance.product_rating.rate
+        data['rate'] = instance.product_rating.rate
+        data['created_at'] = instance.created_at.strftime('%d.%m.%Y')
         return data
 
 
 class ReviewCreateSerializer(serializers.ModelSerializer):
     images = serializers.ListField(
         child=serializers.ImageField(allow_empty_file=False),
-        required=True,
+        required=False,
         write_only=True,
         allow_empty=True
     )
-    rating = serializers.FloatField()
+    rating = serializers.FloatField(required=False)
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -389,6 +399,11 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
 
         return review
 
+    def to_representation(self, instance: Review):
+        data = super(ReviewCreateSerializer, self).to_representation(instance)
+        data['rating'] = instance.product_rating.rate
+        return data
+
 
 class RatingCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
@@ -413,4 +428,45 @@ class RatingUpdateSerializer(serializers.ModelSerializer):
             'rate',
             'user',
             'product',
+        )
+
+
+class CommentListSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = [
+            'id',
+            'parent',
+            'text',
+            'user',
+            'is_active',
+            'created_at',
+            'sub_comments',
+        ]
+        extra_kwargs = {
+            'sub_comments': {'read_only': True},
+        }
+
+    def to_representation(self, instance: Comment):
+        data = super().to_representation(instance)
+        data['sub_comments'] = CommentListSerializer(instance.sub_comments.all(), many=True).data
+        if instance.user:
+            data['user'] = instance.user.full_name
+        data['created_at'] = instance.created_at.strftime('%d %b, %Y - %H:%M')
+        return data
+
+
+class CommentCreateSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Comment
+        fields = (
+            'id',
+            'parent',
+            'text',
+            'user',
+            'sub_comments',
         )

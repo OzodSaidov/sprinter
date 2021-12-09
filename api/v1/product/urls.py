@@ -61,8 +61,8 @@ urlpatterns = [
     # path('promocode/delete/<int:pk>/', views.PromoCodeDeleteView.as_view()),
 
     # ----------------------COMMENT----------------------
-    # path('comment/list/', views.CommentListView.as_view()),
-    # path('comment/create/', views.CommentCreateView.as_view()),
+    path('comment/list/', views.CommentListView.as_view()),
+    path('comment/create/', views.CommentCreateView.as_view()),
     # path('comment/edit/<int:pk>/', views.CommentEditView.as_view()),
     # path('comment/detail/<int:pk>/', views.CommentRetrieveView.as_view()),
     # path('comment/delete/<int:pk>/', views.CommentDeleteView.as_view()),
