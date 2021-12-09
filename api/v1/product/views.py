@@ -62,6 +62,17 @@ class ProductListView(generics.ListAPIView):
     filterset_class = ProductFilter
 
 
+class SimilarProductListView(generics.ListAPIView):
+    serializer_class = ProductListSerializer
+    permission_classes = [AllowAny]
+    lookup_url_kwarg = 'id'
+
+    def get_queryset(self):
+        product = Product.objects.filter(id=self.kwargs.get('id')).first()
+        product_similars = Product.objects.filter(catalog=product.catalog).exclude(id=product.id)
+        return product_similars
+
+
 class ProductCreateView(generics.CreateAPIView):
     serializer_class = ProductCreateSerializer
 
@@ -309,7 +320,6 @@ class ReviewListView(generics.ListAPIView):
 class ReviewCreateView(generics.CreateAPIView):
     serializer_class = ReviewCreateSerializer
     # permission_classes = None
-
 
 # class ReviewEditView(generics.RetrieveUpdateAPIView):
 #     serializer_class = None
