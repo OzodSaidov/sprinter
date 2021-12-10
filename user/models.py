@@ -39,7 +39,8 @@ class User(AbstractUser, Base):
         return self.get_full_name()
 
     def save(self, *args, **kwargs):
-        ident = str(uuid.uuid4().fields[-1])[:9]
-        self.user_ident = ident
+        if not self.user_ident:
+            ident = str(uuid.uuid4().fields[-1])[:9]
+            self.user_ident = ident
         super(User, self).save(*args, **kwargs)
 

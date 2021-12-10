@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.generics import (
     CreateAPIView, RetrieveAPIView
 )
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -14,8 +14,12 @@ from api.v1.user.serializers import UserMeCreateSerializer, LoginSerializer, Res
 from api.v1.user.services.send_code import send_code
 from api.v1.user.services.utilities import check_session_basket
 
-User = get_user_model()
 from django.db import transaction
+
+from user.permissions import UserPermission
+
+User = get_user_model()
+
 
 # from user.models import User
 
@@ -86,6 +90,7 @@ class LoginView(APIView):
     def post(self, request):
         username = self.request.data.get('username')
         password = self.request.data.get('password')
+        print(username, password)
         if re.findall(r'\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}', username):
             user = User.objects.filter(email=username)
         elif re.findall(r'^[+]?998\d{9}$', username):
@@ -98,7 +103,7 @@ class LoginView(APIView):
                 if user.first().check_password(password):
                     serializer = LoginSerializer(user.first())
 
-                    #TODO """ Uncomment this when redis will be set in server """
+                    # TODO """ Uncomment this when redis will be set in server """
                     ##check_session_basket(user=user.last(), request=request)
 
                     return Response(serializer.data)
@@ -140,7 +145,7 @@ class UserResetPasswordView(APIView):
 
 
 class UserMeView(RetrieveAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [UserPermission]
     serializer_class = UserSerializer
 
     def get_object(self):
