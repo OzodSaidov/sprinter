@@ -36,9 +36,7 @@ class UserMeCreateView(CreateAPIView):
         if sms_code:
             totp = pyotp.TOTP(token, interval=300)
             if totp.verify(sms_code):
-                return super().post(request, *args, **kwargs)
-                # TODO """ Uncomment this when redis will be set in server """
-                ##check_session_basket(user=user.last(), request=request)
+                return super(UserMeCreateView, self).post(request, *args, **kwargs)
             return Response({'status': "invalid code"}, status=402)
 
         return Response({'status': "not otp or token"}, status=401)
@@ -101,6 +99,7 @@ class LoginView(APIView):
         if username and password:
             if user.exists():
                 if user.first().check_password(password):
+                    check_session_basket(user=user.first(), request=request)
                     serializer = LoginSerializer(user.first())
 
                     # TODO """ Uncomment this when redis will be set in server """

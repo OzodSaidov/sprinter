@@ -4,7 +4,7 @@ from rest_framework import serializers
 from rest_framework.serializers import Serializer
 
 from user.token import MyTokenObtainPairSerializer
-
+from api.v1.user.services.utilities import check_session_basket
 User = get_user_model()
 
 
@@ -51,6 +51,7 @@ class UserMeCreateSerializer(serializers.ModelSerializer):
         user.save()
         self.refresh_token = MyTokenObtainPairSerializer.get_token(user)
         self.access_token = self.refresh_token.access_token
+        check_session_basket(request=self.context.get('request'), user=user)
         return user
 
 
