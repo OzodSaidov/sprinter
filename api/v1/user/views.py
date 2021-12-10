@@ -12,9 +12,10 @@ from rest_framework.views import APIView
 
 from api.v1.user.serializers import UserMeCreateSerializer, LoginSerializer, ResetPasswordSerializer, UserSerializer
 from api.v1.user.services.send_code import send_code
+from api.v1.user.services.utilities import check_session_basket
 
 User = get_user_model()
-
+from django.db import transaction
 
 # from user.models import User
 
@@ -24,6 +25,7 @@ class UserMeCreateView(CreateAPIView):
     serializer_class = UserMeCreateSerializer
     permission_classes = [AllowAny]
 
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
         sms_code = request.data.get("sms_code")
         token = request.data.get("token")
@@ -31,6 +33,8 @@ class UserMeCreateView(CreateAPIView):
             totp = pyotp.TOTP(token, interval=300)
             if totp.verify(sms_code):
                 return super().post(request, *args, **kwargs)
+                # TODO """ Uncomment this when redis will be set in server """
+                ##check_session_basket(user=user.last(), request=request)
             return Response({'status': "invalid code"}, status=402)
 
         return Response({'status': "not otp or token"}, status=401)
@@ -93,6 +97,10 @@ class LoginView(APIView):
             if user.exists():
                 if user.first().check_password(password):
                     serializer = LoginSerializer(user.first())
+
+                    #TODO """ Uncomment this when redis will be set in server """
+                    ##check_session_basket(user=user.last(), request=request)
+
                     return Response(serializer.data)
                 else:
                     return Response({'error': 'Incorrect data'}, status=status.HTTP_400_BAD_REQUEST)
