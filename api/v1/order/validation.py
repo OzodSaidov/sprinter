@@ -4,8 +4,7 @@ from django.core.exceptions import ValidationError
 
 
 class ProductOrderValidation:
-    def __init__(self, product_order, product, attrs):
-        self.product_order = product_order
+    def __init__(self, product, attrs):
         self.product = product
         self.product_params = attrs.get('product_param', [])
         self.quantity = attrs.get('quantity', 0)

@@ -49,7 +49,7 @@ class ProductOrderCreateSerializer(serializers.ModelSerializer):
         Evey important param has a group, only one param from each group can be chosen"""
 
         product = attrs.get('product')
-        validator = ProductOrderValidation(product_order=self.instance, product=product, attrs=attrs)
+        validator = ProductOrderValidation(product=product, attrs=attrs)
         validator.validate_product_params()
         validator.validate_quantity()
 
@@ -99,8 +99,7 @@ class ProductOrderUpdateSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        validator = ProductOrderValidation(product_order=self.instance,
-                                           product=self.instance.product, attrs=attrs)
+        validator = ProductOrderValidation(product=self.instance.product, attrs=attrs)
         validator.validate_product_params()
         validator.validate_quantity()
         return attrs
