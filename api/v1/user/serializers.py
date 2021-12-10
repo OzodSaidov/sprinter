@@ -25,8 +25,6 @@ class UserMeCreateSerializer(serializers.ModelSerializer):
             'last_name',
             'phone',
             'email',
-            # 'address',
-            # 'zip_code',
             'password',
             'access_token',
             'refresh_token'
@@ -83,8 +81,6 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'phone',
             'email',
-            'address',
-            'zip_code',
         )
 
 
