@@ -11,7 +11,7 @@ User = get_user_model()
 class UserMeCreateSerializer(serializers.ModelSerializer):
     refresh_token = serializers.SerializerMethodField(read_only=True)
     access_token = serializers.SerializerMethodField(read_only=True)
-    username = serializers.CharField(required=False)
+    username = serializers.CharField(read_only=True)
     password = serializers.CharField(write_only=True)
 
     class Meta:
@@ -23,17 +23,12 @@ class UserMeCreateSerializer(serializers.ModelSerializer):
             'last_name',
             'phone',
             'email',
-            'address',
-            'zip_code',
+            # 'address',
+            # 'zip_code',
             'password',
             'access_token',
             'refresh_token'
         ]
-
-        extra_kwargs = {
-            'address': {'required': False},
-            'zip_code': {'required': False}
-        }
 
     def get_refresh_token(self, obj):
         return str(self.refresh_token)
