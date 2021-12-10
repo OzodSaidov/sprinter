@@ -1,8 +1,10 @@
 from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
+from rest_framework.fields import CurrentUserDefault
 from rest_framework.serializers import Serializer
 
+from user.models import Address
 from user.token import MyTokenObtainPairSerializer
 from api.v1.user.services.utilities import check_session_basket
 User = get_user_model()
@@ -83,4 +85,19 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'address',
             'zip_code',
+        )
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=CurrentUserDefault())
+
+    class Meta:
+        model = Address
+        fields = (
+            'id',
+            'user',
+            'full_name',
+            'phone',
+            'zip_code',
+            'address'
         )
