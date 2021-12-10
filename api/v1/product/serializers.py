@@ -278,7 +278,7 @@ class ProductRetrieveUpdateSerializer(serializers.ModelSerializer):
 
 class ProductRetrieveSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField(read_only=True)
-    colors = serializers.PrimaryKeyRelatedField(queryset=ProductColor.objects.all(), many=True)
+    # colors = serializers.PrimaryKeyRelatedField(queryset=ProductColor.objects.all(), many=True)
     params = serializers.SerializerMethodField(read_only=True)
     important_params = serializers.SerializerMethodField(read_only=True)
     rating = serializers.SerializerMethodField(read_only=True)
@@ -294,7 +294,7 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             'old_price',
             'rating',
             'images',
-            'colors',
+            # 'colors',
             'is_new',
             'available_quantity',
             'params',
@@ -333,10 +333,8 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance: Product):
         data = super(ProductRetrieveSerializer, self).to_representation(instance)
-        # data['image'] = ProductImageSerializer(instance.images.all(), many=True,
-        #                                        context=self.context).data
-        if instance.colors:
-            data['colors'] = instance.colors.all().values_list('color', flat=True)
+        # if instance.colors:
+        #     data['colors'] = instance.colors.all().values_list('color', flat=True)
         return data
 
 
