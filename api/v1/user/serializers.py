@@ -30,6 +30,11 @@ class UserMeCreateSerializer(serializers.ModelSerializer):
             'refresh_token'
         ]
 
+        extra_kwargs = {
+            'address': {'required': False},
+            'zip_code': {'required': False}
+        }
+
     def get_refresh_token(self, obj):
         return str(self.refresh_token)
 

@@ -6,7 +6,7 @@ from django import forms
 
 
 class UserAdminModel(admin.ModelAdmin):
-    list_display = ('email', 'phone', 'full_name', 'role', 'group', 'id')
+    list_display = ('username', 'email', 'full_name', 'role', 'group', 'id')
 
     def group(self, user):
         groups = []
