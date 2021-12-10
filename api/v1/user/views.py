@@ -3,19 +3,19 @@ import re
 import pyotp
 from django.contrib.auth import get_user_model
 from rest_framework import status
-from rest_framework.generics import (
-    CreateAPIView, RetrieveAPIView
-)
+from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.v1.user.serializers import UserMeCreateSerializer, LoginSerializer, ResetPasswordSerializer, UserSerializer
+from api.v1.user.serializers import UserMeCreateSerializer, LoginSerializer, ResetPasswordSerializer, UserSerializer, \
+    AddressSerializer
 from api.v1.user.services.send_code import send_code
 from api.v1.user.services.utilities import check_session_basket
 
 from django.db import transaction
 
+from user.models import Address
 from user.permissions import UserPermission
 
 User = get_user_model()
@@ -24,7 +24,7 @@ User = get_user_model()
 # from user.models import User
 
 
-class UserMeCreateView(CreateAPIView):
+class UserMeCreateView(generics.CreateAPIView):
     """User registration"""
     serializer_class = UserMeCreateSerializer
     permission_classes = [AllowAny]
@@ -143,9 +143,22 @@ class UserResetPasswordView(APIView):
         return Response({'error': "invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserMeView(RetrieveAPIView):
+class UserMeView(generics.RetrieveAPIView):
     permission_classes = [UserPermission]
     serializer_class = UserSerializer
 
     def get_object(self):
         return self.request.user
+
+
+class AddressCreateView():
+    serializer_class = None
+    permission_classes = [UserPermission]
+
+
+class AddressListCreateView(generics.ListCreateAPIView):
+    serializer_class = AddressSerializer
+    permission_classes = [UserPermission]
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
