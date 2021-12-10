@@ -8,17 +8,18 @@ from django.http import JsonResponse
 from core.models import Product
 from .basket import Basket
 from django.http import HttpResponse
+from rest_framework.views import APIView
 from django.core.exceptions import ValidationError
 
 from .validation import SessionProductOrderValidation
 
 
-class TemporaryBasketCreateApi(GenericAPIView):
+class TemporaryBasketCreateApi(APIView):
     """ Temporarily create basket in session """
 
     permission_classes = [AllowAny, ]
 
-    def get(self, request):
+    def post(self, request):
         product_id = request.data.get('product', 0)
         params = request.data.get('params', [])
         color_id = request.data.get('color', 0)
@@ -35,12 +36,12 @@ class TemporaryBasketCreateApi(GenericAPIView):
             return Response('Product not found')
 
 
-class TemporaryBasketUpdateApi(GenericAPIView):
+class TemporaryBasketUpdateApi(APIView):
     """ Update product in session """
 
     permission_classes = [AllowAny, ]
 
-    def get(self, request):
+    def post(self, request):
         id = request.data.get('id', 0)
         product_id = request.data.get('product', 0)
         params = request.data.get('params', [])
@@ -58,7 +59,7 @@ class TemporaryBasketUpdateApi(GenericAPIView):
             return Response('Product not found')
 
 
-class TemporaryBasketListApi(GenericAPIView):
+class TemporaryBasketListApi(APIView):
     """ List of products in session """
 
     permission_classes = [AllowAny, ]
@@ -68,12 +69,13 @@ class TemporaryBasketListApi(GenericAPIView):
         return JsonResponse(basket.basket, safe=False)
 
 
-class TemporaryBasketDeleteApi(GenericAPIView):
-    """ List of products in session """
+class TemporaryBasketDeleteApi(APIView):
+    """ Delete products from session """
 
     permission_classes = [AllowAny, ]
+    http_method_names = ['POST',]
 
-    def get(self, request):
+    def post(self, request):
         id = request.data.get('id', 0)
         basket = Basket(request=request)
         basket.remove_(id=id)

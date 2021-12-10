@@ -1,7 +1,8 @@
 from decimal import Decimal
 from django.conf import settings
 from core.models import Product, ProductParam
-
+from django.http import JsonResponse, HttpResponse
+from rest_framework.response import Response
 BASKET_SESSION_ID = {}
 
 
@@ -62,7 +63,6 @@ class Basket(object):
             if product_order['id'] == int(id):
                 self.basket.remove(product_order)
         BASKET_SESSION_ID[self.session] = self.basket
-
 
     def check_product(self, product, color_id, params):
         """ Check is product with same properties exist in basket """
