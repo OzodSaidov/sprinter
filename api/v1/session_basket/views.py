@@ -73,7 +73,6 @@ class TemporaryBasketDeleteApi(APIView):
     """ Delete products from session """
 
     permission_classes = [AllowAny, ]
-    http_method_names = ['POST',]
 
     def post(self, request):
         id = request.data.get('id', 0)
