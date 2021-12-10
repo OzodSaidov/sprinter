@@ -151,11 +151,6 @@ class UserMeView(generics.RetrieveAPIView):
         return self.request.user
 
 
-class AddressCreateView():
-    serializer_class = None
-    permission_classes = [UserPermission]
-
-
 class AddressListCreateView(generics.ListCreateAPIView):
     serializer_class = AddressSerializer
     permission_classes = [UserPermission]
