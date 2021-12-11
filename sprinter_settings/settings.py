@@ -101,7 +101,8 @@ WSGI_APPLICATION = 'sprinter_settings.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 if os.getenv("PRODUCTION") == 'TRUE':
-    DATABASES = { 'default': {
+    DATABASES = {
+        'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.getenv('POSTGRES_DB'),
             'USER': os.getenv('POSTGRES_USER'),
@@ -233,7 +234,6 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
-
 
 CACHES = {
     "default": {
