@@ -13,6 +13,7 @@ services:
     container_name: django
     depends_on:
       - postgres
+      - redis
     volumes:
       - .:/app:z
     env_file:
