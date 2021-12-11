@@ -8,6 +8,7 @@ class OrderFilter(django_filters.FilterSet):
         model = Order
         fields = [
             'order_status',
+            'payment_status',
         ]
 
 
