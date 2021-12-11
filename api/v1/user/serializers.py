@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
 
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault
@@ -7,6 +8,7 @@ from rest_framework.serializers import Serializer
 from user.models import Address
 from user.token import MyTokenObtainPairSerializer
 from api.v1.user.services.utilities import check_session_basket
+
 User = get_user_model()
 
 
@@ -97,3 +99,27 @@ class AddressSerializer(serializers.ModelSerializer):
             'zip_code',
             'address'
         )
+
+
+class UserMeUpdateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'first_name',
+            'last_name',
+            'email',
+            'password',
+        )
+
+    def validate_password(self, password):
+        if password:
+            validate_password(password)
+        return super(UserMeUpdateSerializer, self).validate(password)
+
+    def update(self, instance, validated_data):
+        if password := validated_data.pop('password', None):
+            instance.set_password(password)
+        return super(UserMeUpdateSerializer, self).update(instance, validated_data)
