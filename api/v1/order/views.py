@@ -135,3 +135,12 @@ class OrderDestroyApiView(DestroyAPIView):
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
+
+
+class CurrentBasketApiView(RetrieveAPIView):
+    """ Get current basket """
+    serializer_class = BasketDetailSerializer
+
+    def get_object(self):
+        basket = self.request.user.basket.filter(is_active=True)
+        return basket.last()
