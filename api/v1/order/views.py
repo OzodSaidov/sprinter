@@ -55,7 +55,7 @@ class ProductOrderDestroyApiView(DestroyAPIView):
 
 class BasketListApiView(ListAPIView):
     """ List of baskets """
-    permission_classes = [AllowAny]
+
     serializer_class = BasketListSerializer
     filterset_class = BasketListFilter
 

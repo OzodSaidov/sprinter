@@ -100,8 +100,8 @@ WSGI_APPLICATION = 'sprinter_settings.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-if os.getenv("RUN_IN_DOCKER") == 'TRUE':
-    DATABASES = {  'default': {
+if os.getenv("PRODUCTION") == 'TRUE':
+    DATABASES = { 'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.getenv('POSTGRES_DB'),
             'USER': os.getenv('POSTGRES_USER'),
@@ -111,17 +111,6 @@ if os.getenv("RUN_IN_DOCKER") == 'TRUE':
         }
     }
     DATABASES["default"]["ATOMIC_REQUESTS"] = True
-elif os.getenv('PRODUCTION') == 'TRUE':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('POSTGRES_DB'),
-            'USER': os.getenv('POSTGRES_USER'),
-            'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-            'HOST': os.getenv('POSTGRES_HOST'),
-            'PORT': os.getenv('POSTGRES_PORT')
-        }
-    }
 else:
     DATABASES = {
         'default': {
