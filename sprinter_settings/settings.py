@@ -10,15 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
+import environ
 from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 from django.conf import settings
 
 load_dotenv()
+env = environ.Env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+env.read_env(str(BASE_DIR / ".env"))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -98,7 +100,10 @@ WSGI_APPLICATION = 'sprinter_settings.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-if os.getenv('PRODUCTION') == 'TRUE':
+if os.getenv("RUN_IN_DOCKER") == 'TRUE':
+    DATABASES = {"default": env.db("DATABASE_URL")}
+    DATABASES["default"]["ATOMIC_REQUESTS"] = True
+elif os.getenv('PRODUCTION') == 'TRUE':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
