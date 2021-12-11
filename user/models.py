@@ -17,8 +17,6 @@ class User(AbstractUser, Base):
         },
     )
     user_ident = models.CharField(max_length=9, unique=True)
-    # address = models.TextField(null=True, blank=True)
-    # zip_code = models.CharField(max_length=9, null=True, blank=True)
     role = models.CharField(max_length=255, choices=UserRoles.choices, default='User')
     phone = models.CharField(max_length=25,
                              unique=True,
