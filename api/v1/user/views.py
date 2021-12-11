@@ -164,3 +164,7 @@ class AddressListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         return Address.objects.filter(user=self.request.user)
+
+
+class AddressDeleteView(generics.DestroyAPIView):
+    permission_classes = [UserPermission]
