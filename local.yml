@@ -18,7 +18,7 @@ services:
     env_file:
       - ./.env
     ports:
-      - "8080:8080"
+      - "8000:8000"
     command: /start
 
   postgres:
@@ -32,3 +32,5 @@ services:
       - local_postgres_data_backups:/backups:z
     env_file:
       - ./.env
+  redis:
+    image: redis:6
