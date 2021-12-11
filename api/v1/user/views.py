@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.v1.user.serializers import UserMeCreateSerializer, LoginSerializer, ResetPasswordSerializer, UserSerializer, \
-    AddressSerializer
+    AddressSerializer, UserMeUpdateSerializer
 from api.v1.user.services.send_code import send_code
 from api.v1.user.services.utilities import check_session_basket
 
@@ -48,27 +48,27 @@ class VerifyAPIView(APIView):
     def post(self, request):
         reset = self.request.query_params.get('reset', False)
         username = self.request.data.get('username')
-        is_email = re.findall(r'\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}', username)
-        is_phone = re.findall(r'^[+]?998\d{9}$', username)
+        # is_email = re.findall(r'\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}', username)
+        # is_phone = re.findall(r'^[+]?998\d{9}$', username)
         user_not_found = Response({'user': 'Not found!'}, status=status.HTTP_404_NOT_FOUND)
         user_exists = Response({'user': 'Already exists!'}, status=status.HTTP_400_BAD_REQUEST)
         error = Response({'error': 'Incorrect data!'})
 
         if reset == 'true':
-            if is_email:
-                if not User.objects.filter(email=username).exists():
-                    return user_not_found
-            elif is_phone:
+            # if is_email:
+            #     if not User.objects.filter(email=username).exists():
+            #         return user_not_found
+            if username:
                 username = re.sub('[^0-9]', '', username)
                 if not User.objects.filter(phone=username).exists():
                     return user_not_found
             else:
                 return error
         else:
-            if is_email:
-                if User.objects.filter(email=username).exists():
-                    return user_exists
-            elif is_phone:
+            # if is_email:
+            #     if User.objects.filter(email=username).exists():
+            #         return user_exists
+            if username:
                 username = re.sub('[^0-9]', '', username)
                 if User.objects.filter(phone=username).exists():
                     return user_exists
@@ -88,14 +88,13 @@ class LoginView(APIView):
     def post(self, request):
         username = self.request.data.get('username')
         password = self.request.data.get('password')
-        print(username, password)
         if re.findall(r'\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}', username):
             user = User.objects.filter(email=username)
         elif re.findall(r'^[+]?998\d{9}$', username):
             username = re.sub('[^0-9]', '', username)
             user = User.objects.filter(phone=username)
         else:
-            return Response({'error': 'Incorrect data'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'You entered the given incorrectly'}, status=status.HTTP_400_BAD_REQUEST)
         if username and password:
             if user.exists():
                 if user.first().check_password(password):
@@ -107,7 +106,7 @@ class LoginView(APIView):
 
                     return Response(serializer.data)
                 else:
-                    return Response({'error': 'Incorrect data'}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'error': 'You entered the given incorrectly'}, status=status.HTTP_400_BAD_REQUEST)
             else:
                 return Response(
                     {'user': 'Not found'},
@@ -146,6 +145,14 @@ class UserResetPasswordView(APIView):
 class UserMeView(generics.RetrieveAPIView):
     permission_classes = [UserPermission]
     serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+
+class UserMeUpdateView(generics.UpdateAPIView):
+    permission_classes = [UserPermission]
+    serializer_class = UserMeUpdateSerializer
 
     def get_object(self):
         return self.request.user
