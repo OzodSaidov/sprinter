@@ -9,7 +9,7 @@ load_dotenv(dotenv_path=BASE_DIR / '.env')
 
 class Round(Func):
     function = 'ROUND'
-    if os.getenv('RUN_IN_DOCKER') == 'TRUE':
+    if os.getenv('PRODUCTION') == 'TRUE':
         template = '%(function)s(%(expressions)s::numeric, 2)'
     else:
         template = '%(function)s(%(expressions)s, 2)'
