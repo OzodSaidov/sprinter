@@ -30,6 +30,16 @@ class ProductOrder(Base):
             total_price += additional_price['additional_price']
         return total_price * self.quantity
 
+    @property
+    def product_price(self):
+        """ Return price of product with some params """
+        additional_price = self.product.prices.filter(
+            param__in=self.product_param.all()).aggregate(additional_price=Sum('price'))
+        product_price = self.product.price
+        if additional_price.get('additional_price'):
+            product_price += additional_price['additional_price']
+        return product_price
+
     def delete(self, *args, **kwargs):
         """ Do not allow to delete non active product-order. Non-active is for history """
 

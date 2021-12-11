@@ -12,6 +12,7 @@ class ProductOrderListSerializer(serializers.ModelSerializer):
     product = ProductRetrieveSerializer(read_only=True)
     color = ColorSerializer(read_only=True)
     price = serializers.ReadOnlyField()
+    product_price = serializers.ReadOnlyField()
     product_param = ProductParamSerializer(many=True)
 
     class Meta:
@@ -22,9 +23,10 @@ class ProductOrderListSerializer(serializers.ModelSerializer):
             'product',
             'product_param',
             'color',
+            'product_price',
             'quantity',
-            'is_active',
             'price',
+            'is_active',
         ]
 
 
@@ -107,6 +109,7 @@ class ProductOrderUpdateSerializer(serializers.ModelSerializer):
 
 class ProductOrderDetailSerializer(serializers.ModelSerializer):
     price = serializers.ReadOnlyField()
+    product_price = serializers.ReadOnlyField()
     product = ProductRetrieveSerializer(read_only=True)
     color = ColorSerializer(read_only=True)
     product_param = ProductParamSerializer(many=True)
@@ -118,8 +121,10 @@ class ProductOrderDetailSerializer(serializers.ModelSerializer):
             'product',
             'product_param',
             'color',
+            'product_price',
             'quantity',
-            'price'
+            'price',
+
         ]
 
 
