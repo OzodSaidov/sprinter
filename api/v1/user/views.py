@@ -168,3 +168,4 @@ class AddressListCreateView(generics.ListCreateAPIView):
 
 class AddressDeleteView(generics.DestroyAPIView):
     permission_classes = [UserPermission]
+    queryset = Address.objects.all()
