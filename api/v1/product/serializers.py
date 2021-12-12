@@ -314,20 +314,23 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
         params = obj.params.filter(group__isnull=True).values_list('key', 'value')
         result = {}
         if params:
-            result = {_[0]: _[1] for _ in params}
+            result = {item[0]: item[1] for item in params}
         return result
 
     def get_important_params(self, obj):
         groups = set(
             obj.params.filter(group__isnull=False).values_list('group__title', flat=True)
         )
-        result = {
-            group: [
-                dict(id=item[0], param=item[1], price=item[2])
-                for item in obj.params.filter(group__title=group).values_list('id', 'value', 'prices__price')
-            ]
+        result = [
+            {
+                "group": group,
+                "params": [
+                    dict(id=item[0], param=item[1], price=item[2])
+                    for item in obj.params.filter(group__title=group).values_list('id', 'value', 'prices__price')
+                ]
+            }
             for group in groups
-        }
+        ]
         return result
 
     def to_representation(self, instance: Product):
