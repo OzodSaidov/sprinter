@@ -25,3 +25,8 @@ BROKER_PASSWORD=
 
 #Redis
 redis_location="redis://127.0.0.1:6379/1"
+
+#Payme
+PAYCOM_TEST='Test'
+PAYME_MERCHANT_ID='12345'
+PAYME_MERCHANT_KEY='123456'

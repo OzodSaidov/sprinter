@@ -76,6 +76,7 @@ class Basket(Base):
 
         return self.products.count()
 
+
 class Order(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     basket = models.OneToOneField('Basket', on_delete=models.PROTECT)

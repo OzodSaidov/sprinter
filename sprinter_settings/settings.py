@@ -57,6 +57,7 @@ THIRD_PARTY_APPS = [
 LOCALE_APPS = [
     'user',
     'core',
+    'paycomuz',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCALE_APPS
@@ -235,6 +236,7 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
+# REDIS
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -244,3 +246,14 @@ CACHES = {
         }
     }
 }
+
+#Payme
+PAYCOM_TEST = os.getenv('PAYCOM_TEST')
+PAYCOM_SETTINGS = {
+    "KASSA_ID": os.getenv('PAYME_MERCHANT_ID'),  # token
+    "SECRET_KEY": os.getenv('PAYME_MERCHANT_KEY'), #if not bool(PAYCOM_TEST) else config('PAYME_MERCHANT_TEST_KEY', default=None),  # password
+    "ACCOUNTS": {
+        "KEY": "order_id"
+    }
+}
+

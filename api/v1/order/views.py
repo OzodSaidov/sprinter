@@ -157,3 +157,4 @@ class CurrentBasketProductNumberApiView(APIView):
         if basket.exists():
             count['number_of_products'] = basket.last().products_count
         return JsonResponse(count)
+

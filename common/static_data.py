@@ -8,11 +8,12 @@ class PaymentType(TextChoices):
 
 
 class OrderStatus(TextChoices):
+    # Client
     OPENED = 'Opened', 'Opened'
-    ORDERED = 'Ordered', 'Ordered'
+    CANCELLED = 'Cancelled', 'Cancelled'
+    # Admin
     APPROVED = 'Approved', 'Approved'
     DECLINED = 'Declined', 'Declined'
-    CANCELLED = 'Cancelled', 'Cancelled'
     DELIVERING = 'Delivering', 'Delivering'
     COMPLETED = 'Completed', 'Completed'
 
