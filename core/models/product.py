@@ -56,12 +56,13 @@ class Product(Base):
 
 
 class ProductColor(Base):
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='colors')
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='colors',
+                                null=True, blank=True)
     color = ColorField()
-    # title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, null=True)
 
-    # def __str__(self):
-    #     return f'{self.title}'
+    def __str__(self):
+        return f'{self.title}'
 
 
 class ProductImage(Base):
