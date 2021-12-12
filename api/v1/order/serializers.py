@@ -51,9 +51,7 @@ class ProductOrderCreateSerializer(serializers.ModelSerializer):
         Evey important param has a group, only one param from each group can be chosen"""
 
         product = attrs.get('product')
-        validator = ProductOrderValidation(product=product, attrs=attrs)
-        validator.validate_product_params()
-        validator.validate_quantity()
+        ProductOrderValidation(product=product, attrs=attrs)
 
         return attrs
 
@@ -70,7 +68,7 @@ class ProductOrderCreateSerializer(serializers.ModelSerializer):
             same_product = same_product.filter(product_param=param)
         if same_product.exists():
             product_order = same_product.last()
-            product_order.quantity = quantity
+            product_order.quantity += quantity
         else:
             product_order = ProductOrder.objects.create(**validated_data)
         product_order.product_param.set(product_params)
@@ -101,9 +99,8 @@ class ProductOrderUpdateSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        validator = ProductOrderValidation(product=self.instance.product, attrs=attrs)
-        validator.validate_product_params()
-        validator.validate_quantity()
+        ProductOrderValidation(product=self.instance.product, attrs=attrs)
+
         return attrs
 
 
