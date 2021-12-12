@@ -102,7 +102,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
 
 class UserMeUpdateSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = User

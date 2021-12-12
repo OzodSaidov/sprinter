@@ -5,20 +5,19 @@ from core.models.product import *
 
 # - PRODUCT -
 
+@admin.register(Catalog)
 class CatalogModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'parent', 'is_active')
 
 
-class ColorModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'color', 'product')
-
-
-class ImageModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product', 'image', 'is_active')
-
-
+@admin.register(Brand)
 class BrandModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'logo', 'is_active')
+
+
+@admin.register(ProductColor)
+class ColorModelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'color', 'product')
 
 
 class ProductColorInline(admin.StackedInline):
@@ -31,6 +30,16 @@ class ProductImageInline(ProductColorInline):
     extra = 1
 
 
+# @admin.register(ProductImage)
+# class ImageModelAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'product', 'image', 'is_active')
+#
+#     inlines = (
+#         ProductColorInline,
+#     )
+
+
+@admin.register(Product)
 class ProductModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'catalog', 'brand', 'price', 'old_price', 'discount', 'rating', 'is_active')
     list_filter = ('brand', 'catalog')
@@ -41,52 +50,42 @@ class ProductModelAdmin(admin.ModelAdmin):
     )
 
 
+@admin.register(ProductGroup)
 class ProductGroupModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'title')
 
 
+@admin.register(ProductParam)
 class ProductParamModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'key', 'value', 'product', 'has_group')
 
 
+@admin.register(ProductPrice)
 class ProductPriceModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'product', 'param', 'price', 'available_count',)
 
 
+@admin.register(PromoCode)
 class PromoCodeModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'code', 'is_active')
 
 
+@admin.register(Review)
 class ReviewModelAdmin(admin.ModelAdmin):
     list_display = ('user', 'product', 'id')
 
 
+@admin.register(ReviewImage)
 class ReviewImageModelAdmin(admin.ModelAdmin):
     list_display = ('review', 'photo')
 
 
+@admin.register(Rating)
 class ProductRatingModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'rate', 'product', 'review')
 
 
-admin.site.register(Catalog, CatalogModelAdmin)
-admin.site.register(ProductColor, ColorModelAdmin)
-admin.site.register(ProductImage, ImageModelAdmin)
-admin.site.register(Product, ProductModelAdmin)
-admin.site.register(ProductParam, ProductParamModelAdmin)
-admin.site.register(ProductPrice, ProductPriceModelAdmin)
-admin.site.register(PromoCode, PromoCodeModelAdmin)
-admin.site.register(Brand, BrandModelAdmin)
-admin.site.register(Review, ReviewModelAdmin)
-admin.site.register(ReviewImage, ReviewImageModelAdmin)
-admin.site.register(ProductGroup, ProductGroupModelAdmin)
-admin.site.register(Rating, ProductRatingModelAdmin)
-
-
-####################### - PRODUCT - #######################
-
-####################### - ORDER - #######################
-
+# - ORDER -
 
 class ProductOrderClassModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'product', 'quantity')
@@ -131,14 +130,6 @@ admin.site.register(Basket, BasketClassModelAdmin)
 admin.site.register(Order, OrderClassModelAdmin)
 
 
-####################### - ORDER - #######################
-
-
-####################### - Comment, Rating - #######################
-
-
+@admin.register(Comment)
 class CommentClassModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'parent', 'user', 'text', 'is_active')
-
-
-admin.site.register(Comment, CommentClassModelAdmin)

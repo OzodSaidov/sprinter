@@ -136,7 +136,6 @@ class ProductRatingSerializer(serializers.ModelSerializer):
 
 class ProductListSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(read_only=True)
-    # rating = serializers.SerializerMethodField(read_only=True)
     rating = serializers.ReadOnlyField()
 
     class Meta:
@@ -159,9 +158,6 @@ class ProductListSerializer(serializers.ModelSerializer):
         data['image'] = ProductImageSerializer(instance.images.filter(is_active=True).first(),
                                                context=self.context).data
         return data
-
-    # def get_rating(self, instance):
-    #     return instance.rating_set.all().aggregate(rate=Round(Avg('rate')))['rate']
 
 
 class ColorSerializer(serializers.ModelSerializer):
@@ -284,7 +280,7 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
     colors = serializers.PrimaryKeyRelatedField(queryset=ProductColor.objects.all(), many=True)
     params = serializers.SerializerMethodField(read_only=True)
     important_params = serializers.SerializerMethodField(read_only=True)
-    rating = serializers.SerializerMethodField(read_only=True)
+    rating = serializers.ReadOnlyField()
 
     class Meta:
         model = Product
@@ -303,9 +299,6 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             'params',
             'important_params',
         )
-
-    def get_rating(self, obj: Product):
-        return obj.rating_set.all().aggregate(rate=Round(Avg('rate')))['rate']
 
     def get_images(self, obj):
         request = self.context['request']
@@ -329,7 +322,10 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             obj.params.filter(group__isnull=False).values_list('group__title', flat=True)
         )
         result = {
-            group: {_[0]: _[1] for _ in obj.params.filter(group__title=group).values_list('value', 'prices__price')}
+            group: [
+                dict(id=item[0], param=item[1], price=item[2])
+                for item in obj.params.filter(group__title=group).values_list('id', 'value', 'prices__price')
+            ]
             for group in groups
         }
         return result
