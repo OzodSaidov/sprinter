@@ -51,7 +51,8 @@ class ProductOrderCreateSerializer(serializers.ModelSerializer):
         Evey important param has a group, only one param from each group can be chosen"""
 
         product = attrs.get('product')
-        ProductOrderValidation(product=product, attrs=attrs)
+        validator = ProductOrderValidation(product=product, attrs=attrs)
+        validator.validate()
 
         return attrs
 
@@ -85,21 +86,25 @@ class ProductOrderCreateSerializer(serializers.ModelSerializer):
 
 class ProductOrderUpdateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    product_param = serializers.PrimaryKeyRelatedField(required=False, many=True,
-                                                       queryset=ProductParam.objects.all())
 
     class Meta:
         model = ProductOrder
         fields = [
             'id',
             'user',
-            'product_param',
-            'color',
             'quantity',
         ]
 
+    def update(self, instance, validated_data):
+        quantity = validated_data.get('quantity', 0)
+        instance.quantity += quantity
+        instance.save()
+
+        return instance
+
     def validate(self, attrs):
-        ProductOrderValidation(product=self.instance.product, attrs=attrs)
+        validator = ProductOrderValidation(product=self.instance.product, attrs=attrs)
+        validator.validate_quantity()
 
         return attrs
 
