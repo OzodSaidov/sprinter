@@ -1,5 +1,8 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.db.models import Avg
+
+from api.v1.product.services.round_avg import Round
 from sprinter_settings.base_models import Base
 from mptt.models import TreeForeignKey
 from mptt.models import MPTTModel
@@ -47,14 +50,18 @@ class Product(Base):
     def __str__(self):
         return f'{self.title}'
 
+    @property
+    def rating(self):
+        return self.rating_set.all().aggregate(rate=Round(Avg('rate')))['rate']
+
 
 class ProductColor(Base):
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='colors')
     color = ColorField()
-    title = models.CharField(max_length=255)
+    # title = models.CharField(max_length=255)
 
-    def __str__(self):
-        return f'{self.title}'
+    # def __str__(self):
+    #     return f'{self.title}'
 
 
 class ProductImage(Base):
@@ -132,7 +139,8 @@ class Comment(Base, MPTTModel):
 class Rating(Base):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    review = models.OneToOneField('Review', on_delete=models.SET_NULL, null=True, related_name='product_rating')
+    review = models.OneToOneField('Review', on_delete=models.SET_NULL, null=True, blank=True,
+                                  related_name='product_rating')
     rate = models.FloatField(validators=[
         MinValueValidator(0),
         MaxValueValidator(5),

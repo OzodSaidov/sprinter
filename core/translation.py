@@ -8,10 +8,10 @@ class CatalogTranslationOptions(TranslationOptions):
     )
 
 
-class ColorTranslationOptions(TranslationOptions):
-    fields = (
-        'title',
-    )
+# class ColorTranslationOptions(TranslationOptions):
+#     fields = (
+#         'title',
+#     )
 
 
 class ProductTranslationOptions(TranslationOptions):
@@ -41,7 +41,7 @@ class ProductGroupTranslationOptions(TranslationOptions):
 
 
 translator.register(Catalog, CatalogTranslationOptions)
-translator.register(ProductColor, ColorTranslationOptions)
+# translator.register(ProductColor, ColorTranslationOptions)
 translator.register(Product, ProductTranslationOptions)
 # translator.register(Comment, CommentTranslationOptions)
 translator.register(ProductParam, ProductParamTranslationOptions)

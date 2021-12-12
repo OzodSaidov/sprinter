@@ -1,5 +1,4 @@
 import re
-
 import pyotp
 from django.contrib.auth import get_user_model
 from rest_framework import status
@@ -7,21 +6,15 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from api.v1.user.serializers import UserMeCreateSerializer, LoginSerializer, ResetPasswordSerializer, UserSerializer, \
     AddressSerializer, UserMeUpdateSerializer
 from api.v1.user.services.send_code import send_code
 from api.v1.user.services.utilities import check_session_basket
-
 from django.db import transaction
-
 from user.models import Address
 from user.permissions import UserPermission
 
 User = get_user_model()
-
-
-# from user.models import User
 
 
 class UserMeCreateView(generics.CreateAPIView):
