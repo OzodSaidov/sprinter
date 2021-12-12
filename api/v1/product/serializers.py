@@ -314,7 +314,7 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
         params = obj.params.filter(group__isnull=True).values_list('key', 'value')
         result = {}
         if params:
-            result = {item[0]: item[1] for item in params}
+            result = [dict(title=item[0], param=item[1]) for item in params]
         return result
 
     def get_important_params(self, obj):
