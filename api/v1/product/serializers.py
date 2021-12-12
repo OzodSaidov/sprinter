@@ -136,7 +136,8 @@ class ProductRatingSerializer(serializers.ModelSerializer):
 
 class ProductListSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(read_only=True)
-    rating = serializers.SerializerMethodField(read_only=True)
+    # rating = serializers.SerializerMethodField(read_only=True)
+    rating = serializers.ReadOnlyField()
 
     class Meta:
         model = Product
@@ -159,8 +160,8 @@ class ProductListSerializer(serializers.ModelSerializer):
                                                context=self.context).data
         return data
 
-    def get_rating(self, instance):
-        return instance.rating_set.all().aggregate(rating=Avg('rate'))
+    # def get_rating(self, instance):
+    #     return instance.rating_set.all().aggregate(rate=Round(Avg('rate')))['rate']
 
 
 class ColorSerializer(serializers.ModelSerializer):
@@ -169,7 +170,7 @@ class ColorSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'color',
-            'title',
+            # 'title',
         )
 
 
@@ -249,6 +250,7 @@ class ProductRetrieveUpdateSerializer(serializers.ModelSerializer):
         write_only=True,
         allow_empty=True
     )
+    rating = serializers.ReadOnlyField()
 
     class Meta:
         model = Product
@@ -263,6 +265,7 @@ class ProductRetrieveUpdateSerializer(serializers.ModelSerializer):
             'description_en',
             'price',
             'old_price',
+            'rating',
             'image',
             'available_quantity',
             'is_new'

@@ -1,19 +1,16 @@
 from django.contrib import admin
-from django import forms
-# Register your models here.
-
 from core.models.order import *
 from core.models.product import *
 
 
-####################### - PRODUCT - #######################
+# - PRODUCT -
 
 class CatalogModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'parent', 'is_active')
 
 
 class ColorModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'color', 'product')
+    list_display = ('id', 'color', 'product')
 
 
 class ImageModelAdmin(admin.ModelAdmin):
@@ -24,8 +21,24 @@ class BrandModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'logo', 'is_active')
 
 
+class ProductColorInline(admin.StackedInline):
+    model = ProductColor
+    extra = 1
+
+
+class ProductImageInline(ProductColorInline):
+    model = ProductImage
+    extra = 1
+
+
 class ProductModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'catalog', 'brand', 'price', 'old_price', 'discount', 'is_active')
+    list_display = ('id', 'title', 'catalog', 'brand', 'price', 'old_price', 'discount', 'rating', 'is_active')
+    list_filter = ('brand', 'catalog')
+
+    inlines = (
+        ProductImageInline,
+        # ProductColorInline,
+    )
 
 
 class ProductGroupModelAdmin(admin.ModelAdmin):
@@ -69,6 +82,7 @@ admin.site.register(ReviewImage, ReviewImageModelAdmin)
 admin.site.register(ProductGroup, ProductGroupModelAdmin)
 admin.site.register(Rating, ProductRatingModelAdmin)
 
+
 ####################### - PRODUCT - #######################
 
 ####################### - ORDER - #######################
@@ -92,7 +106,7 @@ class OrderClassModelAdmin(admin.ModelAdmin):
                     'order_status', 'payment_status',
                     'promocode', 'is_active')
     list_filter = (
-         'order_status',
+        'order_status',
     )
 
     def get_items(self, obj):
@@ -100,12 +114,13 @@ class OrderClassModelAdmin(admin.ModelAdmin):
         for index, product_order in enumerate(obj.basket.products.all()):
             params = '\n'.join([f"{param.key} : {param.value}" for param in product_order.product_param.all()])
             text += '{}. {}, {} шт\nЦвет: {}\n{}\nЦена: {}\n\n'.format(index + 1,
-                                                     product_order.product.title,
-                                                     product_order.quantity,
-                                                     product_order.color.title,
-                                                     params,
-                                                     product_order.price)
+                                                                       product_order.product.title,
+                                                                       product_order.quantity,
+                                                                       product_order.color.title,
+                                                                       params,
+                                                                       product_order.price)
         return text
+
     get_items.short_description = 'Товары'
     exclude = ('basket', 'is_active')
     readonly_fields = ('promocode', 'price', 'get_items')

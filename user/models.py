@@ -38,8 +38,11 @@ class User(AbstractUser, Base):
 
     def save(self, *args, **kwargs):
         if not self.user_ident:
-            ident = str(uuid.uuid4().fields[-1])[:9]
+            ident = str(uuid.uuid4().fields[-1])[:12]
             self.user_ident = ident
+
+        if not self.username:
+            self.username = self.phone
         super(User, self).save(*args, **kwargs)
 
 
