@@ -8,3 +8,4 @@ urlpatterns = [
     path('basket/list/', views.TemporaryBasketListApi.as_view()),
     path('basket/remove/', views.TemporaryBasketDeleteApi.as_view()),
 ]
+

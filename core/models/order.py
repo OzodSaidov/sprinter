@@ -70,6 +70,11 @@ class Basket(Base):
             total_price += product.price
         return total_price
 
+    @property
+    def products_count(self):
+        """ Return number of products in basket """
+
+        return self.products.count()
 
 class Order(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')

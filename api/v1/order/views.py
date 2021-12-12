@@ -10,6 +10,8 @@ from rest_framework.permissions import AllowAny
 from api.v1.order.filters import OrderFilter, BasketListFilter
 from api.v1.order.serializers import *
 from core.models.order import *
+from rest_framework.views import APIView
+from django.http import JsonResponse
 
 
 class ProductOrderListApiView(ListAPIView):
@@ -144,3 +146,14 @@ class CurrentBasketApiView(RetrieveAPIView):
     def get_object(self):
         basket = self.request.user.basket.filter(is_active=True)
         return basket.last()
+
+
+class CurrentBasketProductNumberApiView(APIView):
+    """ Ger number of products in basket """
+
+    def get(self, request):
+        basket = request.user.basket.filter(is_active=True)
+        count = dict(number_of_products=0)
+        if basket.exists():
+            count['number_of_products'] = basket.last().products_count
+        return JsonResponse(count)
