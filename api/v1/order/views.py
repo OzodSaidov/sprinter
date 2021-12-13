@@ -106,6 +106,7 @@ class OrderCreateApiView(CreateAPIView):
 
 class OrderListApiView(ListAPIView):
     """ List of orders """
+
     permission_classes = [AllowAny]
     serializer_class = OrderListSerializer
     filterset_class = OrderFilter
@@ -120,7 +121,8 @@ class OrderUpdateApiView(UpdateAPIView):
     serializer_class = OrderUpdateSerializer
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)
+        return Order.objects.filter(user=self.request.user, order_status=OrderStatus.OPENED,
+                                    payment_status=PaymentStatus.WAITING)
 
 
 class OrderDetailApiView(RetrieveAPIView):

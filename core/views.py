@@ -5,7 +5,8 @@ from paycomuz import Paycom
 from paycomuz.views import MerchantAPIView as PaymeMerchantAPIView
 from core.models.order import Order
 from loguru import logger
-# Create your views here.
+
+""" Payme """
 
 
 class CheckOrder(Paycom):
