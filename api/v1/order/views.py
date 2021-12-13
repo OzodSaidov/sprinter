@@ -6,7 +6,7 @@ from rest_framework.generics import (
     DestroyAPIView,
 )
 from rest_framework.permissions import AllowAny
-
+from django.http import HttpResponse
 from api.v1.order.filters import OrderFilter, BasketListFilter
 from api.v1.order.serializers import *
 from core.models.order import *
@@ -112,7 +112,7 @@ class OrderListApiView(ListAPIView):
     filterset_class = OrderFilter
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)
+        return Order.objects.filter(user=self.request.user, is_active=True)
 
 
 class OrderUpdateApiView(UpdateAPIView):
@@ -122,7 +122,7 @@ class OrderUpdateApiView(UpdateAPIView):
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user, order_status=OrderStatus.OPENED,
-                                    payment_status=PaymentStatus.WAITING)
+                                    payment_status=PaymentStatus.WAITING, is_active=True)
 
 
 class OrderDetailApiView(RetrieveAPIView):
@@ -131,7 +131,7 @@ class OrderDetailApiView(RetrieveAPIView):
     serializer_class = OrderDetailSerializer
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)
+        return Order.objects.filter(user=self.request.user, is_active=True)
 
 
 class OrderDestroyApiView(DestroyAPIView):
@@ -139,6 +139,14 @@ class OrderDestroyApiView(DestroyAPIView):
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
+
+    def delete(self, request, *args, **kwargs):
+        order_id = kwargs.get('pk', 0)
+        order = Order.objects.filter(id=order_id, payment_status=PaymentStatus.WAITING, is_active=True)
+        if order.exists():
+            order.update(is_active=False)
+            return HttpResponse(status=200)
+        return HttpResponse(status=404)
 
 
 class CurrentBasketApiView(RetrieveAPIView):
