@@ -1,8 +1,5 @@
 from django.db import transaction
-from django.db.models import Avg
 from rest_framework import serializers
-
-from api.v1.product.services.round_avg import Round
 from api.v1.product.validators import ReviewCreateValidator
 from core.models import Catalog, Brand, Product, ProductImage, Rating, ProductColor, ProductParam, ProductPrice, Review, \
     ReviewImage, Comment

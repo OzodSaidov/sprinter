@@ -15,11 +15,6 @@ class BrandModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'logo', 'is_active')
 
 
-@admin.register(ProductColor)
-class ColorModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'color', 'product')
-
-
 class ProductColorInline(admin.StackedInline):
     model = ProductColor
     extra = 1
@@ -30,13 +25,14 @@ class ProductImageInline(ProductColorInline):
     extra = 1
 
 
-# @admin.register(ProductImage)
-# class ImageModelAdmin(admin.ModelAdmin):
-#     list_display = ('id', 'product', 'image', 'is_active')
-#
-#     inlines = (
-#         ProductColorInline,
-#     )
+@admin.register(ProductColor)
+class ColorModelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'color', 'title', 'product',)
+
+
+@admin.register(ProductImage)
+class ImageModelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'product', 'image', 'is_active')
 
 
 @admin.register(Product)
