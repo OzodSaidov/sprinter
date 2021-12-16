@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from api.v1.order.validation import ProductOrderValidation
 from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer, ProductParamSerializer, \
-    ProductShortDetailSerializer
+    ProductShortDetailSerializer, ProductImageShortSerializer
 from api.v1.user.serializers import AddressSerializer
 from core.models import ProductParam, Product, ProductGroup
 from core.models.order import *
@@ -34,17 +34,23 @@ class ProductOrderListSerializer(serializers.ModelSerializer):
 
 class ProductOrderShortSerializer(serializers.ModelSerializer):
     product = ProductShortDetailSerializer(read_only=True)
-    color = ColorSerializer(read_only=True)
-
+    # color = ColorSerializer(read_only=True)
+    image = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = ProductOrder
         fields = [
             'id',
             'product',
-            'color',
+            # 'color',
             'quantity',
+            'image',
         ]
 
+    def get_image(self, obj):
+        image = obj.color.images.first()
+        if image:
+            return ProductImageShortSerializer(image, many=False).data
+        return []
 
 class ProductOrderCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
