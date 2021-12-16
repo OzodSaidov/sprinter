@@ -120,6 +120,13 @@ class ProductImageSerializer(serializers.ModelSerializer):
         )
 
 
+class ProductImageShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = (
+            'image',
+        )
+
 class ProductRatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
@@ -158,12 +165,13 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 
 class ColorSerializer(serializers.ModelSerializer):
+    images = ProductImageShortSerializer(many=True)
     class Meta:
         model = ProductColor
         fields = (
             'id',
             'color',
-            # 'title',
+            'images',
         )
 
 
@@ -491,8 +499,6 @@ class CommentCreateSerializer(serializers.ModelSerializer):
 
 
 class ProductShortDetailSerializer(serializers.ModelSerializer):
-    images = serializers.SerializerMethodField(read_only=True)
-
     class Meta:
         model = Product
         fields = (
@@ -500,13 +506,3 @@ class ProductShortDetailSerializer(serializers.ModelSerializer):
             'description',
             'images',
         )
-
-    def get_images(self, obj):
-        request = self.context['request']
-        url_scheme = '{}://{}{}'.format(request.scheme, request.get_host(), settings.MEDIA_URL)
-        return list(map(
-            lambda item: {
-                "IMAGE_URL": ''.join([url_scheme, item[0]]),
-                "COLOR": item[1]
-            }, obj.images.all().values_list('image', 'color')
-        ))
