@@ -34,8 +34,8 @@ class ProductOrderListSerializer(serializers.ModelSerializer):
 
 class ProductOrderShortSerializer(serializers.ModelSerializer):
     product = ProductShortDetailSerializer(read_only=True)
-    # color = ColorSerializer(read_only=True)
     image = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = ProductOrder
         fields = [
@@ -49,8 +49,13 @@ class ProductOrderShortSerializer(serializers.ModelSerializer):
     def get_image(self, obj):
         image = obj.color.images.first()
         if image:
-            return ProductImageShortSerializer(image, many=False).data
+            data = ProductImageShortSerializer(image, many=False, context=self.context).data
+            return data['image']
+        elif obj.product.images.first():
+            data = ProductImageShortSerializer(obj.product.images.first(), many=False, context=self.context).data
+            return data['image']
         return []
+
 
 class ProductOrderCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())

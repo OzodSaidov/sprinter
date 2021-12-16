@@ -127,6 +127,7 @@ class ProductImageShortSerializer(serializers.ModelSerializer):
             'image',
         )
 
+
 class ProductRatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Rating
