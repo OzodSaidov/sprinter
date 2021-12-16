@@ -29,8 +29,8 @@ class TemporaryBasketCreateApi(APIView):
         if product.exists():
             validator = SessionProductOrderValidation(product=product.last(), params=params, quantity=quantity,
                                                       color_id=color_id)
-            validator.validate()
-            basket.add(product=product.last(), quantity=quantity,color_id=color_id, params=params)
+            if validator.validate():
+                basket.add(product=product.last(), quantity=quantity,color_id=color_id, params=params)
             return JsonResponse(basket.current_product, safe=False)
         else:
             return Response('Product not found')
@@ -52,8 +52,8 @@ class TemporaryBasketUpdateApi(APIView):
         if product.exists():
             validator = SessionProductOrderValidation(product=product.last(), params=params, quantity=quantity,
                                                       color_id=color_id)
-            validator.validate()
-            basket.update(product=product.last(), params=params, color_id=color_id, quantity=quantity, id=id)
+            if validator.validate():
+                basket.update(product=product.last(), params=params, color_id=color_id, quantity=quantity, id=id)
             return JsonResponse(basket.current_product, safe=False)
         else:
             return Response('Product not found')
