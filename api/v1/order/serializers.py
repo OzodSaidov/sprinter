@@ -3,6 +3,7 @@ from rest_framework import serializers
 from api.v1.order.validation import ProductOrderValidation
 from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer, ProductParamSerializer, \
     ProductShortDetailSerializer
+from api.v1.user.serializers import AddressSerializer
 from core.models import ProductParam, Product, ProductGroup
 from core.models.order import *
 from django.db import transaction
@@ -204,6 +205,7 @@ class BasketDetailSerializer(serializers.ModelSerializer):
 
 class OrderListSerializer(serializers.ModelSerializer):
     basket = BasketDetailSerializer(read_only=True)
+    address = AddressSerializer(read_only=True, many=False)
 
     class Meta:
         model = Order
