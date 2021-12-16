@@ -7,5 +7,6 @@ urlpatterns = [
     path('basket/update/', views.TemporaryBasketUpdateApi.as_view()),
     path('basket/list/', views.TemporaryBasketListApi.as_view()),
     path('basket/remove/', views.TemporaryBasketDeleteApi.as_view()),
+    path('basket/products/count/', views.TemporaryBasketProductsCount.as_view()),
 ]
 

@@ -79,3 +79,15 @@ class TemporaryBasketDeleteApi(APIView):
         basket = Basket(request=request)
         basket.remove_(id=id)
         return HttpResponse(status=200)
+
+
+class TemporaryBasketProductsCount(APIView):
+    """ Get number of products in basket """
+
+    permission_classes = [AllowAny, ]
+
+    def get(self, request):
+        basket = Basket(request=request)
+        data = dict(count=len(basket.basket))
+        return JsonResponse(data)
+
