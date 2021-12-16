@@ -69,7 +69,9 @@ class TemporaryBasketListApi(APIView):
 
     def get(self, request):
         basket = Basket(request=request).basket
+        result = {}
         data = []
+        total_price = 0
         for b in basket:
             product = Product.objects.filter(id=b.get('product_id', 0))
             color = ProductColor.objects.filter(id=b.get('color_id', 0))
@@ -92,7 +94,10 @@ class TemporaryBasketListApi(APIView):
                     product_price += additional_price['additional_price']
                 temp['product_price'] = product_price
                 data.append(temp)
-        return JsonResponse(data, safe=False)
+                total_price += product_price * temp['quantity']
+        result['products'] = data
+        result['total_price'] = total_price
+        return JsonResponse(result, safe=False)
 
 
 class TemporaryBasketDeleteApi(APIView):
