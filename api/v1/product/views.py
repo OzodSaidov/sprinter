@@ -62,6 +62,15 @@ class ProductListView(generics.ListAPIView):
     filterset_class = ProductFilter
 
 
+class ProductNewListView(generics.ListAPIView):
+    serializer_class = ProductListSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        products = Product.objects.all().order_by('-created_at')[:20]
+        return products
+
+
 class SimilarProductListView(generics.ListAPIView):
     serializer_class = ProductListSerializer
     permission_classes = [AllowAny]
