@@ -24,5 +24,6 @@ urlpatterns = [
     # path('basket/detail/<int:pk>/', BasketDetailApiView.as_view()),
     # path('basket/delete/<int:pk>/', BasketDestroyApiView.as_view()),
     path('basket/current/', CurrentBasketApiView.as_view()),
+    path('basket/current/products/', CurrentBasketProductsListApiView.as_view()),
     path('basket/products/count/', CurrentBasketProductNumberApiView.as_view()),
 ]

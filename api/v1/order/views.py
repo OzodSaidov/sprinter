@@ -168,3 +168,13 @@ class CurrentBasketProductNumberApiView(APIView):
             count['number_of_products'] = basket.last().products_count
         return JsonResponse(count)
 
+
+class CurrentBasketProductsListApiView(ListAPIView):
+    """ Get current basket's product-orders """
+
+    serializer_class = ProductOrderShortSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        basket = user.basket.filter(is_active=True).last()
+        return basket.products.all()

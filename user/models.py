@@ -39,7 +39,6 @@ class User(AbstractUser, Base):
     def save(self, *args, **kwargs):
         if not self.user_ident:
             ident = str(uuid.uuid4().fields[-1])[:9]
-            print(ident)
             self.user_ident = ident
 
         if not self.username:

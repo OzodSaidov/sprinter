@@ -488,3 +488,25 @@ class CommentCreateSerializer(serializers.ModelSerializer):
             'user',
             'sub_comments',
         )
+
+
+class ProductShortDetailSerializer(serializers.ModelSerializer):
+    images = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = (
+            'title',
+            'description',
+            'images',
+        )
+
+    def get_images(self, obj):
+        request = self.context['request']
+        url_scheme = '{}://{}{}'.format(request.scheme, request.get_host(), settings.MEDIA_URL)
+        return list(map(
+            lambda item: {
+                "IMAGE_URL": ''.join([url_scheme, item[0]]),
+                "COLOR": item[1]
+            }, obj.images.all().values_list('image', 'color')
+        ))

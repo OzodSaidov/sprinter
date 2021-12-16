@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
 from api.v1.order.validation import ProductOrderValidation
-from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer, ProductParamSerializer
+from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer, ProductParamSerializer, \
+    ProductShortDetailSerializer
 from core.models import ProductParam, Product, ProductGroup
 from core.models.order import *
 from django.db import transaction
@@ -27,6 +28,20 @@ class ProductOrderListSerializer(serializers.ModelSerializer):
             'quantity',
             'price',
             'is_active',
+        ]
+
+
+class ProductOrderShortSerializer(serializers.ModelSerializer):
+    product = ProductShortDetailSerializer(read_only=True)
+    color = ColorSerializer(read_only=True)
+
+    class Meta:
+        model = ProductOrder
+        fields = [
+            'id',
+            'product',
+            'color',
+            'quantity',
         ]
 
 
@@ -198,7 +213,7 @@ class OrderListSerializer(serializers.ModelSerializer):
             'basket',
             'address',
             'orderer',
-            'zip_code',
+            'email',
             'phone',
             'payment_type',
             'order_status',
@@ -218,9 +233,9 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             'id',
             'basket',
             'user',
-            'address',
             'orderer',
-            'zip_code',
+            'email',
+            'address',
             'phone',
             'payment_type',
             'price',
@@ -257,7 +272,7 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
             'id',
             'address',
             'orderer',
-            'zip_code',
+            'email',
             'phone',
             'payment_type',
             'promocode',
@@ -275,7 +290,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'basket',
             'address',
             'orderer',
-            'zip_code',
+            'email',
             'phone',
             'payment_type',
             'order_status',
@@ -283,3 +298,5 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'price',
             'date_delivered',
         ]
+
+
