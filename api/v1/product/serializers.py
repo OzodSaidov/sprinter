@@ -166,6 +166,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 class ColorSerializer(serializers.ModelSerializer):
     images = ProductImageShortSerializer(many=True)
+
     class Meta:
         model = ProductColor
         fields = (
@@ -504,5 +505,4 @@ class ProductShortDetailSerializer(serializers.ModelSerializer):
         fields = (
             'title',
             'description',
-            'images',
         )
