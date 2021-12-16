@@ -62,7 +62,9 @@ class ProductColor(Base):
     title = models.CharField(max_length=255, null=True)
 
     def __str__(self):
-        return f'{self.title} {self.product.title}'
+        if self.product.title:
+            return f'{self.title} {self.product.title}'
+        return f'{self.title}'
 
 
 class ProductImage(Base):
@@ -95,7 +97,9 @@ class ProductParam(Base):
         return
 
     def __str__(self):
-        return f'{self.key} - {self.value} - {self.product.title}'
+        if self.product.title:
+            return f'{self.key} - {self.value} - {self.product.title}'
+        return f"{self.key} - {self.value}"
 
 
 class ProductPrice(Base):
