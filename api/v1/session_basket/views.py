@@ -68,35 +68,8 @@ class TemporaryBasketListApi(APIView):
     permission_classes = [AllowAny, ]
 
     def get(self, request):
-        basket = Basket(request=request).basket
-        result = {}
-        data = []
-        total_price = 0
-        for b in basket:
-            product = Product.objects.filter(id=b.get('product_id', 0))
-            color = ProductColor.objects.filter(id=b.get('color_id', 0))
-            params = ProductParam.objects.filter(id__in=b.get('params', []))
-            if product.exists() and color.exists():
-                product = product.last()
-                temp = {}
-                url_scheme = '{}://{}{}{}'.format(request.scheme, request.get_host(),
-                                                  settings.MEDIA_URL, color.last().images.last().image)
-                temp['id'] = b.get('id')
-                temp['product'] = ProductShortDetailSerializer(instance=product, many=False).data
-                temp['color'] = dict(color=color.last().color, image=url_scheme)
-                temp['quantity'] = b.get('quantity')
-                temp['params'] = ProductParamSerializer(instance=params, many=True).data
-
-                additional_price = product.prices.filter(
-                    param__in=b.get('params')).aggregate(additional_price=Sum('price'))
-                product_price = product.price
-                if additional_price.get('additional_price'):
-                    product_price += additional_price['additional_price']
-                temp['product_price'] = product_price
-                data.append(temp)
-                total_price += product_price * temp['quantity']
-        result['products'] = data
-        result['total_price'] = total_price
+        basket = Basket(request=request)
+        result = basket.to_representation()
         return JsonResponse(result, safe=False)
 
 
