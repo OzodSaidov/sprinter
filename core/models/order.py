@@ -96,6 +96,7 @@ class Order(Base):
     promocode = models.ForeignKey('PromoCode', on_delete=models.PROTECT, null=True, blank=True)
     date_delivered = models.DateField(null=True, blank=True)
     price = models.FloatField()
+    delivery_price = models.FloatField(default=0)
     is_active = models.BooleanField(default=True)
 
     def save_price(self):
@@ -107,5 +108,6 @@ class Order(Base):
                     sale = price * self.promocode.percent / 100
                     price -= sale
             total_price += price
+        total_price += self.delivery_price
         self.price = total_price
         self.save()

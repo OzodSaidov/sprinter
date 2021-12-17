@@ -234,6 +234,7 @@ class OrderListSerializer(serializers.ModelSerializer):
             'payment_type',
             'order_status',
             'promocode',
+            'delivery_price',
             'price',
             'date_delivered',
         ]
@@ -328,6 +329,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'payment_type',
             'order_status',
             'promocode',
+            'delivery_price',
             'price',
             'date_delivered',
         ]
