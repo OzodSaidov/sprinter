@@ -12,7 +12,7 @@ class PayOrderWithPaymeApi(APIView):
     def post(self, request):
         order_id = request.data.get('order_id', None)
         order = Order.objects.filter(id=order_id, payment_status=PaymentStatus.WAITING,
-                                      order_status=OrderStatus.APPROVED)
+                                      order_status=OrderStatus.OPENED)
         if not order_id:
             return JsonResponse(dict(order_id='Order is not given'))
         elif not order.exists():

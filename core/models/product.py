@@ -122,8 +122,8 @@ class ProductPrice(Base):
 
 class PromoCode(Base):
     code = models.CharField(max_length=255, unique=True)
-    product = models.ManyToManyField('Product', blank=True)
-    # product_param = models.ForeignKey('ProductParam', on_delete=models.CASCADE)
+    catalog = models.ForeignKey('Catalog', on_delete=models.CASCADE)
+    percent = models.FloatField()
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
