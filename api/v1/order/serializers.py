@@ -337,5 +337,6 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance: Order):
         data = super(OrderDetailSerializer, self).to_representation(instance)
+        data['date_delivered'] = instance.address.region.delivery.date_delivered.strftime('%d.%m.%Y')
         data['delivery_price'] = instance.address.region.delivery.delivery_price
         return data

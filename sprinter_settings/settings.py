@@ -59,7 +59,7 @@ LOCALE_APPS = [
     'user',
     'core',
     'paycomuz',
-    'common'
+    'common',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCALE_APPS

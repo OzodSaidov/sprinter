@@ -369,4 +369,4 @@ class ReviewCreateView(generics.CreateAPIView):
 class RegionListView(generics.ListAPIView):
     serializer_class = RegionListSerializer
     permission_classes = [AllowAny]
-    queryset = Region.objects.all()
+    queryset = Region.objects.filter(is_active=True)
