@@ -12,8 +12,8 @@ class OrderStatus(TextChoices):
     OPENED = 'Opened', 'Opened'
     CANCELLED = 'Cancelled', 'Cancelled'
     # Admin
-    APPROVED = 'Approved', 'Approved'
-    DECLINED = 'Declined', 'Declined'
+    # APPROVED = 'Approved', 'Approved'
+    # DECLINED = 'Declined', 'Declined'
     DELIVERING = 'Delivering', 'Delivering'
     COMPLETED = 'Completed', 'Completed'
 

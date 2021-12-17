@@ -2,12 +2,14 @@ from rest_framework import serializers
 
 from api.v1.order.validation import ProductOrderValidation
 from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer, ProductParamSerializer, \
-    ProductShortDetailSerializer, ProductImageShortSerializer
+    ProductShortDetailSerializer, ProductImageShortSerializer, PromoCodeSerializer
 from api.v1.user.serializers import AddressSerializer
-from core.models import ProductParam, Product, ProductGroup
+from core.models import ProductParam, Product, ProductGroup, PromoCode
 from core.models.order import *
 from django.db import transaction
 from django.db.models import Sum, F, When
+
+from paycomuz import PayComResponse
 
 
 class ProductOrderListSerializer(serializers.ModelSerializer):
@@ -217,6 +219,7 @@ class BasketDetailSerializer(serializers.ModelSerializer):
 class OrderListSerializer(serializers.ModelSerializer):
     basket = BasketDetailSerializer(read_only=True)
     address = AddressSerializer(read_only=True, many=False)
+    promocode = PromoCodeSerializer(read_only=True, many=False)
 
     class Meta:
         model = Order
@@ -231,6 +234,7 @@ class OrderListSerializer(serializers.ModelSerializer):
             'payment_type',
             'order_status',
             'promocode',
+            'delivery_price',
             'price',
             'date_delivered',
         ]
@@ -238,7 +242,7 @@ class OrderListSerializer(serializers.ModelSerializer):
 
 class OrderCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    # basket = BasketDetailSerializer(read_only=True)
+    promocode = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Order
@@ -256,7 +260,6 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ('price',)
 
-
     def validate_basket(self, basket):
         if basket.is_empty:
             raise ValidationError('Basket is empty. Cannot create order')
@@ -272,10 +275,27 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         basket.save()
 
         order = Order(**validated_data)
-        order.price = basket.total_price
+        request = self.context.get('request').data
+        promocode = request.get('promocode')
+        if promocode:
+            promo = PromoCode.objects.filter(is_active=True, code=promocode)
+            if promo.exists():
+                order.promocode = promo.last()
+        order.save_price()
         order.save()
-
         return order
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        url = {}
+        """ Check type of payment and give corresponding payment url """
+        if instance.payment_type == PaymentType.PAYME:
+            paycom_response = PayComResponse()
+            payme_url = paycom_response.create_initialization(amount=instance.price * 100, order_id=str(instance.id),
+                                                              return_url='https://sprinter.uz/')
+            url = dict(url=payme_url, type=PaymentType.PAYME)
+        data['payment_url'] = url
+        return data
 
 
 class OrderUpdateSerializer(serializers.ModelSerializer):
@@ -310,11 +330,10 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'payment_type',
             'order_status',
             'promocode',
+            'delivery_price',
             'price',
             'date_delivered',
         ]
-
-
 
     def to_representation(self, instance: Order):
         data = super(OrderDetailSerializer, self).to_representation(instance)

@@ -5,14 +5,17 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.http import JsonResponse
-from core.models import Product
+from core.models import Product, ProductColor, ProductParam
+from sprinter_settings import settings
 from .basket import Basket
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from django.core.exceptions import ValidationError
 
 from .validation import SessionProductOrderValidation
-
+from ..product.serializers import ProductRetrieveSerializer, ProductShortDetailSerializer, ColorSerializer, \
+    ProductParamSerializer
+from django.db.models import Sum
 
 class TemporaryBasketCreateApi(APIView):
     """ Temporarily create basket in session """
@@ -29,8 +32,8 @@ class TemporaryBasketCreateApi(APIView):
         if product.exists():
             validator = SessionProductOrderValidation(product=product.last(), params=params, quantity=quantity,
                                                       color_id=color_id)
-            validator.validate()
-            basket.add(product=product.last(), quantity=quantity,color_id=color_id, params=params)
+            if validator.validate():
+                basket.add(product=product.last(), quantity=quantity,color_id=color_id, params=params)
             return JsonResponse(basket.current_product, safe=False)
         else:
             return Response('Product not found')
@@ -52,11 +55,11 @@ class TemporaryBasketUpdateApi(APIView):
         if product.exists():
             validator = SessionProductOrderValidation(product=product.last(), params=params, quantity=quantity,
                                                       color_id=color_id)
-            validator.validate()
-            basket.update(product=product.last(), params=params, color_id=color_id, quantity=quantity, id=id)
+            if validator.validate():
+                basket.update(product=product.last(), params=params, color_id=color_id, quantity=quantity, id=id)
             return JsonResponse(basket.current_product, safe=False)
         else:
-            return Response('Product not found')
+            return JsonResponse('Product not found', safe=False)
 
 
 class TemporaryBasketListApi(APIView):
@@ -66,7 +69,8 @@ class TemporaryBasketListApi(APIView):
 
     def get(self, request):
         basket = Basket(request=request)
-        return JsonResponse(basket.basket, safe=False)
+        result = basket.to_representation()
+        return JsonResponse(result, safe=False)
 
 
 class TemporaryBasketDeleteApi(APIView):
@@ -79,3 +83,15 @@ class TemporaryBasketDeleteApi(APIView):
         basket = Basket(request=request)
         basket.remove_(id=id)
         return HttpResponse(status=200)
+
+
+class TemporaryBasketProductsCount(APIView):
+    """ Get number of products in basket """
+
+    permission_classes = [AllowAny, ]
+
+    def get(self, request):
+        basket = Basket(request=request)
+        data = dict(count=len(basket.basket))
+        return JsonResponse(data)
+

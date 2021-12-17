@@ -17,7 +17,7 @@ KEY = settings.PAYCOM_SETTINGS['ACCOUNTS']['KEY']
 class PayComResponse(object):
     LINK = 'https://checkout.paycom.uz'
 
-    def create_initialization(self, amount: int, order_id: str, return_url: str) -> str:
+    def create_initialization(self, amount: float, order_id: str, return_url: str) -> str:
         """
 
         documentation : https://help.paycom.uz/ru/initsializatsiya-platezhey/otpravka-cheka-po-metodu-get

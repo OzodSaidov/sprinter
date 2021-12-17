@@ -2,7 +2,7 @@ from django.db import transaction
 from rest_framework import serializers
 from api.v1.product.validators import ReviewCreateValidator
 from core.models import Catalog, Brand, Product, ProductImage, Rating, ProductColor, ProductParam, ProductPrice, Review, \
-    ReviewImage, Comment
+    ReviewImage, Comment, PromoCode
 from sprinter_settings import settings
 
 
@@ -506,4 +506,14 @@ class ProductShortDetailSerializer(serializers.ModelSerializer):
         fields = (
             'title',
             'description',
+        )
+
+
+class PromoCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PromoCode
+        fields = (
+            'code',
+            'catalog',
+            'percent',
         )

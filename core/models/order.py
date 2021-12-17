@@ -67,7 +67,12 @@ class Basket(Base):
 
         total_price = 0
         for product in self.products.all():
-            total_price += product.price
+            price = product.price
+            if self.order and self.order.promocode:
+                if self.order.promocode.catalog == product.product.catalog:
+                    sale = price * self.order.promocode.percent / 100
+                    price -= sale
+            total_price += price
         return total_price
 
     @property
@@ -91,4 +96,18 @@ class Order(Base):
     promocode = models.ForeignKey('PromoCode', on_delete=models.PROTECT, null=True, blank=True)
     date_delivered = models.DateField(null=True, blank=True)
     price = models.FloatField()
+    delivery_price = models.FloatField(default=0)
     is_active = models.BooleanField(default=True)
+
+    def save_price(self):
+        total_price = 0
+        for product in self.basket.products.all():
+            price = product.price
+            if self.promocode:
+                if self.promocode.catalog == product.product.catalog:
+                    sale = price * self.promocode.percent / 100
+                    price -= sale
+            total_price += price
+        total_price += self.delivery_price
+        self.price = total_price
+        self.save()
