@@ -79,8 +79,11 @@ class Basket(object):
             if product.exists() and color.exists():
                 product = product.last()
                 temp = {}
-                url_scheme = '{}://{}{}{}'.format(self.request.scheme, self.request.get_host(),
+                try:
+                    url_scheme = '{}://{}{}{}'.format(self.request.scheme, self.request.get_host(),
                                                   settings.MEDIA_URL, color.last().images.last().image)
+                except:
+                    url_scheme = None
                 temp['id'] = b.get('id')
                 temp['product'] = ProductShortDetailSerializer(instance=product, many=False).data
                 temp['color'] = dict(color=color.last().color, image=url_scheme)
