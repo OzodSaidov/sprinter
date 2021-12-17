@@ -67,12 +67,7 @@ class Basket(Base):
 
         total_price = 0
         for product in self.products.all():
-            price = product.price
-            if self.order and self.order.promocode:
-                if self.order.promocode.catalog == product.product.catalog:
-                    sale = price * self.order.promocode.percent / 100
-                    price -= sale
-            total_price += price
+            total_price += product.price
         return total_price
 
     @property
