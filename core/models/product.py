@@ -174,7 +174,7 @@ class ReviewImage(Base):
 class Delivery(Base):
     region = models.OneToOneField('Region', on_delete=models.SET_NULL, null=True)
     delivery_price = models.PositiveIntegerField()
-    date_delivered = models.DateTimeField(null=True)
+    # date_delivered = models.DateTimeField(null=True)
 
 
 class Region(Base):
