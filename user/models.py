@@ -52,4 +52,4 @@ class Address(Base):
     phone = models.CharField(max_length=25, validators=[validate_phone])
     zip_code = models.CharField(max_length=9)
     address = models.TextField()
-    region = models.ForeignKey('core.Region', on_delete=models.DO_NOTHING)
+    region = models.ForeignKey('core.Region', on_delete=models.SET_NULL, null=True)
