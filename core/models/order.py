@@ -88,7 +88,8 @@ class Order(Base):
     address = models.ForeignKey(Address, on_delete=models.DO_NOTHING)
     orderer = models.CharField(max_length=255)
     phone = models.CharField(max_length=25,
-                             validators=[validate_phone], )
+                             validators=[validate_phone],
+                             )
     email = models.EmailField(null=True, blank=True)
     payment_type = models.CharField(max_length=255, choices=PaymentType.choices, default=PaymentType.CASH)
     order_status = models.CharField(max_length=255, choices=OrderStatus.choices, default=OrderStatus.OPENED)
@@ -109,5 +110,10 @@ class Order(Base):
                     price -= sale
             total_price += price
         total_price += self.delivery_price
+
+        if self.address.region.delivery:
+            delivery_price = self.address.region.delivery.delivery_price
+            total_price += delivery_price
+            self.delivery_price =  delivery_price
         self.price = total_price
         self.save()
