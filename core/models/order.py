@@ -114,6 +114,7 @@ class Order(Base):
         if self.address.region.delivery:
             delivery_price = self.address.region.delivery.delivery_price
             total_price += delivery_price
-            self.delivery_price =  delivery_price
+            self.delivery_price = delivery_price
+
         self.price = total_price
         self.save()
