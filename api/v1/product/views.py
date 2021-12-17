@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny
 
 from core.models import *
+from core.models import Region
 from .filters import ProductFilter, ReviewFilter, CommentFilter
 from .serializers import *
 
@@ -363,3 +364,9 @@ class ReviewCreateView(generics.CreateAPIView):
 #     serializer_class = None
 #     # permission_classes = None
 #     queryset = ReviewImage.objects.all()
+
+
+class RegionListView(generics.ListAPIView):
+    serializer_class = RegionListSerializer
+    permission_classes = [AllowAny]
+    queryset = Region.objects.all()

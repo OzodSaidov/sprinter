@@ -40,9 +40,16 @@ class ProductGroupTranslationOptions(TranslationOptions):
     )
 
 
+class RegionTranslationOptions(TranslationOptions):
+    fields = (
+        'name',
+    )
+
+
 translator.register(Catalog, CatalogTranslationOptions)
 translator.register(ProductColor, ColorTranslationOptions)
 translator.register(Product, ProductTranslationOptions)
 # translator.register(Comment, CommentTranslationOptions)
 translator.register(ProductParam, ProductParamTranslationOptions)
 translator.register(ProductGroup, ProductGroupTranslationOptions)
+translator.register(Region, RegionTranslationOptions)

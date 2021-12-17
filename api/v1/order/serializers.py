@@ -294,6 +294,8 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
 
 class OrderDetailSerializer(serializers.ModelSerializer):
     basket = BasketDetailSerializer(read_only=True)
+    promocode = PromoCodeSerializer(read_only=True, many=False)
+    delivery_price = serializers.FloatField(read_only=True)
 
     class Meta:
         model = Order
@@ -313,3 +315,8 @@ class OrderDetailSerializer(serializers.ModelSerializer):
         ]
 
 
+
+    def to_representation(self, instance: Order):
+        data = super(OrderDetailSerializer, self).to_representation(instance)
+        data['delivery_price'] = instance.address.region.delivery.delivery_price
+        return data
