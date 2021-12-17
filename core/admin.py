@@ -81,6 +81,19 @@ class ProductRatingModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'rate', 'product', 'review')
 
 
+@admin.register(Delivery)
+class DeliveryModelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'region', 'delivery_price')
+
+
+@admin.register(Region)
+class RegionModelAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name_uz', 'name_en', 'name_ru')
+
+    def has_add_permission(self, request):
+        return False
+
+
 # - ORDER -
 
 class ProductOrderClassModelAdmin(admin.ModelAdmin):

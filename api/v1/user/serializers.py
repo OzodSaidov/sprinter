@@ -97,7 +97,8 @@ class AddressSerializer(serializers.ModelSerializer):
             'full_name',
             'phone',
             'zip_code',
-            'address'
+            'address',
+            'region',
         )
 
 

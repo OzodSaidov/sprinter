@@ -2,7 +2,7 @@ from django.db import transaction
 from rest_framework import serializers
 from api.v1.product.validators import ReviewCreateValidator
 from core.models import Catalog, Brand, Product, ProductImage, Rating, ProductColor, ProductParam, ProductPrice, Review, \
-    ReviewImage, Comment, PromoCode
+    ReviewImage, Comment, PromoCode, Region
 from sprinter_settings import settings
 
 
@@ -516,4 +516,13 @@ class PromoCodeSerializer(serializers.ModelSerializer):
             'code',
             'catalog',
             'percent',
+        )
+
+
+class RegionListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Region
+        fields = (
+            'id',
+            'name',
         )

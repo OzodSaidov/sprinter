@@ -169,3 +169,14 @@ class ReviewImage(Base):
     photo = models.ImageField(upload_to='review/',
                               validators=[FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png'])],
                               error_messages={'extension': _('File extension must be jpeg or jpg or png')})
+
+
+class Delivery(Base):
+    region = models.OneToOneField('Region', on_delete=models.SET_NULL, null=True)
+    delivery_price = models.PositiveIntegerField()
+    date_delivered = models.DateTimeField(null=True)
+
+
+class Region(Base):
+    name = models.CharField(max_length=255, unique=True)
+    is_active = models.BooleanField(default=True)
