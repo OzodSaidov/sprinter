@@ -177,4 +177,6 @@ class CurrentBasketProductsListApiView(ListAPIView):
     def get_queryset(self):
         user = self.request.user
         basket = user.basket.filter(is_active=True).last()
-        return basket.products.all()
+        if basket:
+            return basket.products.all().order_by('-created_at')
+        return []
