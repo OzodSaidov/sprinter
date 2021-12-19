@@ -240,6 +240,17 @@ class OrderListSerializer(serializers.ModelSerializer):
             'date_delivered',
         ]
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        url = {}
+        """ Check type of payment and give corresponding payment url """
+        payme = payme_url(order=instance)
+        click = dict(url='click test url', type=PaymentType.CLICK)
+        url['payme'] = payme
+        url['clic'] = click
+        data['payment_url'] = url
+        return data
+
 
 class OrderCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
@@ -291,8 +302,10 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         url = {}
         """ Check type of payment and give corresponding payment url """
-        if instance.payment_type == PaymentType.PAYME:
-            url = payme_url(order=instance)
+        payme = payme_url(order=instance)
+        click = dict(url='click test url', type=PaymentType.CLICK)
+        url['payme'] = payme
+        url['clic'] = click
         data['payment_url'] = url
         return data
 
@@ -309,14 +322,14 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
             'payment_type',
         ]
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        url = {}
-        """ Check type of payment and give corresponding payment url """
-        if instance.payment_type == PaymentType.PAYME:
-            url = payme_url(order=instance)
-        data['payment_url'] = url
-        return data
+    # def to_representation(self, instance):
+    #     data = super().to_representation(instance)
+    #     url = {}
+    #     """ Check type of payment and give corresponding payment url """
+    #     if instance.payment_type == PaymentType.PAYME:
+    #         url = payme_url(order=instance)
+    #     data['payment_url'] = url
+    #     return data
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
