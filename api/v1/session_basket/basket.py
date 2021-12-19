@@ -73,7 +73,8 @@ class Basket(object):
         result = {}
         data = []
         total_price = 0
-        for b in self.basket:
+        basket = sorted(self.basket, key=lambda b: b['id'])
+        for b in basket:
             product = Product.objects.filter(id=b.get('product_id', 0))
             color = ProductColor.objects.filter(id=b.get('color_id', 0))
             params = ProductParam.objects.filter(id__in=b.get('params', []))
