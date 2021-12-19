@@ -112,7 +112,7 @@ class OrderListApiView(ListAPIView):
     filterset_class = OrderFilter
 
     def get_queryset(self):
-        return Order.objects.filter(user=self.request.user, is_active=True)
+        return Order.objects.filter(user=self.request.user, is_active=True).order_by('-created_at')
 
 
 class OrderUpdateApiView(UpdateAPIView):
