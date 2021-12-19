@@ -145,8 +145,7 @@ class Comment(Base, MPTTModel):
 class Rating(Base):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    review = models.OneToOneField('Review', on_delete=models.SET_NULL, null=True, blank=True,
-                                  related_name='product_rating')
+    review = models.OneToOneField('Review', on_delete=models.SET_NULL, null=True, blank=True)
     rate = models.FloatField(validators=[
         MinValueValidator(0),
         MaxValueValidator(5),

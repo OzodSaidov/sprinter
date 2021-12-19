@@ -160,9 +160,18 @@ class AddressListCreateView(generics.ListCreateAPIView):
     permission_classes = [UserPermission]
 
     def get_queryset(self):
-        return Address.objects.filter(user=self.request.user)
+        return Address.objects.filter(user=self.request.user, is_active=True)
 
 
 class AddressDeleteView(generics.DestroyAPIView):
     permission_classes = [UserPermission]
     queryset = Address.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        instance: Address = self.get_object()
+        if instance.is_active:
+            instance.is_active = False
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        instance.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
