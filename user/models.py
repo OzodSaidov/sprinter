@@ -53,3 +53,5 @@ class Address(Base):
     zip_code = models.CharField(max_length=9)
     address = models.TextField()
     region = models.ForeignKey('core.Region', on_delete=models.SET_NULL, null=True)
+
+

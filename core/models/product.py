@@ -39,7 +39,8 @@ class Product(Base):
     title = models.CharField(max_length=255)
     description = models.TextField()
     price = models.FloatField()
-    discount = models.PositiveSmallIntegerField('Скидка', null=True, blank=True)
+    discount = models.PositiveSmallIntegerField('Скидка', null=True, blank=True,
+                                                validators=[MinValueValidator(0), MaxValueValidator(100)])
     old_price = models.FloatField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_slider = models.BooleanField(default=False)

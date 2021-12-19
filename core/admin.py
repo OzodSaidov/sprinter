@@ -17,6 +17,7 @@ class BrandModelAdmin(admin.ModelAdmin):
 
 class ProductColorInline(admin.StackedInline):
     model = ProductColor
+    raw_id_fields = ['product']
     extra = 1
 
 
