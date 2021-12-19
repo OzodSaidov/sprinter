@@ -4,6 +4,7 @@ from sprinter_settings import settings
 from user.redis import get_or_create_session, get_basket, update_session
 from django.db.models import Sum
 
+
 class Basket(object):
     def __init__(self, request):
         get_or_create_session()
@@ -42,7 +43,7 @@ class Basket(object):
                 product_order_dict['product_id'] = product_order['product_id']
                 old_product_order = self.check_product(product, color_id, params)
                 if old_product_order is not None:
-                    product_order_dict['quantity'] += old_product_order['quantity']
+                    # product_order_dict['quantity'] = old_product_order['quantity']
                     self.basket.remove(old_product_order)
                 if not product_order == old_product_order:
                     self.basket.remove(product_order)
@@ -85,8 +86,9 @@ class Basket(object):
                 except:
                     url_scheme = None
                 temp['id'] = b.get('id')
+                temp['product_id'] = product.id
                 temp['product'] = ProductShortDetailSerializer(instance=product, many=False).data
-                temp['color'] = dict(color=color.last().color, image=url_scheme)
+                temp['color'] = dict(id=color.last().id, color=color.last().color, image=url_scheme)
                 temp['quantity'] = b.get('quantity')
                 temp['params'] = ProductParamSerializer(instance=params, many=True).data
 

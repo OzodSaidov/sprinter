@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from api.v1.order.validation import ProductOrderValidation
+from api.v1.payment.payme.functions import payme_url
 from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer, ProductParamSerializer, \
     ProductShortDetailSerializer, ProductImageShortSerializer, PromoCodeSerializer
 from api.v1.user.serializers import AddressSerializer
@@ -155,7 +156,6 @@ class ProductOrderDetailSerializer(serializers.ModelSerializer):
             'product_price',
             'quantity',
             'price',
-
         ]
 
 
@@ -232,6 +232,7 @@ class OrderListSerializer(serializers.ModelSerializer):
             'email',
             'phone',
             'payment_type',
+            'payment_status',
             'order_status',
             'promocode',
             'delivery_price',
@@ -243,6 +244,7 @@ class OrderListSerializer(serializers.ModelSerializer):
 class OrderCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     promocode = serializers.PrimaryKeyRelatedField(read_only=True)
+    address = serializers.PrimaryKeyRelatedField(required=True, queryset=Address.objects.all())
 
     class Meta:
         model = Order
@@ -258,7 +260,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             'price',
             'promocode',
         ]
-        read_only_fields = ('price',)
+        read_only_fields = ('price', )
 
     def validate_basket(self, basket):
         if basket.is_empty:
@@ -290,10 +292,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         url = {}
         """ Check type of payment and give corresponding payment url """
         if instance.payment_type == PaymentType.PAYME:
-            paycom_response = PayComResponse()
-            payme_url = paycom_response.create_initialization(amount=instance.price * 100, order_id=str(instance.id),
-                                                              return_url='https://sprinter.uz/')
-            url = dict(url=payme_url, type=PaymentType.PAYME)
+            url = payme_url(order=instance)
         data['payment_url'] = url
         return data
 
@@ -308,8 +307,16 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
             'email',
             'phone',
             'payment_type',
-            'promocode',
         ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        url = {}
+        """ Check type of payment and give corresponding payment url """
+        if instance.payment_type == PaymentType.PAYME:
+            url = payme_url(order=instance)
+        data['payment_url'] = url
+        return data
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):

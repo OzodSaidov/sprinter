@@ -1,4 +1,6 @@
 from rest_framework.views import APIView
+
+from api.v1.payment.payme.functions import payme_url
 from paycomuz.methods_subscribe_api import PayComResponse
 from django.core.exceptions import ValidationError
 from core.models.order import Order
@@ -19,8 +21,6 @@ class PayOrderWithPaymeApi(APIView):
             return JsonResponse(dict(order='Order does not exist'))
         else:
             order = order.last()
-            paycom_response = PayComResponse()
-            url = paycom_response.create_initialization(amount=order.price * 100, order_id=order.id,
-                                                        return_url='https://sprinter.uz/')
+            url = payme_url(order=order)
             data = dict(payment_url=url)
             return JsonResponse(data)

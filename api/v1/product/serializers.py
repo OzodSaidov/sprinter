@@ -166,15 +166,22 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 
 class ColorSerializer(serializers.ModelSerializer):
-    images = ProductImageShortSerializer(many=True)
+    # images = ProductImageShortSerializer(many=True)
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = ProductColor
         fields = (
             'id',
             'color',
-            'images',
+            # 'images',
+            'image',
         )
+
+    def get_image(self, product_color):
+        if product_color.images.exists():
+            data = ProductImageSerializer(instance=product_color.images.first(), many=False, context=self.context).data
+            return data['image']
 
 
 class ProductParamPriceSerializer(serializers.ModelSerializer):
