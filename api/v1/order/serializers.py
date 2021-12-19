@@ -243,7 +243,7 @@ class OrderListSerializer(serializers.ModelSerializer):
 class OrderCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     promocode = serializers.PrimaryKeyRelatedField(read_only=True)
-    address = serializers.PrimaryKeyRelatedField(required=True)
+    address = serializers.PrimaryKeyRelatedField(required=True, queryset=Address.objects.all())
 
     class Meta:
         model = Order
