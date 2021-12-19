@@ -1,8 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 from api.v1.product.validators import ReviewCreateValidator
-from core.models import Catalog, Brand, Product, ProductImage, Rating, ProductColor, ProductParam, ProductPrice, Review, \
-    ReviewImage, Comment, PromoCode, Region
+from core.models import *
 from sprinter_settings import settings
 
 
@@ -390,7 +389,7 @@ class ReviewListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance: Review):
         data = super(ReviewListSerializer, self).to_representation(instance)
-        data['rate'] = instance.product_rating.rate
+        data['rate'] = instance.rating.rate
         data['created_at'] = instance.created_at.strftime('%d.%m.%Y')
         data['user'] = instance.user.full_name
         return data
@@ -436,7 +435,7 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance: Review):
         data = super(ReviewCreateSerializer, self).to_representation(instance)
-        data['rating'] = instance.product_rating.rate
+        data['rating'] = instance.rating.rate
         return data
 
 
