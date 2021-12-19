@@ -46,7 +46,7 @@ class TemporaryBasketUpdateApi(APIView):
 
     def post(self, request):
         id = request.data.get('id', 0)
-        product_id = request.data.get('product', 0)
+        product_id = request.data.get('product_id', 0)
         params = request.data.get('params', [])
         color_id = request.data.get('color', 0)
         quantity = request.data.get('quantity', 0)

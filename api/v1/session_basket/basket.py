@@ -85,6 +85,7 @@ class Basket(object):
                 except:
                     url_scheme = None
                 temp['id'] = b.get('id')
+                temp['product_id'] = product.id
                 temp['product'] = ProductShortDetailSerializer(instance=product, many=False).data
                 temp['color'] = dict(color=color.last().color, image=url_scheme)
                 temp['quantity'] = b.get('quantity')
