@@ -247,7 +247,7 @@ class OrderListSerializer(serializers.ModelSerializer):
         payme = payme_url(order=instance)
         click = dict(url='click test url', type=PaymentType.CLICK)
         url['payme'] = payme
-        url['clic'] = click
+        url['click'] = click
         data['payment_url'] = url
         return data
 
@@ -305,7 +305,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         payme = payme_url(order=instance)
         click = dict(url='click test url', type=PaymentType.CLICK)
         url['payme'] = payme
-        url['clic'] = click
+        url['click'] = click
         data['payment_url'] = url
         return data
 
