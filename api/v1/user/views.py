@@ -13,6 +13,7 @@ from api.v1.user.services.utilities import check_session_basket
 from django.db import transaction
 from user.models import Address
 from user.permissions import UserPermission
+from django.utils.translation import ugettext as _
 
 User = get_user_model()
 
@@ -26,13 +27,13 @@ class UserMeCreateView(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         sms_code = request.data.get("sms_code")
         token = request.data.get("token")
-        if sms_code:
+        if sms_code and token:
             totp = pyotp.TOTP(token, interval=300)
             if totp.verify(sms_code):
                 return super(UserMeCreateView, self).post(request, *args, **kwargs)
-            return Response({'status': "invalid code"}, status=402)
+            return Response({'error': "You entered incorrect or deprecated code"}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({'status': "not otp or token"}, status=401)
+        return Response({'error': "not otp or token"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class VerifyAPIView(APIView):
@@ -40,33 +41,28 @@ class VerifyAPIView(APIView):
 
     def post(self, request):
         reset = self.request.query_params.get('reset', False)
-        username = self.request.data.get('username')
-        # is_email = re.findall(r'\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}', username)
-        # is_phone = re.findall(r'^[+]?998\d{9}$', username)
-        user_not_found = Response({'user': 'Not found!'}, status=status.HTTP_404_NOT_FOUND)
-        user_exists = Response({'user': 'Already exists!'}, status=status.HTTP_400_BAD_REQUEST)
-        error = Response({'error': 'Incorrect data!'})
+        username = self.request.data.get('username', '')
+        if not username:
+            return Response(dict(username=[_('Required field.')]), status=status.HTTP_400_BAD_REQUEST)
+        if re.findall(r'\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}', username):
+            user = User.objects.filter(email=username)
+            data = 'email'
+        elif re.findall(r'^[+]?998\d{9}$', username):
+            username = re.sub('[^0-9]', '', username)
+            user = User.objects.filter(phone=username)
+            data = 'phone'
+        else:
+            return Response(dict(detail=_('You entered a phone or email in the wrong format')),
+                            status=status.HTTP_400_BAD_REQUEST)
 
         if reset == 'true':
-            # if is_email:
-            #     if not User.objects.filter(email=username).exists():
-            #         return user_not_found
-            if username:
-                username = re.sub('[^0-9]', '', username)
-                if not User.objects.filter(phone=username).exists():
-                    return user_not_found
-            else:
-                return error
+            if not user.exists():
+                return Response(dict(detail=f'The {data} you entered isn’t connected to an account'),
+                                status=status.HTTP_404_NOT_FOUND)
         else:
-            # if is_email:
-            #     if User.objects.filter(email=username).exists():
-            #         return user_exists
-            if username:
-                username = re.sub('[^0-9]', '', username)
-                if User.objects.filter(phone=username).exists():
-                    return user_exists
-            else:
-                return error
+            if user.exists():
+                return Response(dict(detail=f'The {data} you entered is connected to another account'),
+                                status=status.HTTP_400_BAD_REQUEST)
 
         secret = pyotp.random_base32()
         totp = pyotp.TOTP(secret, interval=300)
@@ -79,34 +75,41 @@ class LoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        username = self.request.data.get('username')
-        password = self.request.data.get('password')
+        username = self.request.data.get('username', '')
+        password = self.request.data.get('password', '')
+        usr = 'phone'
+        if not username:
+            if not password:
+                return Response(dict(username=[_('Required field.')], password=[_('This field cannot be empty.')]),
+                                status=status.HTTP_400_BAD_REQUEST)
+            return Response(dict(username=[_('Required field.')]), status=status.HTTP_400_BAD_REQUEST)
+        if not password:
+            return Response(dict(password=[_('This field cannot be empty.')]), status=status.HTTP_400_BAD_REQUEST)
+
         if re.findall(r'\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6}', username):
             user = User.objects.filter(email=username)
+            usr = 'email'
         elif re.findall(r'^[+]?998\d{9}$', username):
             username = re.sub('[^0-9]', '', username)
             user = User.objects.filter(phone=username)
         else:
-            return Response({'error': 'You entered the given incorrectly'}, status=status.HTTP_400_BAD_REQUEST)
-        if username and password:
-            if user.exists():
-                if user.first().check_password(password):
-                    check_session_basket(user=user.first(), request=request)
-                    serializer = LoginSerializer(user.first())
+            return Response(dict(detail=_('You entered a phone or email in the wrong format')),
+                            status=status.HTTP_400_BAD_REQUEST)
+        if not user.exists():
+            return Response(
+                {'detail': f'The {usr} you entered isn’t connected to an account'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        if not user.first().check_password(password):
+            return Response({'detail': 'You entered an incorrect password'}, status=status.HTTP_401_UNAUTHORIZED)
 
-                    # TODO """ Uncomment this when redis will be set in server """
-                    ##check_session_basket(user=user.last(), request=request)
+        check_session_basket(user=user.first(), request=request)
+        serializer = LoginSerializer(user.first())
 
-                    return Response(serializer.data)
-                else:
-                    return Response({'error': 'You entered the given incorrectly'}, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response(
-                    {'user': 'Not found'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-        else:
-            return Response({'error': 'Incorrect data'}, status=status.HTTP_400_BAD_REQUEST)
+        # TODO """ Uncomment this when redis will be set in server """
+        ##check_session_basket(user=user.last(), request=request)
+
+        return Response(serializer.data)
 
 
 class UserResetPasswordView(APIView):
@@ -124,15 +127,16 @@ class UserResetPasswordView(APIView):
         phone = re.sub('[^0-9]', '', phone)
         user = User.objects.filter(phone=phone).first()
         if not user:
-            return Response({"phone": "not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"user": "Not found"}, status=status.HTTP_404_NOT_FOUND)
         totp = pyotp.TOTP(token, interval=300)
-        if code and token:
-            if totp.verify(code):
-                user.set_password(password)
-                user.save()
-                return Response({"password_updated": "ok"}, status=status.HTTP_200_OK)
-            return Response({"error": "You entered incorrect or deprecated code"}, status=status.HTTP_400_BAD_REQUEST)
-        return Response({'error': "invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+        if not (code and token):
+            if not totp.verify(code):
+                return Response({"error": "You entered incorrect or deprecated code"},
+                                status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': "Invalid token or code"}, status=status.HTTP_400_BAD_REQUEST)
+        user.set_password(password)
+        user.save()
+        return Response({"message": "Password successfully changed"}, status=status.HTTP_200_OK)
 
 
 class UserMeView(generics.RetrieveAPIView):
