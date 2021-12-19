@@ -17,5 +17,6 @@ __all__ = [
     'Brand',
     'ProductGroup',
     'Review',
-    'ReviewImage'
+    'ReviewImage',
+    'Region'
 ]
