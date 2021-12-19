@@ -88,6 +88,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class AddressSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=CurrentUserDefault())
+    is_active = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Address
@@ -99,6 +100,7 @@ class AddressSerializer(serializers.ModelSerializer):
             'zip_code',
             'address',
             'region',
+            'is_active',
         )
 
 
