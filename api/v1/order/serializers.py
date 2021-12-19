@@ -243,6 +243,7 @@ class OrderListSerializer(serializers.ModelSerializer):
 class OrderCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     promocode = serializers.PrimaryKeyRelatedField(read_only=True)
+    address = serializers.PrimaryKeyRelatedField(required=True)
 
     class Meta:
         model = Order
@@ -258,7 +259,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             'price',
             'promocode',
         ]
-        read_only_fields = ('price',)
+        read_only_fields = ('price', )
 
     def validate_basket(self, basket):
         if basket.is_empty:

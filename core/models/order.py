@@ -80,7 +80,7 @@ class Basket(Base):
 class Order(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     basket = models.OneToOneField('Basket', on_delete=models.PROTECT)
-    address = models.ForeignKey(Address, on_delete=models.DO_NOTHING)
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
     orderer = models.CharField(max_length=255)
     phone = models.CharField(max_length=25,
                              validators=[validate_phone],
