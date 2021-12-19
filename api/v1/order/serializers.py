@@ -155,7 +155,6 @@ class ProductOrderDetailSerializer(serializers.ModelSerializer):
             'product_price',
             'quantity',
             'price',
-
         ]
 
 
@@ -232,6 +231,7 @@ class OrderListSerializer(serializers.ModelSerializer):
             'email',
             'phone',
             'payment_type',
+            'payment_status',
             'order_status',
             'promocode',
             'delivery_price',
