@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from api.v1.order.validation import ProductOrderValidation
+from api.v1.payment.functios import payment_urls
 from api.v1.payment.payme.functions import payme_url
 from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer, ProductParamSerializer, \
     ProductShortDetailSerializer, ProductImageShortSerializer, PromoCodeSerializer
@@ -220,6 +221,7 @@ class OrderListSerializer(serializers.ModelSerializer):
     basket = BasketDetailSerializer(read_only=True)
     address = AddressSerializer(read_only=True, many=False)
     promocode = PromoCodeSerializer(read_only=True, many=False)
+    payment_url = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Order
@@ -238,24 +240,18 @@ class OrderListSerializer(serializers.ModelSerializer):
             'delivery_price',
             'price',
             'date_delivered',
+            'payment_url',
         ]
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        url = {}
-        """ Check type of payment and give corresponding payment url """
-        payme = payme_url(order=instance)
-        click = dict(url='click test url', type=PaymentType.CLICK)
-        url['payme'] = payme
-        url['click'] = click
-        data['payment_url'] = url
-        return data
+    def get_payment_url(self, order):
+        return payment_urls(order=order)
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
     promocode = serializers.PrimaryKeyRelatedField(read_only=True)
     address = serializers.PrimaryKeyRelatedField(required=True, queryset=Address.objects.all())
+    payment_url = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Order
@@ -270,6 +266,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             'payment_type',
             'price',
             'promocode',
+            'payment_url',
         ]
         read_only_fields = ('price', )
 
@@ -298,16 +295,8 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         order.save()
         return order
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        url = {}
-        """ Check type of payment and give corresponding payment url """
-        payme = payme_url(order=instance)
-        click = dict(url='click test url', type=PaymentType.CLICK)
-        url['payme'] = payme
-        url['click'] = click
-        data['payment_url'] = url
-        return data
+    def get_payment_url(self, order):
+        return payment_urls(order=order)
 
 
 class OrderUpdateSerializer(serializers.ModelSerializer):
