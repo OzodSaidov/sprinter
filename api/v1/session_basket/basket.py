@@ -43,7 +43,7 @@ class Basket(object):
                 product_order_dict['product_id'] = product_order['product_id']
                 old_product_order = self.check_product(product, color_id, params)
                 if old_product_order is not None:
-                    product_order_dict['quantity'] = old_product_order['quantity']
+                    # product_order_dict['quantity'] = old_product_order['quantity']
                     self.basket.remove(old_product_order)
                 if not product_order == old_product_order:
                     self.basket.remove(product_order)
