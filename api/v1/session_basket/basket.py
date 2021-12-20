@@ -12,12 +12,14 @@ class Basket(object):
     def __init__(self, request):
         print(request.session['cart'])
         if request.session.get('cart') is None:
+            print('yes')
             request.session['cart'] = ['Hi']
+            print(request.session['cart'])
             request.session.modified = True
         print(request.session['cart'])
         get_or_create_session()
         self.request = request
-        self.session = request.session['cart']
+        self.session = request.session
         # self.basket = get_basket(self.session)
         self.basket = request.session['cart']
         self.current_product = None
@@ -39,8 +41,8 @@ class Basket(object):
             self.current_product = product_order_dict
 
         print(self.basket)
-        self.request.session['cart'] = self.basket
-        self.request.session.modified = True
+        # self.request.session['cart'] = self.basket
+        self.session['cart'] = self.basket
         # update_session(session=self.session, basket=self.basket)
 
 
