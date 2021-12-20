@@ -261,3 +261,5 @@ PAYCOM_SETTINGS = {
 
 # if os.getenv('PRODUCTION') == "TRUE":
 #     SESSION_COOKIE_DOMAIN = os.getenv('WEB_URL')
+
+SESSION_SAVE_EVERY_REQUEST = True
