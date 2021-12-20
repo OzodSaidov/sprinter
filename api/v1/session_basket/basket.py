@@ -10,17 +10,10 @@ from ipware import get_client_ip
 
 class Basket(object):
     def __init__(self, request):
-        if request.session.get('cart') is None:
-            print('yes')
-            request.session['cart'] = ['Hi']
-            print(request.session['cart'])
-            request.session.modified = True
-        print(request.session['cart'])
         get_or_create_session()
         self.request = request
-        self.session = request.session
-        # self.basket = get_basket(self.session)
-        self.basket = request.session['cart']
+        self.session = request.session.session_key
+        self.basket = get_basket(self.session)
         self.current_product = None
 
     def add(self, product, quantity, color_id, params):
@@ -39,10 +32,7 @@ class Basket(object):
             self.basket.append(product_order_dict)
             self.current_product = product_order_dict
 
-        print(self.basket)
-        # self.request.session['cart'] = self.basket
-        self.session['cart'] = self.basket
-        # update_session(session=self.session, basket=self.basket)
+        update_session(session=self.session, basket=self.basket)
 
 
     def update(self, id, product, quantity, color_id, params):
@@ -63,8 +53,8 @@ class Basket(object):
                     self.basket.remove(product_order)
                 self.basket.append(product_order_dict)
                 self.current_product = product_order_dict
-        self.request.session['cart'] = self.basket
-        # update_session(session=self.session, basket=self.basket)
+
+        update_session(session=self.session, basket=self.basket)
 
     def remove_(self, id):
         """ Remove product from basket """
@@ -72,8 +62,7 @@ class Basket(object):
         for product_order in self.basket:
             if product_order['id'] == int(id):
                 self.basket.remove(product_order)
-        self.request.session['cart'] = self.basket
-        # update_session(session=self.session, basket=self.basket)
+        update_session(session=self.session, basket=self.basket)
 
     def check_product(self, product, color_id, params):
         """ Check is product with same properties exist in basket """

@@ -258,9 +258,3 @@ PAYCOM_SETTINGS = {
         "KEY": "order_id"
     }
 }
-
-# if os.getenv('PRODUCTION') == "TRUE":
-#     SESSION_COOKIE_DOMAIN = os.getenv('WEB_URL')
-
-SESSION_SAVE_EVERY_REQUEST = True
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
