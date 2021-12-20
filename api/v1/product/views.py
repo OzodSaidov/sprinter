@@ -44,7 +44,7 @@ class CatalogDeleteView(generics.DestroyAPIView):
 
 class BrandListView(generics.ListAPIView):
     serializer_class = BrandListSerializer
-    queryset = Brand.objects.all()
+    queryset = Brand.objects.filter(is_active=True)
 
 
 class BrandCreateView(generics.CreateAPIView):

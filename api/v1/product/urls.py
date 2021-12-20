@@ -11,7 +11,7 @@ urlpatterns = [
     # path('catalog/delete/<int:pk>/', views.CatalogDeleteView.as_view()),
 
     # ----------------------BRAND----------------------
-    # path('brand/list/', views.BrandListView.as_view()),
+    path('brand/list/', views.BrandListView.as_view()),
     # path('brand/create/', views.BrandCreateView.as_view()),
     # path('brand/<int:pk>/', views.BrandRetrieveUpdateDestroyView.as_view()),
 
