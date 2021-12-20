@@ -259,5 +259,5 @@ PAYCOM_SETTINGS = {
     }
 }
 
-if os.getenv('PRODUCTION') == "TRUE":
-    SESSION_COOKIE_DOMAIN = os.getenv('WEB_URL')
+# if os.getenv('PRODUCTION') == "TRUE":
+#     SESSION_COOKIE_DOMAIN = os.getenv('WEB_URL')
