@@ -43,6 +43,7 @@ class CatalogDeleteView(generics.DestroyAPIView):
 
 
 class BrandListView(generics.ListAPIView):
+    permission_classes = [AllowAny,]
     serializer_class = BrandListSerializer
     queryset = Brand.objects.filter(is_active=True)
 
