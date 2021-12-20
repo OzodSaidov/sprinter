@@ -30,3 +30,5 @@ redis_location="redis://127.0.0.1:6379/1"
 PAYCOM_TEST='Test'
 PAYME_MERCHANT_ID='12345'
 PAYME_MERCHANT_KEY='123456'
+
+WEB_URL='demo.sprinter.uz'
