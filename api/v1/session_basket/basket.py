@@ -13,6 +13,8 @@ class Basket(object):
         get_or_create_session()
         self.request = request
         self.session = request.session.session_key
+        print(request.session.session_key)
+        print(self.session)
         self.basket = get_basket(self.session)
         self.current_product = None
 
