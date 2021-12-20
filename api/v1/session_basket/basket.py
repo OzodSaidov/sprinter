@@ -36,7 +36,10 @@ class Basket(object):
         if product_order_dict['quantity'] > 0:
             self.basket.append(product_order_dict)
             self.current_product = product_order_dict
+
+        print(self.basket)
         self.request.session['cart'] = self.basket
+        self.request.session.modified = True
         # update_session(session=self.session, basket=self.basket)
 
 
