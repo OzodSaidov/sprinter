@@ -10,13 +10,12 @@ from ipware import get_client_ip
 
 class Basket(object):
     def __init__(self, request):
+        if request.session.session_key is None:
+            request.session._get_or_create_session_key()
+        session = request.session.session_key
         get_or_create_session()
         self.request = request
-        self.session = request.session.session_key
-        print(request)
-        print(request.session)
-        print(request.session.session_key)
-        print(self.session)
+        self.session = session
         self.basket = get_basket(self.session)
         self.current_product = None
 
