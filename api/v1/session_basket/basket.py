@@ -12,6 +12,7 @@ class Basket(object):
     def __init__(self, request):
         if request.session.get('cart') is None:
             request.session['cart'] = []
+        print(request.session['cart'])
         get_or_create_session()
         self.request = request
         self.session = request.session['cart']
