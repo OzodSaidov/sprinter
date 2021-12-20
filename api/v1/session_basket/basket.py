@@ -10,9 +10,9 @@ from ipware import get_client_ip
 
 class Basket(object):
     def __init__(self, request):
-        print(request.session.session_key)
+        print(request.session['cart'])
         if request.session.get('cart') is None:
-            request.session['cart'] = []
+            request.session['cart'] = ['Hi']
         print(request.session['cart'])
         get_or_create_session()
         self.request = request
