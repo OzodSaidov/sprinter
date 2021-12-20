@@ -1,15 +1,20 @@
+from pprint import pprint
+
 from api.v1.product.serializers import ProductShortDetailSerializer, ProductParamSerializer
 from core.models import Product, ProductColor, ProductParam
 from sprinter_settings import settings
 from user.redis import get_or_create_session, get_basket, update_session
 from django.db.models import Sum
+from ipware import get_client_ip
 
 
 class Basket(object):
     def __init__(self, request):
+        ip = get_client_ip(request)
+        print(ip)
         get_or_create_session()
         self.request = request
-        self.session = request.session.session_key
+        self.session = ip
         self.basket = get_basket(self.session)
         self.current_product = None
 
