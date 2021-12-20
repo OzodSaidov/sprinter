@@ -12,9 +12,11 @@ class Basket(object):
     def __init__(self, request):
         print(request.COOKIES)
         print(request.session.session_key)
+        if request.session.get('cart') is None:
+            request.session['cart'] = {}
         get_or_create_session()
         self.request = request
-        self.session = request.session.session_key
+        self.session = request.session['cart']
         self.basket = get_basket(self.session)
         self.current_product = None
 
