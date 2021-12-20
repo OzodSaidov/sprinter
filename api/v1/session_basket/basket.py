@@ -13,6 +13,7 @@ class Basket(object):
         print(request.session['cart'])
         if request.session.get('cart') is None:
             request.session['cart'] = ['Hi']
+            request.session.modified = True
         print(request.session['cart'])
         get_or_create_session()
         self.request = request
