@@ -33,7 +33,7 @@ class ColorModelAdmin(admin.ModelAdmin):
 
 @admin.register(ProductImage)
 class ImageModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'product', 'image', 'is_active')
+    list_display = ('id', 'product', 'image', 'is_active', 'is_slider')
 
 
 @admin.register(Product)

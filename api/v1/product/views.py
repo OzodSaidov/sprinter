@@ -43,7 +43,7 @@ class CatalogDeleteView(generics.DestroyAPIView):
 
 
 class BrandListView(generics.ListAPIView):
-    permission_classes = [AllowAny,]
+    permission_classes = [AllowAny, ]
     serializer_class = BrandListSerializer
     queryset = Brand.objects.filter(is_active=True)
 
@@ -372,3 +372,9 @@ class RegionListView(generics.ListAPIView):
     serializer_class = RegionListSerializer
     permission_classes = [AllowAny]
     queryset = Region.objects.filter(is_active=True)
+
+
+class ProductSliderView(generics.ListAPIView):
+    serializer_class = ProductSliderSerializer
+    permission_classes = [AllowAny]
+    queryset = Product.objects.filter(is_slider=True)

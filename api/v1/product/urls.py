@@ -88,5 +88,5 @@ urlpatterns = [
     # path('review/image/detail/<int:pk>/', views.ReviewImageRetrieveView.as_view()),
     # path('review/image/delete/<int:pk>/', views.ReviewImageDeleteView.as_view()),
 
-    # path('region/list/', views.RegionListView.as_view()),
+    path('slider/', views.ProductSliderView.as_view()),
 ]

@@ -1,3 +1,6 @@
+import os
+import uuid
+
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.db.models import Avg
@@ -35,7 +38,7 @@ class Brand(Base):
 
 class Product(Base):
     catalog = models.ForeignKey('Catalog', on_delete=models.PROTECT, related_name='products')
-    brand = models.ForeignKey('Brand', on_delete=models.PROTECT, null=True, blank=True)
+    brand = models.ForeignKey('Brand', on_delete=models.PROTECT, null=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
     price = models.FloatField()
@@ -69,10 +72,19 @@ class ProductColor(Base):
 
 
 class ProductImage(Base):
+
+    def get_file_path(self, filename):
+        extension = filename.split('.')[-1]
+        filename = "%s.%s" % (uuid.uuid4(), extension)
+        return os.path.join('photos/products', filename)
+
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='images')
     color = models.ForeignKey('ProductColor', on_delete=models.SET_NULL, null=True, related_name='images')
-    image = models.ImageField(upload_to='photos/products')
+    image = models.ImageField(upload_to=get_file_path,
+                              validators=[FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png'])],
+                              error_messages={'extension': _('File extension must be jpeg or jpg or png')})
     is_active = models.BooleanField(default=False)
+    is_slider = models.BooleanField(default=False)
 
 
 class ProductGroup(Base):
