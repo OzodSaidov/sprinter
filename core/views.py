@@ -13,7 +13,7 @@ class CheckOrder(Paycom):
     def check_order(self, amount, account, *args, **kwargs):
         try:
             order_id = str(account['order_id'])
-            order = Order.objects.filter(id=int(order_id), order_status=OrderStatus.APPROVED).first()
+            order = Order.objects.filter(id=int(order_id), order_status=OrderStatus.OPENED).first()
             logger.warning(f"Order id: {order_id}")
             if not order:
                 logger.warning(f"Order not found: {order_id}")
