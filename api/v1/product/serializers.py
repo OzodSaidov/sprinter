@@ -313,14 +313,14 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             'important_params',
         )
 
-    def get_images(self, obj):
+    def get_images(self, obj: Product):
         request = self.context['request']
         url_scheme = '{}://{}{}'.format(request.scheme, request.get_host(), settings.MEDIA_URL)
         return list(map(
             lambda item: {
                 "IMAGE_URL": ''.join([url_scheme, item[0]]),
                 "COLOR": item[1]
-            }, obj.images.all().values_list('image', 'color')
+            }, obj.images.filter(is_slider=False).values_list('image', 'color')
         ))
 
     def get_params(self, obj):
@@ -532,3 +532,26 @@ class RegionListSerializer(serializers.ModelSerializer):
             'id',
             'name',
         )
+
+
+class ProductSliderSerializer(serializers.ModelSerializer):
+    image = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = (
+            'id',
+            'catalog',
+            'brand',
+            'description',
+            'price',
+            'old_price',
+            'image'
+        )
+
+    def to_representation(self, instance: Product):
+        data = super(ProductSliderSerializer, self).to_representation(instance)
+        data['brand'] = instance.brand.title
+        data['image'] = ProductImageShortSerializer(instance.images.filter(is_slider=True).first(),
+                                                    context=self.context).data
+        return data
