@@ -29,7 +29,7 @@ class Catalog(Base, MPTTModel):
 
 class Brand(Base):
     title = models.CharField(max_length=255, unique=True)
-    logo = models.ImageField(upload_to='photos/brands')
+    logo = models.ImageField(upload_to='photos/brands', null=True, blank=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
