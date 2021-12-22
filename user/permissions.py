@@ -6,3 +6,4 @@ class UserPermission(BasePermission):
         if not request.user.is_authenticated:
             return False
         return request.user.role == 'User'
+

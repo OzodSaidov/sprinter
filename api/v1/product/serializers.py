@@ -352,7 +352,14 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             data['colors'] = instance.colors.all().values('id', 'color')
         return data
 
-
+class ProductShortSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = (
+            'id',
+            'title',
+            'description',
+        )
 class ReviewImagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReviewImage

@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import ProductDetailForReview
 
 urlpatterns = [
     # ----------------------CATALOG----------------------
@@ -23,6 +24,7 @@ urlpatterns = [
     # path('edit/<int:pk>/', views.ProductEditView.as_view()),
     path('detail/<int:pk>/', views.ProductRetrieveView.as_view()),
     # path('delete/<int:pk>/', views.ProductDeleteView.as_view()),
+    path('detail/for-review/<int:pk>/', ProductDetailForReview.as_view()),
 
     # ----------------------PRODUCT COLOR----------------------
     # path('color/list/', views.ProductColorListView.as_view()),
@@ -81,6 +83,7 @@ urlpatterns = [
     path('review/create/', views.ReviewCreateView.as_view()),
     # path('review/edit/<int:pk>/', views.ReviewEditView.as_view()),
     # path('review/delete/<int:pk>/', views.ReviewDeleteView.as_view()),
+
 
     # ----------------------REVIEW IMAGE----------------------
     # path('review/image/list/', views.ReviewImageListView.as_view()),

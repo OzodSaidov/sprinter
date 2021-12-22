@@ -1,11 +1,12 @@
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
-
+from django.http import HttpResponse
+from common.static_data import OrderStatus
 from core.models import *
 from core.models import Region
 from .filters import ProductFilter, ReviewFilter, CommentFilter
 from .serializers import *
-
+from django.http import JsonResponse
 
 class CatalogListView(generics.ListAPIView):
     serializer_class = CatalogListSerializer
@@ -100,6 +101,20 @@ class ProductRetrieveView(generics.RetrieveAPIView):
     permission_classes = [AllowAny]
     queryset = Product.objects.all()
 
+
+class ProductDetailForReview(generics.RetrieveAPIView):
+    """ Give detail of product to be reviewed, validate it """
+    serializer_class = ProductShortSerializer
+    queryset = Product.objects.all()
+
+    def retrieve(self, request, *args, **kwargs):
+        order_id = request.data.get('order_id', 0)
+        instance = self.get_object()
+        order = Order.objects.filter(id=order_id, user=request.user, basket__products__product=instance)
+        if order.exists():
+            serializer = self.get_serializer(instance)
+            return JsonResponse(serializer.data)
+        return JsonResponse(dict(validation_error='Product not found'), status=404)
 
 # class ProductDeleteView(generics.DestroyAPIView):
 #     queryset = Product.objects.all()
@@ -330,7 +345,7 @@ class ReviewListView(generics.ListAPIView):
 
 class ReviewCreateView(generics.CreateAPIView):
     serializer_class = ReviewCreateSerializer
-    # permission_classes = None
+    permission_classes = None
 
 
 # class ReviewEditView(generics.RetrieveUpdateAPIView):
