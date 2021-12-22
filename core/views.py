@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+from clickuz import ClickUz
+from clickuz.views import ClickUzMerchantAPIView
 from common.static_data import OrderStatus, PaymentStatus, PaymentType
 from paycomuz import Paycom
 from paycomuz.views import MerchantAPIView as PaymeMerchantAPIView
@@ -9,7 +11,7 @@ from loguru import logger
 """ Payme """
 
 
-class CheckOrder(Paycom):
+class PaymeCheckOrder(Paycom):
     def check_order(self, amount, account, *args, **kwargs):
         try:
             order_id = str(account['order_id'])
@@ -20,6 +22,7 @@ class CheckOrder(Paycom):
                 return self.ORDER_NOT_FOUND
             if not order.payment_type != PaymentType.PAYME:
                 logger.warning(f'Order payment type is not payme: {order_id}')
+                return self.ORDER_NOT_FOUND
             if order.payment_status != PaymentStatus.WAITING:
                 logger.warning(f"Order state not waiting: {order_id}")
                 return self.ORDER_NOT_FOUND
@@ -48,4 +51,40 @@ class CheckOrder(Paycom):
 
 
 class TestViewPaycom(PaymeMerchantAPIView):
-    VALIDATE_CLASS = CheckOrder
+    VALIDATE_CLASS = PaymeCheckOrder
+
+
+#Click
+class ClickCheckOrder(ClickUz):
+    def check_order(self, order_id: str, amount: str):
+        try:
+            if not str(amount).isnumeric():
+                return self.INVALID_AMOUNT
+            order = Order.objects.filter(id=order_id, payment_status=PaymentStatus.WAITING).first()
+            if not order:
+                return self.ORDER_NOT_FOUND
+            if not order.payment_type != PaymentType.CLICK:
+                logger.warning(f'Order payment type is not click: {order_id}')
+                return self.ORDER_NOT_FOUND
+            if order.price != float(amount):
+                return self.INVALID_AMOUNT
+            return self.ORDER_FOUND
+        except Exception as e:
+            print('ClickError:', e)
+            return self.ORDER_NOT_FOUND
+
+    def successfully_payment(self, order_id: str, transaction: object):
+        order = Order.objects.filter(id=order_id)
+        if order.exists():
+            order = order.last()
+            order.payment_status = PaymentStatus.PAYED
+            order.save()
+        try:
+            # amocrm_object.create_lead_note(order.lead_id, note_type="invoice_paid", params=new_note)
+            print('CLICK SUCCESSFUL: Note:', order.user.user_id, 'state: ', order.state)
+        except Exception as e:
+            print(f'ClickError:', e)
+
+
+class TestViewClickUz(ClickUzMerchantAPIView):
+    VALIDATE_CLASS = PaymeCheckOrder

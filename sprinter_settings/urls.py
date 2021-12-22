@@ -20,7 +20,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
 from rest_framework_simplejwt.views import TokenRefreshView
-from core.views import TestViewPaycom
+from core.views import TestViewPaycom, TestViewClickUz
 from sprinter_settings import settings
 from user.token import MyTokenObtainPairView
 
@@ -49,6 +49,7 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     path('paycom/', TestViewPaycom.as_view()),
+    path('clickuz/', TestViewClickUz.as_view()),
 ]
 
 if settings.DEBUG:

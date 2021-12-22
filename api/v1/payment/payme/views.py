@@ -1,8 +1,6 @@
 from rest_framework.views import APIView
 
 from api.v1.payment.payme.functions import payme_url
-from paycomuz.methods_subscribe_api import PayComResponse
-from django.core.exceptions import ValidationError
 from core.models.order import Order
 from common.static_data import PaymentStatus, OrderStatus
 from django.http import JsonResponse

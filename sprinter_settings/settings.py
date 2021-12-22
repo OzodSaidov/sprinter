@@ -59,6 +59,7 @@ LOCALE_APPS = [
     'user',
     'core',
     'paycomuz',
+    'clickuz',
     'common',
 ]
 
@@ -258,3 +259,9 @@ PAYCOM_SETTINGS = {
         "KEY": "order_id"
     }
 }
+
+#Click
+CLICK_MERCHANT_USER_ID = os.getenv('CLICK_MERCHANT_USER_ID')
+CLICK_MERCHANT_ID = os.getenv('CLICK_MERCHANT_ID')
+CLICK_SERVICE_ID = os.getenv('CLICK_SERVICE_ID')
+CLICK_SECRET_KEY = os.getenv('CLICK_SECRET_KEY')
