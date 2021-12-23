@@ -388,6 +388,7 @@ class ReviewListSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'user',
+            'order',
             'rate',
             'comment',
             'images',
@@ -417,6 +418,7 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'user',
+            'order',
             'product',
             'comment',
             'like',

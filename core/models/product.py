@@ -171,6 +171,7 @@ class Review(Base):
     """ Отзыв (Оценка продукта)"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='reviews')
+    order = models.ForeignKey('Order', on_delete=models.CASCADE, related_name='reviews')
     comment = models.TextField()
     like = models.CharField('Что понравилось больше всего?', max_length=255, null=True, blank=True)
     is_active = models.BooleanField(default=False)
