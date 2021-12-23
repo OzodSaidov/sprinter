@@ -108,7 +108,7 @@ class ProductDetailForReview(generics.RetrieveAPIView):
     queryset = Product.objects.all()
 
     def retrieve(self, request, *args, **kwargs):
-        order_id = request.data.get('order_id', 0)
+        order_id = request.GET.get('order_id', 0)
         instance = self.get_object()
         order = Order.objects.filter(id=order_id, user=request.user, basket__products__product=instance)
         if order.exists():
