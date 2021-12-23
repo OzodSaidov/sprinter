@@ -107,14 +107,14 @@ class ProductDetailForReview(generics.RetrieveAPIView):
     serializer_class = ProductShortSerializer
     queryset = Product.objects.all()
 
-    def retrieve(self, request, *args, **kwargs):
-        order_id = request.GET.get('order_id', 0)
-        instance = self.get_object()
-        order = Order.objects.filter(id=order_id, user=request.user, order_status=OrderStatus.COMPLETED, basket__products__product=instance)
-        if order.exists():
-            serializer = self.get_serializer(instance)
-            return JsonResponse(serializer.data)
-        return JsonResponse(dict(validation_error='Not possible'), status=404)
+    # def retrieve(self, request, *args, **kwargs):
+    #     order_id = request.GET.get('order_id', 0)
+    #     instance = self.get_object()
+    #     # order = Order.objects.filter(id=order_id, user=request.user, order_status=OrderStatus.COMPLETED, basket__products__product=instance)
+    #     if order.exists():
+    #         serializer = self.get_serializer(instance)
+    #         return JsonResponse(serializer.data)
+    #     return JsonResponse(dict(validation_error='Not possible'), status=404)
 
 # class ProductDeleteView(generics.DestroyAPIView):
 #     queryset = Product.objects.all()
