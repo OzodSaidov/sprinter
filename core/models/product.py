@@ -76,7 +76,7 @@ class ProductImage(Base):
     def get_file_path(self, filename):
         extension = filename.split('.')[-1]
         filename = "%s.%s" % (uuid.uuid4(), extension)
-        return os.path.join('photos/products', filename)
+        return os.path.join('photos/products/', filename)
 
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='images')
     color = models.ForeignKey('ProductColor', on_delete=models.SET_NULL, null=True, related_name='images')
