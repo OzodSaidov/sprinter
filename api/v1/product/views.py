@@ -345,7 +345,6 @@ class ReviewListView(generics.ListAPIView):
 
 class ReviewCreateView(generics.CreateAPIView):
     serializer_class = ReviewCreateSerializer
-    permission_classes = None
 
 
 # class ReviewEditView(generics.RetrieveUpdateAPIView):
