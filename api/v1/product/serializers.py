@@ -542,7 +542,7 @@ class RegionListSerializer(serializers.ModelSerializer):
 
 
 class ProductSliderSerializer(serializers.ModelSerializer):
-    image = serializers.PrimaryKeyRelatedField(read_only=True)
+    image = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Product
@@ -556,9 +556,13 @@ class ProductSliderSerializer(serializers.ModelSerializer):
             'image'
         )
 
+    def get_image(self, instance: Product):
+        request = self.context['request']
+        obj = instance.images.filter(is_slider=True).first()
+        url = '{}://{}{}'.format(request.scheme, request.get_host(), settings.MEDIA_URL)
+        return url + obj.image.name
+
     def to_representation(self, instance: Product):
         data = super(ProductSliderSerializer, self).to_representation(instance)
         data['brand'] = instance.brand.title
-        data['image'] = ProductImageShortSerializer(instance.images.filter(is_slider=True).first(),
-                                                    context=self.context).data
         return data
