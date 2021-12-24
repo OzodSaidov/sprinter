@@ -410,7 +410,7 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
         write_only=True,
         allow_empty=True
     )
-    rating = serializers.FloatField(required=False)
+    rate = serializers.FloatField(required=False)
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -422,13 +422,13 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
             'product',
             'comment',
             'like',
-            'rating',
+            'rate',
             'images',
         )
         validators = [ReviewCreateValidator()]
 
     def create(self, validated_data):
-        rate = validated_data.pop('rating', 0)
+        rate = validated_data.pop('rate', 0)
         images = validated_data.pop('images', [])
         user = validated_data.get('user')
         product = validated_data.get('product')

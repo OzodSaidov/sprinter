@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from rest_framework import serializers
 
 from api.v1.order.validation import ProductOrderValidation
@@ -6,7 +8,7 @@ from api.v1.payment.payme.functions import payme_url
 from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer, ProductParamSerializer, \
     ProductShortDetailSerializer, ProductImageShortSerializer, PromoCodeSerializer
 from api.v1.user.serializers import AddressSerializer
-from core.models import ProductParam, Product, ProductGroup, PromoCode
+from core.models import ProductParam, Product, ProductGroup, PromoCode, Review
 from core.models.order import *
 from django.db import transaction
 from django.db.models import Sum, F, When
@@ -245,6 +247,16 @@ class OrderListSerializer(serializers.ModelSerializer):
 
     def get_payment_url(self, order):
         return payment_urls(order=order)
+
+    def to_representation(self, instance: Order):
+        data = super(OrderListSerializer, self).to_representation(instance)
+        product_orders = data['basket']['products']
+        for index, product_order in enumerate(product_orders):
+            temp = product_order
+            is_reviewed = instance.reviews.filter(product__id=product_order['product']['id']).exists()
+            temp['is_reviewed'] = is_reviewed
+            product_orders[index] = temp
+        return data
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
