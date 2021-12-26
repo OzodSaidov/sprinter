@@ -320,7 +320,7 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             lambda item: {
                 "IMAGE_URL": ''.join([url_scheme, item[0]]),
                 "COLOR": item[1]
-            }, obj.images.filter(is_slider=False).values_list('image', 'color')
+            }, obj.images.values_list('image', 'color')
         ))
 
     def get_params(self, obj):
