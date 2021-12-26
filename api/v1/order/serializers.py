@@ -243,6 +243,7 @@ class OrderListSerializer(serializers.ModelSerializer):
             'price',
             'date_delivered',
             'payment_url',
+            'products_price',
         ]
 
     def get_payment_url(self, order):
@@ -353,6 +354,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'price',
             'date_delivered',
             'payment_url',
+            'products_price',
         ]
 
     def get_payment_url(self, order):
