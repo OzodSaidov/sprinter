@@ -323,14 +323,10 @@ class OrderUpdateSerializer(serializers.ModelSerializer):
             'payment_type',
         ]
 
-    # def to_representation(self, instance):
-    #     data = super().to_representation(instance)
-    #     url = {}
-    #     """ Check type of payment and give corresponding payment url """
-    #     if instance.payment_type == PaymentType.PAYME:
-    #         url = payme_url(order=instance)
-    #     data['payment_url'] = url
-    #     return data
+    def update(self, instance, validated_data):
+        instance = super(OrderUpdateSerializer, self).update(instance, validated_data)
+        instance.save_price()
+        return instance
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
