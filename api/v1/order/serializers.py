@@ -130,7 +130,7 @@ class ProductOrderUpdateSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         quantity = validated_data.get('quantity', 0)
-        instance.quantity += quantity
+        instance.quantity = quantity
         instance.save()
 
         return instance
