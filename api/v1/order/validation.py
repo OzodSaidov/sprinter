@@ -24,7 +24,7 @@ class ProductOrderValidation:
         groups = ProductGroup.objects.filter(productparam__in=product_params)
         if self.product.params.filter(pk__in=product_params, is_important=False).exists():
             raise ValidationError(dict(validation_error='Cannot choose param which is not important'))
-        elif self.product.params.exclude(pk__in=product_params, is_important=True).exclude(group__in=groups).exists():
+        elif self.product.params.filter(is_important=True).exclude(pk__in=product_params).exclude(group__in=groups).exists():
             raise ValidationError(dict(validation_error='Not all params were chosen'))
         elif len(product_params) != self.product.params.filter(is_important=True).distinct('group').count():
             raise ValidationError(dict(validation_error='Cannot assign several params from the same group'))
