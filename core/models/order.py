@@ -41,6 +41,9 @@ class ProductOrder(Base):
             product_price += additional_price['additional_price']
         return product_price
 
+    class Meta:
+        ordering = ['created_at']
+
     def delete(self, *args, **kwargs):
         """ Do not allow to delete non active product-order. Non-active is for history """
 
