@@ -6,6 +6,7 @@ from common.static_data import PaymentType, OrderStatus, PaymentStatus
 from sprinter_settings.base_models import Base
 from user.validators import validate_phone
 from django.db.models import Sum
+from sortedm2m.fields import SortedManyToManyField
 
 
 class ProductOrder(Base):
@@ -51,6 +52,7 @@ class ProductOrder(Base):
 class Basket(Base):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='basket')
     products = models.ManyToManyField('ProductOrder')
+    # products = SortedManyToManyField('ProductOrder')
     is_active = models.BooleanField(editable=False, default=True)
 
     @property

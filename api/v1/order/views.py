@@ -159,7 +159,7 @@ class CurrentBasketApiView(RetrieveAPIView):
 
 
 class CurrentBasketProductNumberApiView(APIView):
-    """ Ger number of products in basket """
+    """ Get number of products in basket """
 
     def get(self, request):
         basket = request.user.basket.filter(is_active=True)

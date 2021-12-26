@@ -91,8 +91,8 @@ class DeliveryModelAdmin(admin.ModelAdmin):
 class RegionModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'name_uz', 'name_en', 'name_ru')
 
-    def has_add_permission(self, request):
-        return False
+    # def has_add_permission(self, request):
+    #     return False
 
 
 # - ORDER -

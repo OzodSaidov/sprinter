@@ -58,6 +58,9 @@ class Product(Base):
     def rating(self):
         return self.rating_set.all().aggregate(rate=Round(Avg('rate')))['rate']
 
+    class Meta:
+        ordering = ["created_at"]
+
 
 class ProductColor(Base):
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='colors',
