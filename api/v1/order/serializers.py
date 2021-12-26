@@ -337,6 +337,8 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     basket = BasketDetailSerializer(read_only=True)
     promocode = PromoCodeSerializer(read_only=True, many=False)
     delivery_price = serializers.FloatField(read_only=True)
+    address = AddressSerializer(read_only=True)
+    payment_url = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Order
@@ -354,7 +356,11 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'delivery_price',
             'price',
             'date_delivered',
+            'payment_url',
         ]
+
+    def get_payment_url(self, order):
+        return payment_urls(order=order)
 
     def to_representation(self, instance: Order):
         data = super(OrderDetailSerializer, self).to_representation(instance)
