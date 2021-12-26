@@ -18,6 +18,6 @@ def current_url(order):
     url = ''
     if order.payment_type == PaymentType.PAYME:
         url = payme_url(order)
-    elif order.payment_type == PaymentType.CASH:
+    elif order.payment_type == PaymentType.CLICK:
         url = click_url(order)
     return url
