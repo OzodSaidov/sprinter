@@ -94,7 +94,7 @@ class Order(Base):
     payment_status = models.CharField(max_length=255, choices=PaymentStatus.choices, default=PaymentStatus.WAITING)
     promocode = models.ForeignKey('PromoCode', on_delete=models.PROTECT, null=True, blank=True)
     date_delivered = models.DateField(null=True, blank=True)
-    products_price = models.FloatField()
+    products_price = models.FloatField(default=0)
     price = models.FloatField(default=0)
     delivery_price = models.FloatField(default=0)
     is_active = models.BooleanField(default=True)
@@ -109,7 +109,6 @@ class Order(Base):
                     price -= sale
             total_price += price
         self.products_price = total_price
-        total_price += self.delivery_price
 
         if self.address.region.delivery:
             delivery_price = self.address.region.delivery.delivery_price
