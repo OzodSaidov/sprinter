@@ -3,7 +3,7 @@ from pprint import pprint
 from rest_framework import serializers
 
 from api.v1.order.validation import ProductOrderValidation
-from api.v1.payment.functios import payment_urls
+from api.v1.payment.functios import payment_urls, current_url
 from api.v1.payment.payme.functions import payme_url
 from api.v1.product.serializers import ProductRetrieveSerializer, ColorSerializer, ProductParamSerializer, \
     ProductShortDetailSerializer, ProductImageShortSerializer, PromoCodeSerializer
@@ -335,7 +335,8 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     promocode = PromoCodeSerializer(read_only=True, many=False)
     delivery_price = serializers.FloatField(read_only=True)
     address = AddressSerializer(read_only=True)
-    payment_url = serializers.SerializerMethodField(read_only=True)
+    # payment_url = serializers.SerializerMethodField(read_only=True)
+    current_payment_url = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Order
@@ -353,15 +354,18 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'delivery_price',
             'price',
             'date_delivered',
-            'payment_url',
+            # 'payment_url',
             'products_price',
+            'current_payment_url',
         ]
 
-    def get_payment_url(self, order):
-        return payment_urls(order=order)
+    # def get_payment_url(self, order):
+    #     return payment_urls(order=order)
+    def get_current_payment_url(self, order):
+        url = current_url(order=order)
+        return url
 
     def to_representation(self, instance: Order):
         data = super(OrderDetailSerializer, self).to_representation(instance)
-        # data['date_delivered'] = instance.address.region.delivery.date_delivered.strftime('%d.%m.%Y')
         data['delivery_price'] = instance.address.region.delivery.delivery_price
         return data
