@@ -15,9 +15,8 @@ class BrandModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'logo', 'is_active')
 
 
-class ProductColorInline(admin.StackedInline):
+class ProductColorInline(admin.TabularInline):
     model = ProductColor
-    raw_id_fields = ['product']
     extra = 1
 
 
@@ -26,9 +25,24 @@ class ProductImageInline(ProductColorInline):
     extra = 1
 
 
+class ProductGroupInline(admin.TabularInline):
+    model = ProductGroup
+    extra = 1
+
+
+class ProductParamInline(ProductGroupInline):
+    model = ProductParam
+    extra = 1
+
+
 @admin.register(ProductColor)
 class ColorModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'color', 'title', 'product',)
+    # fieldsets = (
+    #     ('Color information', {
+    #         'fields': ('color', 'title_uz', 'title_en', 'title_ru')
+    #     }),
+    # )
+    list_display = ('id', 'product', 'color', 'title')
 
 
 @admin.register(ProductImage)
@@ -40,12 +54,12 @@ class ImageModelAdmin(admin.ModelAdmin):
 class ProductModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'catalog', 'brand', 'price', 'old_price', 'discount', 'rating', 'is_active')
     list_filter = ('brand', 'catalog')
+    save_on_top = True
 
     inlines = (
         ProductImageInline,
-        # ProductColorInline,
+        ProductParamInline,
     )
-
 
 @admin.register(ProductGroup)
 class ProductGroupModelAdmin(admin.ModelAdmin):

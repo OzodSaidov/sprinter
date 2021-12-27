@@ -62,6 +62,7 @@ class Product(Base):
 class ProductColor(Base):
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='colors',
                                 null=True, blank=True)
+    # product = models.ManyToManyField('Product', related_name='colors')
     color = ColorField()
     title = models.CharField(max_length=255, null=True)
 
@@ -69,6 +70,9 @@ class ProductColor(Base):
         if self.product:
             return f'{self.title} {self.product.title}'
         return f'{self.title}'
+
+    # def __str__(self):
+    #     return self.title
 
 
 class ProductImage(Base):
