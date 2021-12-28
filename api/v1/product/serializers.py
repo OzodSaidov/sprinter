@@ -1,6 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 from api.v1.product.validators import ReviewCreateValidator
+from api.v1.services.get_endpoint import get_image_endpoint
 from core.models import *
 from sprinter_settings import settings
 
@@ -125,6 +126,35 @@ class ProductImageShortSerializer(serializers.ModelSerializer):
         fields = (
             'image',
         )
+
+
+# class _ProductImageSerializer(serializers.ModelSerializer):
+#     """
+#     Product detail ichidagi image ni serializatsiya qilish uchun serializer
+#     """
+#
+#     image_medium = serializers.SerializerMethodField(read_only=True)
+#     image_big = serializers.SerializerMethodField(read_only=True)
+#
+#     class Meta:
+#         model = ProductImage
+#         fields = (
+#             'image',
+#             'image_medium',
+#             'image_big',
+#             'color'
+#         )
+#
+#     def get_image_medium(self, instance):
+#         return '%s%s' % (get_image_endpoint(self.context['request']), instance.image_medium.name)
+#
+#     def get_image_big(self, instance):
+#         return '%s%s' % (get_image_endpoint(self.context['request']), instance.image_big.name)
+
+    # def to_representation(self, instance: ProductImage):
+    #     data = super(_ProductImageSerializer, self).to_representation(instance)
+    #     data['color'] = instance.color.color
+    #     return data
 
 
 class ProductRatingSerializer(serializers.ModelSerializer):
@@ -290,6 +320,7 @@ class ProductRetrieveUpdateSerializer(serializers.ModelSerializer):
 
 class ProductRetrieveSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField(read_only=True)
+    # images = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
     colors = serializers.PrimaryKeyRelatedField(queryset=ProductColor.objects.all(), many=True)
     params = serializers.SerializerMethodField(read_only=True)
     important_params = serializers.SerializerMethodField(read_only=True)
@@ -350,7 +381,11 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
         data = super(ProductRetrieveSerializer, self).to_representation(instance)
         if instance.colors:
             data['colors'] = instance.colors.all().values('id', 'color')
+
+        # data['images'] = _ProductImageSerializer(instance.images.all(), many=True,
+        #                                          context=self.context).data
         return data
+
 
 class ProductShortSerializer(serializers.ModelSerializer):
     class Meta:
@@ -360,6 +395,8 @@ class ProductShortSerializer(serializers.ModelSerializer):
             'title',
             'description',
         )
+
+
 class ReviewImagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReviewImage
