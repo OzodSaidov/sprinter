@@ -54,6 +54,7 @@ THIRD_PARTY_APPS = [
     'django_filters',
     "corsheaders",
     'sortedm2m',
+    # 'imagekit',
 ]
 
 LOCALE_APPS = [
@@ -197,6 +198,14 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/hour',
+        'user': '100/hour'
+    }
 }
 
 SIMPLE_JWT = {
@@ -251,18 +260,22 @@ CACHES = {
     }
 }
 
-#Payme
+# Payme
 PAYCOM_TEST = os.getenv('PAYCOM_TEST')
 PAYCOM_SETTINGS = {
     "KASSA_ID": os.getenv('PAYME_MERCHANT_ID'),  # token
-    "SECRET_KEY": os.getenv('PAYME_MERCHANT_KEY'), #if not bool(PAYCOM_TEST) else config('PAYME_MERCHANT_TEST_KEY', default=None),  # password
+    "SECRET_KEY": os.getenv('PAYME_MERCHANT_KEY'),
+    # if not bool(PAYCOM_TEST) else config('PAYME_MERCHANT_TEST_KEY', default=None),  # password
     "ACCOUNTS": {
         "KEY": "order_id"
     }
 }
 
-#Click
+# Click
 CLICK_MERCHANT_USER_ID = os.getenv('CLICK_MERCHANT_USER_ID')
 CLICK_MERCHANT_ID = os.getenv('CLICK_MERCHANT_ID')
 CLICK_SERVICE_ID = os.getenv('CLICK_SERVICE_ID')
 CLICK_SECRET_KEY = os.getenv('CLICK_SECRET_KEY')
+
+# ----------------------------------IMAGE-KIT--------------------------------
+# IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'imagekit.cachefiles.strategies.Optimistic'
