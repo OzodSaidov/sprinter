@@ -4,8 +4,8 @@ import uuid
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.db.models import Avg
-# from imagekit.models.fields import ImageSpecField
-# from imagekit.processors import ResizeToFit, Adjust
+from imagekit.models import ImageSpecField, ProcessedImageField
+from imagekit.processors import ResizeToFit, Adjust
 from api.v1.product.services.round_avg import Round
 from sprinter_settings.base_models import Base
 from mptt.models import TreeForeignKey
@@ -88,10 +88,12 @@ class ProductImage(Base):
     image = models.ImageField(upload_to=get_file_path,
                               validators=[FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png'])],
                               error_messages={'extension': _('File extension must be jpeg or jpg or png')})
-    # image_medium = ImageSpecField(processors=[Adjust(contrast=1.2, sharpness=1.1), ResizeToFit(200, 200)],
-    #                               source='image', format='JPG', options={'quality': 90})
-    # image_big = ImageSpecField(processors=[Adjust(contrast=1.2, sharpness=1.1), ResizeToFit(540, 370)],
-    #                            source='image', format='JPG', options={'quality': 90})
+    image_200x200 = ImageSpecField(processors=[Adjust(contrast=1.2, sharpness=1.1), ResizeToFit(200, 200)],
+                                   source='image', format='JPEG', options={'quality': 90})
+    image_320x350 = ImageSpecField(processors=[Adjust(contrast=1.2, sharpness=1.1), ResizeToFit(320, 350)],
+                                   source='image', format='JPEG', options={'quality': 90})
+    image_540x370 = ImageSpecField(processors=[Adjust(contrast=1.2, sharpness=1.1), ResizeToFit(540, 370)],
+                                   source='image', format='JPEG', options={'quality': 90})
     is_active = models.BooleanField(default=False)
     is_slider = models.BooleanField(default=False)
 

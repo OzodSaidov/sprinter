@@ -128,33 +128,22 @@ class ProductImageShortSerializer(serializers.ModelSerializer):
         )
 
 
-# class _ProductImageSerializer(serializers.ModelSerializer):
-#     """
-#     Product detail ichidagi image ni serializatsiya qilish uchun serializer
-#     """
-#
-#     image_medium = serializers.SerializerMethodField(read_only=True)
-#     image_big = serializers.SerializerMethodField(read_only=True)
-#
-#     class Meta:
-#         model = ProductImage
-#         fields = (
-#             'image',
-#             'image_medium',
-#             'image_big',
-#             'color'
-#         )
-#
-#     def get_image_medium(self, instance):
-#         return '%s%s' % (get_image_endpoint(self.context['request']), instance.image_medium.name)
-#
-#     def get_image_big(self, instance):
-#         return '%s%s' % (get_image_endpoint(self.context['request']), instance.image_big.name)
+class _ProductImageSerializer(serializers.ModelSerializer):
+    """
+    Product detail ichidagi image ni serializatsiya qilish uchun serializer
+    """
 
-    # def to_representation(self, instance: ProductImage):
-    #     data = super(_ProductImageSerializer, self).to_representation(instance)
-    #     data['color'] = instance.color.color
-    #     return data
+    image_200x200 = serializers.ImageField(read_only=True)
+    image_540x370 = serializers.ImageField(read_only=True)
+
+    class Meta:
+        model = ProductImage
+        fields = (
+            'image',
+            'image_200x200',
+            'image_540x370',
+            'color'
+        )
 
 
 class ProductRatingSerializer(serializers.ModelSerializer):
@@ -168,8 +157,24 @@ class ProductRatingSerializer(serializers.ModelSerializer):
         )
 
 
+class ProductImageThumbSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = ProductImage
+        fields = (
+            'id',
+            'product',
+            'image',
+            'is_active'
+        )
+
+    def get_image(self, instance: ProductImage):
+        return '%s%s' % (get_image_endpoint(self.context['request']), instance.image_320x350.name)
+
+
 class ProductListSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(read_only=True)
+    image = serializers.ReadOnlyField()
     rating = serializers.ReadOnlyField()
 
     class Meta:
@@ -187,10 +192,10 @@ class ProductListSerializer(serializers.ModelSerializer):
             'is_new',
         )
 
-    def to_representation(self, instance):
+    def to_representation(self, instance: Product):
         data = super(ProductListSerializer, self).to_representation(instance)
-        data['image'] = ProductImageSerializer(instance.images.filter(is_active=True).first(),
-                                               context=self.context).data
+        data['image'] = ProductImageThumbSerializer(instance.images.filter(is_active=True).first(),
+                                                    context=self.context).data
         return data
 
 
@@ -319,8 +324,8 @@ class ProductRetrieveUpdateSerializer(serializers.ModelSerializer):
 
 
 class ProductRetrieveSerializer(serializers.ModelSerializer):
-    images = serializers.SerializerMethodField(read_only=True)
-    # images = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
+    # images = serializers.SerializerMethodField(read_only=True)
+    images = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
     colors = serializers.PrimaryKeyRelatedField(queryset=ProductColor.objects.all(), many=True)
     params = serializers.SerializerMethodField(read_only=True)
     important_params = serializers.SerializerMethodField(read_only=True)
@@ -344,15 +349,15 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             'important_params',
         )
 
-    def get_images(self, obj: Product):
-        request = self.context['request']
-        url_scheme = '{}://{}{}'.format(request.scheme, request.get_host(), settings.MEDIA_URL)
-        return list(map(
-            lambda item: {
-                "IMAGE_URL": ''.join([url_scheme, item[0]]),
-                "COLOR": item[1]
-            }, obj.images.values_list('image', 'color')
-        ))
+    # def get_images(self, obj: Product):
+    #     request = self.context['request']
+    #     url_scheme = '{}://{}{}'.format(request.scheme, request.get_host(), settings.MEDIA_URL)
+    #     return list(map(
+    #         lambda item: {
+    #             "IMAGE_URL": ''.join([url_scheme, item[0]]),
+    #             "COLOR": item[1]
+    #         }, obj.images.values_list('image', 'color')
+    #     ))
 
     def get_params(self, obj):
         params = obj.params.filter(group__isnull=True).values_list('key', 'value')
@@ -382,8 +387,8 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
         if instance.colors:
             data['colors'] = instance.colors.all().values('id', 'color')
 
-        # data['images'] = _ProductImageSerializer(instance.images.all(), many=True,
-        #                                          context=self.context).data
+        data['images'] = _ProductImageSerializer(instance.images.all(), many=True,
+                                                 context=self.context).data
         return data
 
 
