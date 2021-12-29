@@ -54,7 +54,7 @@ THIRD_PARTY_APPS = [
     'django_filters',
     "corsheaders",
     'sortedm2m',
-    # 'imagekit',
+    'imagekit',
 ]
 
 LOCALE_APPS = [
@@ -278,4 +278,6 @@ CLICK_SERVICE_ID = os.getenv('CLICK_SERVICE_ID')
 CLICK_SECRET_KEY = os.getenv('CLICK_SECRET_KEY')
 
 # ----------------------------------IMAGE-KIT--------------------------------
-# IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'imagekit.cachefiles.strategies.Optimistic'
+IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'imagekit.cachefiles.strategies.Optimistic'
+IMAGEKIT_DEFAULT_CACHEFILE_BACKEND = 'imagekit.cachefiles.backends.Simple'
+IMAGEKIT_CACHE_BACKEND = 'default'
