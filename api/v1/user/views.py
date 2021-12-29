@@ -105,10 +105,6 @@ class LoginView(APIView):
 
         check_session_basket(user=user.first(), request=request)
         serializer = LoginSerializer(user.first())
-
-        # TODO """ Uncomment this when redis will be set in server """
-        ##check_session_basket(user=user.last(), request=request)
-
         return Response(serializer.data)
 
 

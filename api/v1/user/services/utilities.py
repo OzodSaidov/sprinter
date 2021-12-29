@@ -9,7 +9,8 @@ def check_session_basket(user, request):
     """ Is user is registered and there is a basket in session, create basket for user """
 
     try:
-        basket = get_basket(session=request.session.session_key)
+        ip = request.META.get("REMOTE_ADDR")
+        basket = get_basket(session=ip)
         if len(basket) > 0:
             active_basket = user.basket.filter(is_active=True)
             if active_basket.exists():
@@ -25,6 +26,6 @@ def check_session_basket(user, request):
                     color=color_)
                 product_order.product_param.add(*product['params'])
                 new_basket.products.add(product_order)
-            delete_basket(request.session.session_key)
+            delete_basket(ip)
     except Exception as e:
         loguru.logger.error(e)
