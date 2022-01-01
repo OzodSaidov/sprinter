@@ -17,22 +17,22 @@ class BrandModelAdmin(admin.ModelAdmin):
 
 class ProductColorInline(admin.TabularInline):
     model = ProductColor
-    extra = 1
+    extra = 0
 
 
 class ProductImageInline(ProductColorInline):
     model = ProductImage
-    extra = 1
+    extra = 0
 
 
 class ProductGroupInline(admin.TabularInline):
     model = ProductGroup
-    extra = 1
+    extra = 0
 
 
 class ProductParamInline(ProductGroupInline):
     model = ProductParam
-    extra = 1
+    extra = 0
 
 
 @admin.register(ProductColor)
@@ -52,7 +52,18 @@ class ImageModelAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductModelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'catalog', 'brand', 'price', 'old_price', 'discount', 'rating', 'is_active')
+    list_display = (
+        'id',
+        'title',
+        'catalog',
+        'brand',
+        'price',
+        'old_price',
+        'discount',
+        'rating',
+        'is_active'
+    )
+
     list_filter = ('brand', 'catalog')
     save_on_top = True
 
@@ -60,6 +71,7 @@ class ProductModelAdmin(admin.ModelAdmin):
         ProductImageInline,
         ProductParamInline,
     )
+
 
 @admin.register(ProductGroup)
 class ProductGroupModelAdmin(admin.ModelAdmin):

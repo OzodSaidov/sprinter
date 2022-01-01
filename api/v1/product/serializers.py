@@ -601,10 +601,10 @@ class ProductSliderSerializer(serializers.ModelSerializer):
         )
 
     def get_image(self, instance: Product):
-        request = self.context['request']
-        obj = instance.images.filter(is_slider=True).first()
-        url = '{}://{}{}'.format(request.scheme, request.get_host(), settings.MEDIA_URL)
-        return url + obj.image.name
+        product_image = instance.images.filter(is_slider=True).first()
+        if not product_image:
+            return None
+        return '%s%s' % (get_image_endpoint(self.context['request']), product_image.image.name)
 
     def to_representation(self, instance: Product):
         data = super(ProductSliderSerializer, self).to_representation(instance)
