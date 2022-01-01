@@ -389,4 +389,4 @@ class RegionListView(generics.ListAPIView):
 class ProductSliderView(generics.ListAPIView):
     serializer_class = ProductSliderSerializer
     permission_classes = [AllowAny]
-    queryset = Product.objects.filter(is_slider=True)
+    queryset = Product.objects.filter(is_slider=True, images__is_slider=True)

@@ -602,8 +602,6 @@ class ProductSliderSerializer(serializers.ModelSerializer):
 
     def get_image(self, instance: Product):
         product_image = instance.images.filter(is_slider=True).first()
-        if not product_image:
-            return None
         return '%s%s' % (get_image_endpoint(self.context['request']), product_image.image.name)
 
     def to_representation(self, instance: Product):
