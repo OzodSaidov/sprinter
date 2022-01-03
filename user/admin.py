@@ -23,7 +23,7 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('user_ident', 'username', 'first_name', 'last_name', 'phone', 'email', 'password')
         }),
         (_('Permissions'), {
-            'fields': ('is_active', 'is_staff', 'is_superuser', 'user_permissions'),
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups'),
         }),
         (_('Important dates'), {
             'fields': ('last_login', 'date_joined')
@@ -41,23 +41,6 @@ class CustomUserAdmin(UserAdmin):
     readonly_fields = ('user_ident', 'username')
 
 
-# @admin.register(User)
-# class UserAdminModel(admin.ModelAdmin):
-#     list_display = ('username', 'email', 'full_name', 'role', 'group', 'id')
-#
-#     def group(self, user):
-#         groups = []
-#         for group in user.groups.all():
-#             groups.append(group.name)
-#         return ' '.join(groups)
-#
-#     group.short_description = 'Groups'
-
-
 @admin.register(Address)
 class AddressAdminModel(admin.ModelAdmin):
     list_display = ('user', 'address', 'zip_code', 'full_name')
-
-# admin.site.unregister(User)
-# admin.site.register(Address, AddressAdminModel)
-# admin.site.register(User, UserAdminModel)

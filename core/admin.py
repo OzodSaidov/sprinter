@@ -1,6 +1,7 @@
 from django.contrib import admin
 from core.models.order import *
 from core.models.product import *
+from django import forms
 
 
 # - PRODUCT -
@@ -37,11 +38,6 @@ class ProductParamInline(ProductGroupInline):
 
 @admin.register(ProductColor)
 class ColorModelAdmin(admin.ModelAdmin):
-    # fieldsets = (
-    #     ('Color information', {
-    #         'fields': ('color', 'title_uz', 'title_en', 'title_ru')
-    #     }),
-    # )
     list_display = ('id', 'product', 'color', 'title')
 
 
@@ -50,8 +46,55 @@ class ImageModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'product', 'image', 'is_active', 'is_slider')
 
 
+class ProductCreateForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+
 @admin.register(Product)
 class ProductModelAdmin(admin.ModelAdmin):
+    add_form = ProductCreateForm
+
+    fieldsets = (
+        (None, {
+            'fields': (
+                'catalog',
+                'brand',
+                'title',
+                'description',
+                'price',
+                'discount',
+                'old_price',
+                'is_active',
+                'is_slider',
+                'is_on_sale',
+                'is_new',
+                'available_quantity'
+            )
+        }),
+    )
+
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': (
+                'catalog',
+                'brand',
+                'title',
+                'description',
+                'price',
+                'discount',
+                'old_price',
+                'is_active',
+                'is_slider',
+                'is_on_sale',
+                'is_new',
+                'available_quantity'
+            ),
+        }),
+    )
+
     list_display = (
         'id',
         'title',
@@ -67,10 +110,12 @@ class ProductModelAdmin(admin.ModelAdmin):
     list_filter = ('brand', 'catalog')
     save_on_top = True
 
-    inlines = (
-        ProductImageInline,
-        ProductParamInline,
-    )
+    inlines = [ProductImageInline, ProductParamInline]
+
+    def get_inline_instances(self, request, obj=None):
+        if not obj:
+            return []
+        return [inline(self.model, self.admin_site) for inline in self.inlines]
 
 
 @admin.register(ProductGroup)
