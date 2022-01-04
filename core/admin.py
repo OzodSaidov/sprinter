@@ -46,23 +46,27 @@ class ImageModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'product', 'image', 'is_active', 'is_slider')
 
 
-class ProductCreateForm(forms.ModelForm):
-    class Meta:
-        model = Product
-        fields = '__all__'
+# class ProductCreateForm(forms.ModelForm):
+#     class Meta:
+#         model = Product
+#         fields = '__all__'
 
 
 @admin.register(Product)
 class ProductModelAdmin(admin.ModelAdmin):
-    add_form = ProductCreateForm
+    # add_form = ProductCreateForm
 
     fieldsets = (
         (None, {
             'fields': (
                 'catalog',
                 'brand',
-                'title',
-                'description',
+                'title_uz',
+                'title_en',
+                'title_ru',
+                'description_uz',
+                'description_ru',
+                'description_en',
                 'price',
                 'discount',
                 'old_price',
@@ -75,25 +79,27 @@ class ProductModelAdmin(admin.ModelAdmin):
         }),
     )
 
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': (
-                'catalog',
-                'brand',
-                'title',
-                'description',
-                'price',
-                'discount',
-                'old_price',
-                'is_active',
-                'is_slider',
-                'is_on_sale',
-                'is_new',
-                'available_quantity'
-            ),
-        }),
-    )
+    # add_fieldsets = (
+    #     (None, {
+    #         'classes': ('wide',),
+    #         'fields': (
+    #             'catalog',
+    #             'brand',
+    #             'title_uz',
+    #             'title_en',
+    #             'title_ru',
+    #             'description',
+    #             'price',
+    #             'discount',
+    #             'old_price',
+    #             'is_active',
+    #             'is_slider',
+    #             'is_on_sale',
+    #             'is_new',
+    #             'available_quantity'
+    #         ),
+    #     }),
+    # )
 
     list_display = (
         'id',
