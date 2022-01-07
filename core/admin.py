@@ -74,6 +74,7 @@ class ProductModelAdmin(admin.ModelAdmin):
                 'is_slider',
                 'is_on_sale',
                 'is_new',
+                'is_stock',
                 'available_quantity'
             )
         }),
@@ -110,7 +111,8 @@ class ProductModelAdmin(admin.ModelAdmin):
         'old_price',
         'discount',
         'rating',
-        'is_active'
+        'is_active',
+        'is_stock'
     )
 
     list_filter = ('brand', 'catalog')
