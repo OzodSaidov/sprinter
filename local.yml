@@ -6,6 +6,7 @@ volumes:
 
 services:
   django:
+    restart: always
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
@@ -23,6 +24,7 @@ services:
     command: /start
 
   postgres:
+    restart: always
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
@@ -40,6 +42,7 @@ services:
     ports:
       - 5432
   redis:
+    restart: always
     image: redis:6
     ports:
       - 6379

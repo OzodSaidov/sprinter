@@ -7,6 +7,7 @@ class ProductFilter(rest_filter.FilterSet):
     min_price = rest_filter.NumberFilter(field_name='price', lookup_expr='gte')
     max_price = rest_filter.NumberFilter(field_name='price', lookup_expr='lte')
     is_new = rest_filter.BooleanFilter(field_name='is_new')
+    is_stock = rest_filter.BooleanFilter(field_name='is_stock')
 
     class Meta:
         model = Product

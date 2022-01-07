@@ -50,6 +50,7 @@ class Product(Base):
     is_slider = models.BooleanField(default=False)
     is_on_sale = models.BooleanField(default=False)
     is_new = models.BooleanField(default=True)
+    is_stock = models.BooleanField('Есть в наличии?', default=False)
     available_quantity = models.PositiveIntegerField(default=0)
 
     def __str__(self):

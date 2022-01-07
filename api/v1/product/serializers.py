@@ -190,6 +190,7 @@ class ProductListSerializer(serializers.ModelSerializer):
             'image',
             'rating',
             'is_new',
+            'is_stock',
         )
 
     def to_representation(self, instance: Product):
@@ -344,6 +345,7 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             'images',
             'colors',
             'is_new',
+            'is_stock',
             'available_quantity',
             'params',
             'important_params',
