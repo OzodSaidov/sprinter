@@ -87,4 +87,4 @@ class ClickCheckOrder(ClickUz):
 
 
 class TestViewClickUz(ClickUzMerchantAPIView):
-    VALIDATE_CLASS = PaymeCheckOrder
+    VALIDATE_CLASS = ClickCheckOrder
