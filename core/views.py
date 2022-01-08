@@ -63,6 +63,8 @@ class ClickCheckOrder(ClickUz):
             order = Order.objects.filter(id=order_id, payment_status=PaymentStatus.WAITING).first()
             if not order:
                 return self.ORDER_NOT_FOUND
+            print(order.payment_type)
+            print(order.payment_type == PaymentType.CLICK)
             if not order.payment_type != PaymentType.CLICK:
                 logger.warning(f'Order payment type is not click: {order_id}')
                 return self.ORDER_NOT_FOUND
