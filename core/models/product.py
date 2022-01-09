@@ -40,18 +40,18 @@ class Brand(Base):
 class Product(Base):
     catalog = models.ForeignKey('Catalog', on_delete=models.PROTECT, related_name='products')
     brand = models.ForeignKey('Brand', on_delete=models.PROTECT, null=True)
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    price = models.FloatField()
+    title = models.CharField('Название', max_length=255)
+    description = models.TextField("Описание")
+    price = models.FloatField('Цена')
     discount = models.PositiveSmallIntegerField('Скидка', null=True, blank=True,
                                                 validators=[MinValueValidator(0), MaxValueValidator(100)])
-    old_price = models.FloatField(null=True, blank=True)
-    is_active = models.BooleanField(default=True)
-    is_slider = models.BooleanField(default=False)
-    is_on_sale = models.BooleanField(default=False)
-    is_new = models.BooleanField(default=True)
+    old_price = models.FloatField('Старая цена', null=True, blank=True)
+    is_active = models.BooleanField('Продукт активен?', default=True)
+    is_slider = models.BooleanField('Показывать на слайдере?', default=False)
+    is_on_sale = models.BooleanField('На скидке?', default=False)
+    is_new = models.BooleanField('Новый?', default=True)
     is_stock = models.BooleanField('Есть в наличии?', default=False)
-    available_quantity = models.PositiveIntegerField(default=0)
+    available_quantity = models.PositiveIntegerField('Доступное количество', default=0)
 
     def __str__(self):
         return f'{self.title}'
