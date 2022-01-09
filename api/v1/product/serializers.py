@@ -596,7 +596,8 @@ class ProductSliderSerializer(serializers.ModelSerializer):
             'id',
             'catalog',
             'brand',
-            'description',
+            # 'description',
+            'title',
             'price',
             'old_price',
             'image'
