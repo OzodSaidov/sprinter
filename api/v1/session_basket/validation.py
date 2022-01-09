@@ -24,7 +24,7 @@ class SessionProductOrderValidation:
         groups = ProductGroup.objects.filter(productparam__in=self.product_params)
         if self.product.params.filter(pk__in=self.product_params, is_important=False).exists():
             raise ValidationError('Cannot choose param which is not important')
-        elif self.product.params.exclude(pk__in=self.product_params, is_important=True).exclude(group__in=groups).exists():
+        elif self.product.params.filter(is_important=True).exclude(pk__in=self.product_params).exclude(group__in=groups).exists():
             raise ValidationError('Not all params were chosen', code='invalid')
         elif len(self.product_params) != self.product.params.filter(is_important=True).distinct('group').count():
             raise ValidationError('Cannot assign several params from the same group')
