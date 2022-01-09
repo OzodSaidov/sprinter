@@ -23,6 +23,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from core.views import TestViewPaycom, TestViewClickUz
 from sprinter_settings import settings
 from user.token import MyTokenObtainPairView
+from django.http import HttpResponseRedirect
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -40,8 +41,11 @@ schema_view = get_schema_view(
     ]
 )
 
+admin.site.site_header = 'Администрирование Sprinter.uz'
+admin.site.site_url = 'https://sprinter.uz'
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path('admin/', admin_site.urls),
     path('api/', include('api.urls')),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-swagger'),
