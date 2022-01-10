@@ -45,6 +45,10 @@ class User(AbstractUser, Base):
             self.username = self.phone
         super(User, self).save(*args, **kwargs)
 
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
 
 class Address(Base):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -55,4 +59,6 @@ class Address(Base):
     region = models.ForeignKey('core.Region', on_delete=models.SET_NULL, null=True)
     is_active = models.BooleanField(default=True)
 
-
+    class Meta:
+        verbose_name = 'Адрес'
+        verbose_name_plural = 'Адресы'
