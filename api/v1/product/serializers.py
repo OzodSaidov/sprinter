@@ -454,7 +454,7 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
         write_only=True,
         allow_empty=True
     )
-    rate = serializers.FloatField(required=False)
+    # rating = serializers.FloatField(required=False)
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -466,13 +466,12 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
             'product',
             'comment',
             'like',
-            'rate',
             'images',
         )
         validators = [ReviewCreateValidator()]
 
     def create(self, validated_data):
-        rate = validated_data.pop('rate', 0)
+        rate = self.context.get('request').data.get('rating', 0)
         images = validated_data.pop('images', [])
         user = validated_data.get('user')
         product = validated_data.get('product')
@@ -482,7 +481,7 @@ class ReviewCreateSerializer(serializers.ModelSerializer):
             for image in images:
                 ReviewImage.objects.create(review=review, photo=image)
 
-            Rating.objects.create(user=user, product=product, rate=rate, review=review)
+            Rating.objects.create(user=user, product=product, rate=float(rate), review=review)
 
         return review
 
