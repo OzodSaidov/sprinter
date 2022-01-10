@@ -24,7 +24,7 @@ class PaymeCheckOrder(Paycom):
             if not order:
                 logger.warning(f"Order not found: {order_id}")
                 return self.ORDER_NOT_FOUND
-            if not order.payment_type != PaymentType.PAYME:
+            if order.payment_type != PaymentType.PAYME:
                 logger.warning(f'Order payment type is not payme: {order_id}')
                 return self.ORDER_NOT_FOUND
             if order.payment_status != PaymentStatus.WAITING:
