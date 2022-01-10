@@ -363,7 +363,7 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
 
     def get_params(self, obj):
         params = obj.params.filter(group__isnull=True).values_list('key', 'value')
-        result = {}
+        result = []
         if params:
             result = [dict(title=item[0], param=item[1]) for item in params]
         return result
