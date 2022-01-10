@@ -42,6 +42,8 @@ class ProductOrder(Base):
 
     class Meta:
         ordering = ['-created_at']
+        verbose_name = 'Заказ продукт'
+        verbose_name_plural = 'Заказы продукты'
 
     def delete(self, *args, **kwargs):
         """ Do not allow to delete non active product-order. Non-active is for history """
@@ -78,6 +80,10 @@ class Basket(Base):
         """ Return number of products in basket """
 
         return self.products.count()
+
+    class Meta:
+        verbose_name = 'Корзина'
+        verbose_name_plural = 'Корзины'
 
 
 class Order(Base):
@@ -117,3 +123,7 @@ class Order(Base):
 
         self.price = total_price
         self.save()
+
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'
