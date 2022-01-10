@@ -27,6 +27,10 @@ class Catalog(Base, MPTTModel):
     def __str__(self):
         return f'{self.title}'
 
+    class Meta:
+        verbose_name = 'Каталог'
+        verbose_name_plural = 'Каталоги'
+
 
 class Brand(Base):
     title = models.CharField(max_length=255, unique=True)
@@ -35,6 +39,10 @@ class Brand(Base):
 
     def __str__(self):
         return f'{self.title}'
+
+    class Meta:
+        verbose_name = 'Бренд'
+        verbose_name_plural = 'Бренды'
 
 
 class Product(Base):
@@ -60,6 +68,10 @@ class Product(Base):
     def rating(self):
         return self.rating_set.all().aggregate(rate=Round(Avg('rate')))['rate']
 
+    class Meta:
+        verbose_name = 'Продукт'
+        verbose_name_plural = 'Продукты'
+
 
 class ProductColor(Base):
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='colors',
@@ -72,6 +84,10 @@ class ProductColor(Base):
         if self.product:
             return f'{self.title} {self.product.title}'
         return f'{self.title}'
+
+    class Meta:
+        verbose_name = 'Цвет продукта'
+        verbose_name_plural = 'Цветов продукты'
 
     # def __str__(self):
     #     return self.title
@@ -97,6 +113,10 @@ class ProductImage(Base):
                                    source='image', format='JPEG', options={'quality': 90})
     is_active = models.BooleanField(default=False)
     is_slider = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = 'Картина продукта'
+        verbose_name_plural = 'Картинки продукты'
 
 
 class ProductGroup(Base):
@@ -126,6 +146,10 @@ class ProductParam(Base):
             return f'{self.key} - {self.value} - {self.product.title}'
         return f"{self.key} - {self.value}"
 
+    class Meta:
+        verbose_name = 'Параметр продукта'
+        verbose_name_plural = 'Параметры продукты'
+
 
 class ProductPrice(Base):
     product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='prices')
@@ -144,6 +168,10 @@ class ProductPrice(Base):
             raise ValidationError('Невозможно создать для такого параметра')
         return super().save(*args, **kwargs)
 
+    class Meta:
+        verbose_name = 'Цена продукта'
+        verbose_name_plural = 'Цены продукты'
+
 
 class PromoCode(Base):
     code = models.CharField(max_length=255, unique=True)
@@ -153,6 +181,10 @@ class PromoCode(Base):
 
     def __str__(self):
         return f'{self.code}'
+
+    class Meta:
+        verbose_name = 'Промокод'
+        verbose_name_plural = 'Промокоды'
 
 
 class Comment(Base, MPTTModel):
@@ -164,6 +196,10 @@ class Comment(Base, MPTTModel):
 
     # def __str__(self):
     #     return f'{self.user} - {self.text}'
+
+    class Meta:
+        verbose_name = 'Коммент'
+        verbose_name_plural = 'Комменты'
 
 
 class Rating(Base):
@@ -178,6 +214,10 @@ class Rating(Base):
     # def __str__(self):
     #     return f'{self.user} - {self.product} - {self.rate}'
 
+    class Meta:
+        verbose_name = 'Рейтинг'
+        verbose_name_plural = 'Рейтинги'
+
 
 class Review(Base):
     """ Отзыв (Оценка продукта)"""
@@ -188,6 +228,10 @@ class Review(Base):
     like = models.CharField('Что понравилось больше всего?', max_length=255, null=True, blank=True)
     is_active = models.BooleanField(default=False)
 
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+
 
 class ReviewImage(Base):
     review = models.ForeignKey(Review, on_delete=models.CASCADE, null=True)
@@ -195,11 +239,19 @@ class ReviewImage(Base):
                               validators=[FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png'])],
                               error_messages={'extension': _('File extension must be jpeg or jpg or png')})
 
+    class Meta:
+        verbose_name = 'Файл отзыва'
+        verbose_name_plural = 'Файлы отзывов'
+
 
 class Delivery(Base):
     region = models.OneToOneField('Region', on_delete=models.SET_NULL, null=True)
     delivery_price = models.PositiveIntegerField()
     # date_delivered = models.DateTimeField(null=True)
+
+    class Meta:
+        verbose_name = 'Доставка'
+        verbose_name_plural = 'Доставки'
 
 
 class Region(Base):
@@ -208,3 +260,7 @@ class Region(Base):
 
     def __str__(self):
         return f'{self.name}'
+
+    class Meta:
+        verbose_name = 'Регион'
+        verbose_name_plural = 'Регионы'
