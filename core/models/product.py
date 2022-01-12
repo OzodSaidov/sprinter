@@ -7,6 +7,7 @@ from django.db.models import Avg
 from imagekit.models import ImageSpecField, ProcessedImageField
 from imagekit.processors import ResizeToFit, Adjust
 from api.v1.product.services.round_avg import Round
+from common.static_data import ProductStatus
 from sprinter_settings.base_models import Base
 from mptt.models import TreeForeignKey
 from mptt.models import MPTTModel
@@ -59,6 +60,7 @@ class Product(Base):
     is_on_sale = models.BooleanField('На скидке?', default=False)
     is_new = models.BooleanField('Новый?', default=True)
     is_stock = models.BooleanField('Есть в наличии?', default=False)
+    status = models.CharField(max_length=255, choices=ProductStatus.choices, default=ProductStatus.IN_STOCK)
     available_quantity = models.PositiveIntegerField('Доступное количество', default=0)
 
     def __str__(self):

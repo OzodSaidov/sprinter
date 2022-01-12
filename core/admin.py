@@ -75,6 +75,7 @@ class ProductModelAdmin(admin.ModelAdmin):
                 'is_on_sale',
                 'is_new',
                 'is_stock',
+                'status',
                 'available_quantity'
             )
         }),
@@ -112,7 +113,8 @@ class ProductModelAdmin(admin.ModelAdmin):
         'discount',
         'rating',
         'is_active',
-        'is_stock'
+        'is_stock',
+        'status',
     )
 
     list_filter = ('brand', 'catalog')
