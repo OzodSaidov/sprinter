@@ -127,6 +127,14 @@ class ProductModelAdmin(admin.ModelAdmin):
             return []
         return [inline(self.model, self.admin_site) for inline in self.inlines]
 
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "catalogs":
+            queryset = Catalog.objects.all()
+
+
+            kwargs["queryset"] = queryset
+        return super(ProductModelAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
+
 
 @admin.register(ProductGroup)
 class ProductGroupModelAdmin(admin.ModelAdmin):
