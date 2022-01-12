@@ -40,11 +40,22 @@ class ProductParamInline(ProductGroupInline):
 class ColorModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'product', 'color', 'title')
 
+    def get_model_perms(self, request):
+        """
+        Return empty perms dict thus hiding the model from admin index.
+        """
+        return {}
+
 
 @admin.register(ProductImage)
 class ImageModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'product', 'image', 'is_active', 'is_slider')
 
+    def get_model_perms(self, request):
+        """
+        Return empty perms dict thus hiding the model from admin index.
+        """
+        return {}
 
 # class ProductCreateForm(forms.ModelForm):
 #     class Meta:
@@ -140,15 +151,33 @@ class ProductModelAdmin(admin.ModelAdmin):
 class ProductGroupModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'title')
 
+    def get_model_perms(self, request):
+        """
+        Return empty perms dict thus hiding the model from admin index.
+        """
+        return {}
+
 
 @admin.register(ProductParam)
 class ProductParamModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'key', 'value', 'product', 'has_group')
 
+    def get_model_perms(self, request):
+        """
+        Return empty perms dict thus hiding the model from admin index.
+        """
+        return {}
+
 
 @admin.register(ProductPrice)
 class ProductPriceModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'product', 'param', 'price', 'available_count',)
+
+    def get_model_perms(self, request):
+        """
+        Return empty perms dict thus hiding the model from admin index.
+        """
+        return {}
 
 
 @admin.register(PromoCode)
@@ -182,7 +211,11 @@ class RegionModelAdmin(admin.ModelAdmin):
 
     # def has_add_permission(self, request):
     #     return False
-
+    def get_model_perms(self, request):
+        """
+        Return empty perms dict thus hiding the model from admin index.
+        """
+        return {}
 
 # - ORDER -
 
