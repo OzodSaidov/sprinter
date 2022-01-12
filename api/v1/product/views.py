@@ -61,7 +61,7 @@ class ProductListView(generics.ListAPIView):
     serializer_class = ProductListSerializer
     queryset = Product.objects.all()
     permission_classes = [AllowAny]
-    filterset_class = ProductFilter
+    filter_class = ProductFilter
 
 
 class ProductNewListView(generics.ListAPIView):
