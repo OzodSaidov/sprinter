@@ -48,4 +48,4 @@ class AddressAdminModel(admin.ModelAdmin):
 
 @admin.register(BackCall)
 class BackCallAdminModel(admin.ModelAdmin):
-    list_display = ('phone', 'contact')
+    list_display = ('phone', 'contact', 'is_answered')
