@@ -1,7 +1,10 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import generics
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny
 from .filters import ProductFilter, ReviewFilter, CommentFilter
 from .serializers import *
+from .services.similar_products import get_similar_products
 
 
 class CatalogListView(generics.ListAPIView):
@@ -73,12 +76,14 @@ class ProductNewListView(generics.ListAPIView):
 class SimilarProductListView(generics.ListAPIView):
     serializer_class = ProductListSerializer
     permission_classes = [AllowAny]
-    lookup_url_kwarg = 'id'
 
     def get_queryset(self):
-        product = Product.objects.filter(id=self.kwargs.get('id')).first()
-        product_similars = Product.objects.filter(catalog=product.catalog).exclude(id=product.id)
-        return product_similars
+        try:
+            product = Product.objects.get(id=self.kwargs.get('id'))
+        except ObjectDoesNotExist:
+            raise ValidationError({'detail': 'Product not found'})
+        similar_products = get_similar_products(product)
+        return similar_products
 
 
 class ProductCreateView(generics.CreateAPIView):
