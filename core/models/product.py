@@ -47,7 +47,8 @@ class Brand(Base):
 
 
 class Product(Base):
-    catalog = models.ForeignKey('Catalog', on_delete=models.PROTECT, related_name='products')
+    # catalog = models.ForeignKey('Catalog', on_delete=models.PROTECT, related_name='products')
+    catalogs = models.ManyToManyField('Catalog')
     brand = models.ForeignKey('Brand', on_delete=models.PROTECT, null=True)
     title = models.CharField('Название', max_length=255)
     description = models.TextField("Описание")
