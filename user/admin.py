@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.views import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserCreationForm
-from user.models import Address
+from user.models import Address, BackCall
 from django.utils.translation import ugettext_lazy as _
 
 User = get_user_model()
@@ -44,3 +44,8 @@ class CustomUserAdmin(UserAdmin):
 @admin.register(Address)
 class AddressAdminModel(admin.ModelAdmin):
     list_display = ('user', 'address', 'zip_code', 'full_name')
+
+
+@admin.register(BackCall)
+class BackCallAdminModel(admin.ModelAdmin):
+    list_display = ('phone', 'contact')
