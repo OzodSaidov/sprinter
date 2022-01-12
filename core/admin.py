@@ -59,7 +59,7 @@ class ProductModelAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': (
-                'catalog',
+                'catalogs',
                 'brand',
                 'title_uz',
                 'title_en',
@@ -106,7 +106,7 @@ class ProductModelAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'title',
-        'catalog',
+        # 'catalogs',
         'brand',
         'price',
         'old_price',
@@ -117,7 +117,7 @@ class ProductModelAdmin(admin.ModelAdmin):
         'status',
     )
 
-    list_filter = ('brand', 'catalog')
+    list_filter = ('brand', 'catalogs')
     save_on_top = True
 
     inlines = [ProductImageInline, ProductParamInline]

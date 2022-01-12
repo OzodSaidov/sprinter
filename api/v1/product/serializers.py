@@ -593,7 +593,7 @@ class ProductSliderSerializer(serializers.ModelSerializer):
         model = Product
         fields = (
             'id',
-            'catalog',
+            'catalogs',
             'brand',
             # 'description',
             'title',
