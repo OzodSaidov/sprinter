@@ -8,7 +8,6 @@ class PaymentType(TextChoices):
 
 
 class OrderStatus(TextChoices):
-
     OPENED = 'Opened', 'Opened'
     CANCELLED = 'Cancelled', 'Cancelled'
     IN_PROCESS = 'In process', 'In process'
@@ -27,6 +26,11 @@ class UserRoles(TextChoices):
     MODERATOR = 'Moderator'
     USER = 'User'
 
+
+class ProductStatus(TextChoices):
+    IN_STOCK = 'Есть в наличии', 'Есть в наличии'
+    NON_STOCK = 'Нет в наличии', 'Нет в наличии'
+    SOON = 'Скоро', 'Скоро'
 
 # class Quality(TextChoices):
 #     PRICE = 'Price', 'Price'
