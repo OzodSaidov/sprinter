@@ -127,3 +127,4 @@ class Order(Base):
     class Meta:
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+

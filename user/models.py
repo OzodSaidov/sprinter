@@ -62,3 +62,15 @@ class Address(Base):
     class Meta:
         verbose_name = 'Адрес'
         verbose_name_plural = 'Адресы'
+
+
+class BackCall(Base):
+    phone = models.CharField(max_length=20)
+    contact = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.id} - {self.phone}"
+
+    class Meta:
+        verbose_name = 'Запрос за звонок'
+        verbose_name_plural = 'Запросы на звонки'

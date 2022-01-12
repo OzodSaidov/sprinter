@@ -10,4 +10,5 @@ urlpatterns = [
     path('payment/', include('api.v1.payment.urls')),
     path('search/', include('api.v1.search.urls')),
     path('regions/', RegionListView.as_view()),
+    path('backcall/', include('api.v1.backcall.urls')),
 ]

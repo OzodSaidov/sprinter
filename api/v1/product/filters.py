@@ -15,7 +15,7 @@ class ProductFilter(rest_filter.FilterSet):
         fields = {
             'brand_id': ['in'],
             'catalog_id': ['in'],
-            'discount': ['isnull']
+            'discount': ['isnull'],
         }
 
 
