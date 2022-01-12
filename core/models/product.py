@@ -106,11 +106,11 @@ class ProductImage(Base):
                               validators=[FileExtensionValidator(allowed_extensions=['jpeg', 'jpg', 'png'])],
                               error_messages={'extension': _('File extension must be jpeg or jpg or png')})
     image_200x200 = ImageSpecField(processors=[Adjust(contrast=1.2, sharpness=1.1), ResizeToFit(200, 200)],
-                                   source='image', format='JPEG', options={'quality': 90})
+                                   source='image', format='PNG', options={'quality': 90})
     image_320x350 = ImageSpecField(processors=[Adjust(contrast=1.2, sharpness=1.1), ResizeToFit(320, 350)],
-                                   source='image', format='JPEG', options={'quality': 90})
+                                   source='image', format='PNG', options={'quality': 90})
     image_540x370 = ImageSpecField(processors=[Adjust(contrast=1.2, sharpness=1.1), ResizeToFit(540, 370)],
-                                   source='image', format='JPEG', options={'quality': 90})
+                                   source='image', format='PNG', options={'quality': 90})
     is_active = models.BooleanField(default=False)
     is_slider = models.BooleanField(default=False)
 
