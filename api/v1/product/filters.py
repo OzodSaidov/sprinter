@@ -9,7 +9,7 @@ class ProductFilter(rest_filter.FilterSet):
     max_price = rest_filter.NumberFilter(field_name='price', lookup_expr='lte')
     is_new = rest_filter.BooleanFilter(field_name='is_new')
     is_stock = rest_filter.BooleanFilter(field_name='is_stock')
-    catalogs = rest_filter.filters.BaseInFilter(
+    catalog_id__in = rest_filter.filters.BaseInFilter(
         field_name='catalogs',
         lookup_expr='in'
     )
@@ -18,7 +18,7 @@ class ProductFilter(rest_filter.FilterSet):
         model = Product
         fields = {
             'brand_id': ['in'],
-            'catalogs': [],
+            # 'catalogs_id__in': [],
             'discount': ['isnull'],
         }
 
