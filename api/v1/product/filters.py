@@ -14,7 +14,7 @@ class ProductFilter(rest_filter.FilterSet):
         model = Product
         fields = {
             'brand_id': ['in'],
-            'catalog_id': ['in'],
+            # 'catalog_id': ['in'],
             'discount': ['isnull'],
         }
 
