@@ -23,7 +23,7 @@ class Catalog(Base, MPTTModel):
                             blank=True, related_name='sub_catalogs',
                             help_text=_("К какому каталогу относится этот каталог?"))
     image = models.ImageField(upload_to='photos/catalogs', null=True, blank=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, verbose_name='Запрос обработан?')
 
     def __str__(self):
         level = f'{self.get_level()*"---"}'
