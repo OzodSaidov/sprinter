@@ -1,6 +1,6 @@
 from django_filters import rest_framework as rest_filter
 
-from core.models import Product, Review, Comment
+from core.models import Product, Review, Comment, Catalog
 
 
 class ProductFilter(rest_filter.FilterSet):
@@ -11,14 +11,21 @@ class ProductFilter(rest_filter.FilterSet):
     is_stock = rest_filter.BooleanFilter(field_name='is_stock')
     catalog_id__in = rest_filter.filters.BaseInFilter(
         field_name='catalogs',
-        lookup_expr='in'
+        # lookup_expr='in',
+        method="get_catalog"
     )
+
+    def get_catalog(self, queryset, name, values):
+        catalogs = Catalog.objects.filter(id__in=values)
+        catalogs = Catalog.objects.get_queryset_descendants(catalogs, include_self=True)
+        queryset = Product.objects.filter(catalogs__in=catalogs)
+
+        return queryset
 
     class Meta:
         model = Product
         fields = {
             'brand_id': ['in'],
-            # 'catalogs_id__in': [],
             'discount': ['isnull'],
         }
 
