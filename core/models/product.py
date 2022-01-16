@@ -61,9 +61,9 @@ class Product(Base):
     is_slider = models.BooleanField('Показывать на слайдере?', default=False)
     is_on_sale = models.BooleanField('На скидке?', default=False)
     is_new = models.BooleanField('Новый?', default=True)
-    is_stock = models.BooleanField('Есть в наличии?', default=False)
+    # is_stock = models.BooleanField('Есть в наличии?', default=False)
     status = models.CharField(max_length=255, choices=ProductStatus.choices, default=ProductStatus.IN_STOCK)
-    available_quantity = models.PositiveIntegerField('Доступное количество', default=0)
+    available_quantity = models.PositiveIntegerField('Доступное количество', default=100)
 
     def __str__(self):
         return f'{self.title}'

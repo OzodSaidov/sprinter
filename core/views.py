@@ -8,10 +8,10 @@ from paycomuz.views import MerchantAPIView as PaymeMerchantAPIView
 from core.models.order import Order
 from loguru import logger
 
-""" Payme """
-
 
 class PaymeCheckOrder(Paycom):
+    """ Payme """
+
     def check_order(self, amount, account, *args, **kwargs):
         try:
             order_id = str(account['order_id'])
@@ -58,7 +58,7 @@ class TestViewPaycom(PaymeMerchantAPIView):
     VALIDATE_CLASS = PaymeCheckOrder
 
 
-#Click
+# Click
 class ClickCheckOrder(ClickUz):
     def check_order(self, order_id: str, amount: str):
         try:
