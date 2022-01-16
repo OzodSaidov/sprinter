@@ -28,9 +28,9 @@ class UserRoles(TextChoices):
 
 
 class ProductStatus(TextChoices):
-    IN_STOCK = 1, "1"
-    NON_STOCK = 2, "2"
-    SOON = 3, "3"
+    IN_STOCK = 1, "Есть в наличии"
+    NON_STOCK = 2, "Нет в наличии"
+    SOON = 3, "Скоро"
 
 # class Quality(TextChoices):
 #     PRICE = 'Price', 'Price'

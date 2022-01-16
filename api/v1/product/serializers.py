@@ -251,12 +251,12 @@ class ProductParamSerializer(serializers.ModelSerializer):
 
 
 class ProductCreateSerializer(serializers.ModelSerializer):
-    image = serializers.ListField(
-        child=serializers.ImageField(allow_empty_file=False),
-        required=True,
-        write_only=True,
-        allow_empty=True
-    )
+    # image = serializers.ListField(
+    #     child=serializers.ImageField(allow_empty_file=False),
+    #     required=True,
+    #     write_only=True,
+    #     allow_empty=True
+    # )
 
     class Meta:
         model = Product
@@ -271,14 +271,19 @@ class ProductCreateSerializer(serializers.ModelSerializer):
             'description_en',
             'price',
             'old_price',
-            'image',
+            # 'image',
             'is_active',
             'available_quantity',
             'is_slider',
             'is_on_sale',
             'is_new',
-
+            'status',
         )
+
+    def to_representation(self, instance: Product):
+        data = super().to_representation(instance)
+        data['status'] = instance.get_status_display()
+        return data
 
     def create(self, validated_data):
         images = validated_data.pop('image', [])
