@@ -16,7 +16,7 @@ class SearchProductView(generics.ListAPIView):
         q = self.request.query_params.get('q')
         products = Product.objects.none()
         if q:
-            search_fields = [f'catalog__title_{lang}', 'brand__title', f'title_{lang}',
+            search_fields = [f'catalogs__title_{lang}', 'brand__title', f'title_{lang}',
                              f'description_{lang}', 'price']
             query = get_query(q, search_fields)
             products = Product.objects.filter(query).order_by('price')
