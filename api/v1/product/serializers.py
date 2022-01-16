@@ -190,7 +190,7 @@ class ProductListSerializer(serializers.ModelSerializer):
             'image',
             'rating',
             'is_new',
-            'is_stock',
+            # 'is_stock',
             'status',
         )
 
@@ -346,7 +346,7 @@ class ProductRetrieveSerializer(serializers.ModelSerializer):
             'images',
             'colors',
             'is_new',
-            'is_stock',
+            # 'is_stock',
             'status',
             'available_quantity',
             'params',

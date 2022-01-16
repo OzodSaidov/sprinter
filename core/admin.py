@@ -85,7 +85,7 @@ class ProductModelAdmin(admin.ModelAdmin):
                 'is_slider',
                 'is_on_sale',
                 'is_new',
-                'is_stock',
+                # 'is_stock',
                 'status',
                 'available_quantity'
             )
@@ -124,7 +124,7 @@ class ProductModelAdmin(admin.ModelAdmin):
         'discount',
         'rating',
         'is_active',
-        'is_stock',
+        # 'is_stock',
         'status',
     )
 
@@ -141,8 +141,6 @@ class ProductModelAdmin(admin.ModelAdmin):
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == "catalogs":
             queryset = Catalog.objects.all()
-
-
             kwargs["queryset"] = queryset
         return super(ProductModelAdmin, self).formfield_for_manytomany(db_field, request, **kwargs)
 
@@ -216,6 +214,7 @@ class RegionModelAdmin(admin.ModelAdmin):
         Return empty perms dict thus hiding the model from admin index.
         """
         return {}
+
 
 # - ORDER -
 
